@@ -296,15 +296,25 @@ export default function CompanyPage() {
                       <ReportFormatSelector 
                         selectedFormat={selectedFormat}
                         onFormatSelect={setSelectedFormat}
-                        showDownloadButton={true}
-                        onDownload={() => {
+                        showPrepareButton={true}
+                        onPrepare={() => {
+                          // Raporun toplam fiyatını hesapla
+                          const yearCount = selectedYears.length;
+                          const ratioCount = selectedRatios.length;
+                          const basePrice = 25; // TL
+                          const totalPrice = basePrice * yearCount;
+                          
+                          // Ödeme sayfasına yönlendir
+                          navigate(`/payment?amount=${totalPrice}&format=${selectedFormat}&years=${selectedYears.join(",")}&ratios=${selectedRatios.join(",")}&companyId=${companyId}`);
+                          
                           toast({
-                            title: "Rapor indiriliyor",
+                            title: "Rapor hazırlanıyor",
                             description: `${selectedYears.join(", ")} yılları için ${selectedFormat.toUpperCase()} raporu hazırlanıyor.`,
                           });
                         }}
-                        creditsRequired={1}
-                        userCredits={5}
+                        isPreparing={false}
+                        price={selectedYears.length * 25}
+                        currency="₺"
                       />
                     </div>
                     

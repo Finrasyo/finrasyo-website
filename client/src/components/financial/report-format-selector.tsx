@@ -39,21 +39,21 @@ export const formatInfo = {
 interface ReportFormatSelectorProps {
   selectedFormat: ReportFormat;
   onFormatSelect: (format: ReportFormat) => void;
-  showDownloadButton?: boolean;
-  onDownload?: () => void;
-  isDownloading?: boolean;
-  creditsRequired?: number;
-  userCredits?: number;
+  showPrepareButton?: boolean;
+  onPrepare?: () => void;
+  isPreparing?: boolean;
+  price?: number;
+  currency?: string;
 }
 
 export default function ReportFormatSelector({
   selectedFormat,
   onFormatSelect,
-  showDownloadButton = false,
-  onDownload,
-  isDownloading = false,
-  creditsRequired = 1,
-  userCredits = 0
+  showPrepareButton = false,
+  onPrepare,
+  isPreparing = false,
+  price = 25,
+  currency = "₺"
 }: ReportFormatSelectorProps) {
   return (
     <Card>
@@ -88,32 +88,32 @@ export default function ReportFormatSelector({
           ))}
         </RadioGroup>
         
-        {showDownloadButton && (
+        {showPrepareButton && (
           <div className="mt-6 space-y-2">
             <Button 
               className="w-full" 
-              onClick={onDownload}
-              disabled={isDownloading || userCredits < creditsRequired}
+              onClick={onPrepare}
+              disabled={isPreparing}
             >
-              {isDownloading ? (
+              {isPreparing ? (
                 <>
                   <FileDown className="mr-2 h-4 w-4 animate-pulse" />
-                  İndiriliyor...
+                  Hazırlanıyor...
                 </>
               ) : (
                 <>
                   <FileDown className="mr-2 h-4 w-4" />
-                  Raporu İndir {formatInfo[selectedFormat].extension}
+                  HAZIRLA
                 </>
               )}
             </Button>
             
             <div className="flex justify-between text-xs text-neutral-500">
               <span>
-                Bu işlem {creditsRequired} kredi gerektirir
+                Bu işlem ücretlidir
               </span>
-              <span className={userCredits < creditsRequired ? "text-red-500" : "text-green-600"}>
-                Mevcut kredi: {userCredits}
+              <span className="font-medium text-primary">
+                Ücret: {price} {currency}
               </span>
             </div>
           </div>
