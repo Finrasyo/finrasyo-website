@@ -178,14 +178,6 @@ export default function ContactPage() {
                 <h3 className="text-lg font-medium mb-4">İletişim Bilgilerimiz</h3>
                 <ul className="space-y-4">
                   <li className="flex items-start">
-                    <Mail className="h-6 w-6 text-primary mr-3" />
-                    <span>drosmankursat@yandex.com</span>
-                  </li>
-                  <li className="flex items-start">
-                    <Phone className="h-6 w-6 text-primary mr-3" />
-                    <span>+90 (248) 213 3000</span>
-                  </li>
-                  <li className="flex items-start">
                     <MapPin className="h-6 w-6 text-primary mr-3" />
                     <div className="flex flex-col">
                       <span>Serra Yazılım</span>
@@ -196,27 +188,7 @@ export default function ContactPage() {
                 </ul>
               </div>
               
-              <Card>
-                <CardHeader>
-                  <CardTitle>Çalışma Saatlerimiz</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <ul className="space-y-2">
-                    <li className="flex justify-between">
-                      <span>Pazartesi - Cuma:</span>
-                      <span>09:00 - 18:00</span>
-                    </li>
-                    <li className="flex justify-between">
-                      <span>Cumartesi:</span>
-                      <span>10:00 - 14:00</span>
-                    </li>
-                    <li className="flex justify-between">
-                      <span>Pazar:</span>
-                      <span>Kapalı</span>
-                    </li>
-                  </ul>
-                </CardContent>
-              </Card>
+
             </div>
           </div>
           
