@@ -73,18 +73,24 @@ export const insertFinancialDataSchema = createInsertSchema(financialData).pick(
 // Report schema
 export const reports = pgTable("reports", {
   id: serial("id").primaryKey(),
+  name: text("name").notNull(),
+  type: text("type").notNull(),
+  format: text("format").notNull().default("pdf"), // 'pdf', 'word', 'excel', 'csv'
+  companyName: text("company_name").notNull(),
   userId: integer("user_id").notNull(),
   companyId: integer("company_id").notNull(),
   financialDataId: integer("financial_data_id").notNull(),
-  type: text("type").notNull(), // 'pdf', 'docx', 'csv', 'xlsx'
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 
 export const insertReportSchema = createInsertSchema(reports).pick({
+  name: true,
+  type: true,
+  format: true,
+  companyName: true,
   userId: true,
   companyId: true,
   financialDataId: true,
-  type: true,
 });
 
 // Payment records

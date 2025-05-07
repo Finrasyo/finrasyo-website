@@ -7,6 +7,8 @@ import AuthPage from "@/pages/auth-page";
 import CompanyPage from "@/pages/company-page";
 import AnalysisPage from "@/pages/analysis-page";
 import ReportsPage from "@/pages/reports-page";
+import PaymentPage from "@/pages/payment-page";
+import ReportPage from "@/pages/report-page";
 import AboutPage from "@/pages/about-page";
 import HowItWorksPage from "@/pages/how-it-works-page";
 import ContactPage from "@/pages/contact-page";
@@ -22,6 +24,8 @@ function Router() {
       <ProtectedRoute path="/company/:id" component={CompanyPage} />
       <ProtectedRoute path="/analysis/:id" component={AnalysisPage} />
       <ProtectedRoute path="/reports" component={ReportsPage} />
+      <ProtectedRoute path="/payment" component={PaymentPage} />
+      <ProtectedRoute path="/report/:id" component={ReportPage} />
       <Route path="/auth" component={AuthPage} />
       <Route path="/about" component={AboutPage} />
       <Route path="/how-it-works" component={HowItWorksPage} />
