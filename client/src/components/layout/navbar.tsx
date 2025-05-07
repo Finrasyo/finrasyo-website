@@ -49,6 +49,9 @@ export default function Navbar() {
     { href: "/reports", label: "Raporlar", active: location === "/reports" },
     { href: "/", label: "Şirketler", active: location.startsWith("/company") },
     { href: "#", label: "Fiyatlandırma", active: false },
+    { href: "#about", label: "Hakkımızda", active: location === "/about" },
+    { href: "#how-it-works", label: "Nasıl Çalışır", active: location === "/how-it-works" },
+    { href: "#contact", label: "İletişim", active: location === "/contact" },
   ];
 
   return (
