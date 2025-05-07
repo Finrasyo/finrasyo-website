@@ -346,7 +346,7 @@ export async function generateExcelSpreadsheet(financialData: FinancialData, com
   
   // Add footer
   financialSheet.addRow([]);
-  financialSheet.addRow([`© ${new Date().getFullYear()} FinRatio. Tüm hakları saklıdır.`]);
+  financialSheet.addRow([`© ${new Date().getFullYear()} FinRasyo. Tüm hakları saklıdır.`]);
   financialSheet.mergeCells('A25:D25');
   financialSheet.getCell('A25').font = { color: { argb: '999999' }, size: 10 };
   financialSheet.getCell('A25').alignment = { horizontal: 'center' };
@@ -365,7 +365,7 @@ export async function generateExcelSpreadsheet(financialData: FinancialData, com
 // Generate CSV file
 export async function generateCsvFile(financialData: FinancialData, company: Company): Promise<Blob> {
   // Build CSV content
-  let csvContent = `"FinRatio - Finansal Oran Analizi"\n`;
+  let csvContent = `"FinRasyo - Finansal Oran Analizi"\n`;
   csvContent += `"${company.name} - Finansal Analiz Raporu"\n`;
   csvContent += `"Rapor Tarihi","${formatDate(new Date())}"\n`;
   csvContent += `"Analiz Dönemi","${financialData.year}"\n\n`;
@@ -414,7 +414,7 @@ export async function generateCsvFile(financialData: FinancialData, company: Com
   csvContent += `"${plainAnalysis}"\n\n`;
   
   // Footer
-  csvContent += `"© ${new Date().getFullYear()} FinRatio. Tüm hakları saklıdır."\n`;
+  csvContent += `"© ${new Date().getFullYear()} FinRasyo. Tüm hakları saklıdır."\n`;
   
   return new Blob([csvContent], { type: 'text/csv;charset=utf-8' });
 }
