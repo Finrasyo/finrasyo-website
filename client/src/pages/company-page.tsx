@@ -12,6 +12,7 @@ import { Building, File, History, AlertCircle, Loader2 } from "lucide-react";
 import { formatDate } from "@/lib/utils";
 import FinancialDataForm from "@/components/financial/financial-data-form";
 import HistoricalData from "@/components/financial/historical-data";
+import YearSelector from "@/components/financial/year-selector";
 
 export default function CompanyPage() {
   const { id } = useParams();
