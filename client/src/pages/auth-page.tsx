@@ -78,7 +78,7 @@ export default function AuthPage() {
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <h1 className="text-center text-3xl font-bold text-primary">FinRasyo</h1>
         <h2 className="mt-2 text-center text-2xl font-bold text-neutral-900">
-          Finansal Oran Analiz Platformu
+          Finansal Veri Sunum Platformu
         </h2>
       </div>
 
@@ -261,10 +261,10 @@ export default function AuthPage() {
             <div className="hidden md:block bg-primary/5 rounded-lg p-8">
               <div className="h-full flex flex-col justify-center">
                 <h3 className="text-2xl font-bold text-primary mb-4">
-                  Finansal Analiz Kolaylaştı
+                  Finansal Veri Sunumu Kolaylaştı
                 </h3>
                 <p className="text-neutral-600 mb-6">
-                  FinRasyo ile şirketlerin finansal oranlarını kolayca hesaplayın, 
+                  FinRasyo ile şirketlerin finansal verilerini kolayca analiz edin, 
                   karşılaştırmalar yapın ve profesyonel raporlar oluşturun.
                 </p>
                 

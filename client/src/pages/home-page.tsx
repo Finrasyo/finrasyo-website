@@ -29,8 +29,8 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           {/* Dashboard Header */}
           <div className="mb-8">
-            <h1 className="text-2xl font-bold text-neutral-800">Finansal Oran Analizi</h1>
-            <p className="text-neutral-600 mt-1">Şirketlerin finansal oranlarını hesaplayın ve raporları indirin</p>
+            <h1 className="text-2xl font-bold text-neutral-800">Finansal Veri Sunumu</h1>
+            <p className="text-neutral-600 mt-1">Şirketlerin finansal verilerini analiz edin ve raporları indirin</p>
             
             <div className="mt-4 grid grid-cols-1 md:grid-cols-4 gap-4">
               <div className="col-span-1 md:col-span-3">
