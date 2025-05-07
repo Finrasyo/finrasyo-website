@@ -23,6 +23,9 @@ function Router() {
       <ProtectedRoute path="/analysis/:id" component={AnalysisPage} />
       <ProtectedRoute path="/reports" component={ReportsPage} />
       <Route path="/auth" component={AuthPage} />
+      <Route path="/about" component={AboutPage} />
+      <Route path="/how-it-works" component={HowItWorksPage} />
+      <Route path="/contact" component={ContactPage} />
       <Route component={NotFound} />
     </Switch>
   );
