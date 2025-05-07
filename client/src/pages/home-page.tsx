@@ -16,7 +16,7 @@ export default function HomePage() {
     if (user) {
       toast({
         title: "Hoş Geldiniz",
-        description: `${user.username}, FinRatio platformuna hoş geldiniz.`,
+        description: `${user.username}, FinRasyo platformuna hoş geldiniz.`,
       });
     }
   }, []);

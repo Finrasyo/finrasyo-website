@@ -20,7 +20,7 @@ export async function generatePdfReport(financialData: FinancialData, company: C
   // Add header
   doc.setFontSize(20);
   doc.setTextColor(15, 82, 186); // Primary blue
-  doc.text('FinRatio - Finansal Oran Analizi', 105, 20, { align: 'center' });
+  doc.text('FinRasyo - Finansal Oran Analizi', 105, 20, { align: 'center' });
   
   // Add company information
   doc.setFontSize(16);
@@ -120,7 +120,7 @@ export async function generatePdfReport(financialData: FinancialData, company: C
     doc.setFontSize(10);
     doc.setTextColor(150, 150, 150);
     doc.text(
-      `© ${new Date().getFullYear()} FinRatio. Tüm hakları saklıdır. Sayfa ${i}/${pageCount}`,
+      `© ${new Date().getFullYear()} FinRasyo. Tüm hakları saklıdır. Sayfa ${i}/${pageCount}`,
       105,
       doc.internal.pageSize.height - 10,
       { align: 'center' }
@@ -149,7 +149,7 @@ export async function generateWordDocument(financialData: FinancialData, company
       </style>
     </head>
     <body>
-      <h1>FinRatio - Finansal Oran Analizi</h1>
+      <h1>FinRasyo - Finansal Oran Analizi</h1>
       <h2>${company.name} - Finansal Analiz Raporu</h2>
       <p>Rapor Tarihi: ${formatDate(new Date())}</p>
       <p>Analiz Dönemi: ${financialData.year}</p>
@@ -206,7 +206,7 @@ export async function generateWordDocument(financialData: FinancialData, company
       )}</p>
       
       <footer>
-        <p>© ${new Date().getFullYear()} FinRatio. Tüm hakları saklıdır.</p>
+        <p>© ${new Date().getFullYear()} FinRasyo. Tüm hakları saklıdır.</p>
       </footer>
     </body>
     </html>
@@ -219,8 +219,8 @@ export async function generateWordDocument(financialData: FinancialData, company
 // Generate Excel spreadsheet (XLSX)
 export async function generateExcelSpreadsheet(financialData: FinancialData, company: Company): Promise<Blob> {
   const workbook = new ExcelJS.Workbook();
-  workbook.creator = 'FinRatio';
-  workbook.lastModifiedBy = 'FinRatio';
+  workbook.creator = 'FinRasyo';
+  workbook.lastModifiedBy = 'FinRasyo';
   workbook.created = new Date();
   workbook.modified = new Date();
   

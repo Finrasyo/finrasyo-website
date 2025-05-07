@@ -166,7 +166,7 @@ export default function AuthPage() {
                     <CardHeader>
                       <CardTitle>Yeni Hesap Oluşturun</CardTitle>
                       <CardDescription>
-                        FinRatio'ya kaydolarak finansal analizlere başlayın
+                        FinRasyo'ya kaydolarak finansal analizlere başlayın
                       </CardDescription>
                     </CardHeader>
                     <CardContent>
@@ -264,7 +264,7 @@ export default function AuthPage() {
                   Finansal Analiz Kolaylaştı
                 </h3>
                 <p className="text-neutral-600 mb-6">
-                  FinRatio ile şirketlerin finansal oranlarını kolayca hesaplayın, 
+                  FinRasyo ile şirketlerin finansal oranlarını kolayca hesaplayın, 
                   karşılaştırmalar yapın ve profesyonel raporlar oluşturun.
                 </p>
                 
