@@ -1,8 +1,8 @@
-import { useNavigate } from "wouter";
+import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 
 export default function AboutPage() {
-  const [navigate] = useNavigate();
+  const [, setLocation] = useLocation();
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center py-12 sm:px-6 lg:px-8 bg-neutral-50">
@@ -27,7 +27,7 @@ export default function AboutPage() {
           
           <div className="mt-8 text-center">
             <Button
-              onClick={() => navigate("/")}
+              onClick={() => setLocation("/")}
               className="mt-4"
             >
               Ana Sayfaya Dön
