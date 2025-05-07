@@ -302,12 +302,6 @@ export default function AuthPage() {
                     </span>
                   </li>
                 </ul>
-                
-                <div className="mt-8 text-center">
-                  <p className="text-sm text-neutral-500">
-                    Hemen kaydolun ve 5 ücretsiz rapor kredisi kazanın!
-                  </p>
-                </div>
               </div>
             </div>
           </div>
