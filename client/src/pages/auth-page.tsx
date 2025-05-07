@@ -80,6 +80,11 @@ export default function AuthPage() {
         <h2 className="mt-2 text-center text-2xl font-bold text-neutral-900">
           Finansal Veri Sunum Platformu
         </h2>
+        <div className="mt-6 flex justify-center space-x-4">
+          <a href="#about" className="text-primary hover:text-primary-dark font-medium">Hakkımızda</a>
+          <a href="#how-it-works" className="text-primary hover:text-primary-dark font-medium">Nasıl Çalışır</a>
+          <a href="#contact" className="text-primary hover:text-primary-dark font-medium">İletişim</a>
+        </div>
       </div>
 
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-5xl">
