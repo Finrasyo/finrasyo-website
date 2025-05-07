@@ -6,7 +6,7 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div className="col-span-1 md:col-span-1">
-            <span className="text-primary font-bold text-xl">FinRatio</span>
+            <span className="text-primary font-bold text-xl">FinRasyo</span>
             <p className="text-neutral-600 mt-2 text-sm">Finansal oran analizi ve raporlama platformu</p>
             <div className="mt-4 flex space-x-4">
               <a href="#" className="text-neutral-400 hover:text-primary">
@@ -92,7 +92,7 @@ export default function Footer() {
             </select>
           </div>
           <div className="mt-8 md:mt-0 md:order-1">
-            <p className="text-center text-sm text-neutral-500">&copy; {new Date().getFullYear()} FinRatio. Tüm hakları saklıdır.</p>
+            <p className="text-center text-sm text-neutral-500">&copy; {new Date().getFullYear()} FinRasyo. Tüm hakları saklıdır.</p>
           </div>
         </div>
       </div>

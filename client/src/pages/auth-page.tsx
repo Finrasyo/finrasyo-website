@@ -76,7 +76,7 @@ export default function AuthPage() {
   return (
     <div className="min-h-screen flex flex-col justify-center py-12 sm:px-6 lg:px-8 bg-neutral-50">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
-        <h1 className="text-center text-3xl font-bold text-primary">FinRatio</h1>
+        <h1 className="text-center text-3xl font-bold text-primary">FinRasyo</h1>
         <h2 className="mt-2 text-center text-2xl font-bold text-neutral-900">
           Finansal Oran Analiz Platformu
         </h2>
@@ -97,7 +97,7 @@ export default function AuthPage() {
                     <CardHeader>
                       <CardTitle>Hesabınıza Giriş Yapın</CardTitle>
                       <CardDescription>
-                        Mevcut hesabınızla FinRatio'ya giriş yapın
+                        Mevcut hesabınızla FinRasyo'ya giriş yapın
                       </CardDescription>
                     </CardHeader>
                     <CardContent>
