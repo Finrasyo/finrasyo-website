@@ -13,6 +13,8 @@ import { formatDate } from "@/lib/utils";
 import FinancialDataForm from "@/components/financial/financial-data-form";
 import HistoricalData from "@/components/financial/historical-data";
 import YearSelector from "@/components/financial/year-selector";
+import RatioSelector, { RatioType } from "@/components/financial/ratio-selector";
+import ReportFormatSelector, { ReportFormat } from "@/components/financial/report-format-selector";
 
 export default function CompanyPage() {
   const { id } = useParams();
@@ -20,6 +22,15 @@ export default function CompanyPage() {
   const [_, navigate] = useLocation();
   const { toast } = useToast();
   const [activeTab, setActiveTab] = useState("overview");
+  
+  // Seçilen yıllar için state
+  const [selectedYears, setSelectedYears] = useState<number[]>([new Date().getFullYear()]);
+  
+  // Seçilen oran türleri için state
+  const [selectedRatios, setSelectedRatios] = useState<RatioType[]>(["currentRatio", "liquidityRatio", "acidTestRatio"]);
+  
+  // Seçilen rapor formatı için state
+  const [selectedFormat, setSelectedFormat] = useState<ReportFormat>("pdf");
 
   const { 
     data: company,
@@ -119,6 +130,7 @@ export default function CompanyPage() {
           <Tabs value={activeTab} onValueChange={setActiveTab}>
             <TabsList className="mb-6">
               <TabsTrigger value="overview">Genel Bakış</TabsTrigger>
+              <TabsTrigger value="analysis">Analiz</TabsTrigger>
               <TabsTrigger value="history">Analiz Geçmişi</TabsTrigger>
             </TabsList>
             
@@ -231,6 +243,111 @@ export default function CompanyPage() {
                     )}
                   </CardContent>
                 </Card>
+              </div>
+            </TabsContent>
+            
+            <TabsContent value="analysis">
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                {/* Şirket bilgileri */}
+                <div className="col-span-1">
+                  <div className="space-y-6">
+                    {/* Dönem Seçimi */}
+                    <YearSelector 
+                      selectedYears={selectedYears}
+                      onYearSelect={setSelectedYears}
+                      maxSelections={5}
+                    />
+                    
+                    {/* Şirket Bilgileri Kartı */}
+                    <Card>
+                      <CardHeader>
+                        <CardTitle>Şirket Bilgileri</CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="space-y-4">
+                          <div>
+                            <p className="text-sm font-medium text-neutral-500">Şirket Adı</p>
+                            <p className="mt-1 text-neutral-800">{company.name}</p>
+                          </div>
+                          
+                          {company.code && (
+                            <div>
+                              <p className="text-sm font-medium text-neutral-500">Şirket Kodu</p>
+                              <p className="mt-1 text-neutral-800">{company.code}</p>
+                            </div>
+                          )}
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </div>
+                </div>
+                
+                {/* Analiz Alanı */}
+                <div className="col-span-1 lg:col-span-2">
+                  <div className="space-y-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      {/* Oran Türü Seçimi */}
+                      <RatioSelector 
+                        selectedRatios={selectedRatios}
+                        onRatioSelect={setSelectedRatios}
+                      />
+                      
+                      {/* Rapor Formatı Seçimi */}
+                      <ReportFormatSelector 
+                        selectedFormat={selectedFormat}
+                        onFormatSelect={setSelectedFormat}
+                        showDownloadButton={true}
+                        onDownload={() => {
+                          toast({
+                            title: "Rapor indiriliyor",
+                            description: `${selectedYears.join(", ")} yılları için ${selectedFormat.toUpperCase()} raporu hazırlanıyor.`,
+                          });
+                        }}
+                        creditsRequired={1}
+                        userCredits={5}
+                      />
+                    </div>
+                    
+                    {/* Sonuçlar Alanı */}
+                    <Card>
+                      <CardHeader>
+                        <CardTitle>Analiz Sonuçları</CardTitle>
+                        <CardDescription>
+                          Seçilen dönemler ve oran türlerine göre analiz sonuçları
+                        </CardDescription>
+                      </CardHeader>
+                      <CardContent>
+                        {selectedYears.length === 0 ? (
+                          <div className="py-8 text-center border border-dashed rounded-lg">
+                            <p className="text-neutral-500">
+                              Lütfen analiz için en az bir dönem seçiniz.
+                            </p>
+                          </div>
+                        ) : (
+                          <div className="space-y-4">
+                            <p className="text-neutral-600">
+                              {company.name} şirketi için {selectedYears.join(", ")} 
+                              {selectedYears.length > 1 ? " yıllarına" : " yılına"} ait 
+                              {selectedRatios.length === 0 ? " (oran seçiniz)" : ""} analiz sonuçları.
+                            </p>
+                            
+                            {/* Sonuçlar burada gösterilecek */}
+                            <div className="mt-4">
+                              <Button onClick={() => {
+                                toast({
+                                  title: "Analiz yapılıyor",
+                                  description: "Seçilen dönemler için finansal analiz yapılıyor...",
+                                });
+                              }}>
+                                Analiz Et
+                              </Button>
+                            </div>
+                          </div>
+                        )}
+                      </CardContent>
+                    </Card>
+                  </div>
+                </div>
               </div>
             </TabsContent>
             
