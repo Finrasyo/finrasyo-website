@@ -1,4 +1,4 @@
-import type { Express } from "express";
+import type { Express, Request, Response } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { setupAuth } from "./auth";
@@ -9,6 +9,12 @@ import {
   insertReportSchema,
   insertPaymentSchema
 } from "@shared/schema";
+
+const contactFormSchema = z.object({
+  name: z.string().min(2),
+  email: z.string().email(),
+  message: z.string().min(10)
+});
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // sets up /api/register, /api/login, /api/logout, /api/user
@@ -317,6 +323,39 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
     } catch (error: any) {
       res.status(500).json({ message: error.message });
+    }
+  });
+
+  // İletişim formu
+  app.post("/api/contact", async (req: Request, res: Response) => {
+    try {
+      const validatedData = contactFormSchema.parse(req.body);
+      
+      // Log the contact form submission
+      console.log("İletişim formu gönderildi:", validatedData);
+      console.log("Alıcı: drosmankursat@yandex.com");
+      
+      // Burada bir e-posta gönderme işlevi eklenebilir
+      // SendGrid veya başka bir e-posta servisi kullanılabilir
+      
+      res.status(200).json({ 
+        success: true, 
+        message: "İletişim formu başarıyla gönderildi." 
+      });
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ 
+          success: false, 
+          message: "Form bilgileri geçerli değil.",
+          errors: error.errors 
+        });
+      }
+      
+      console.error("İletişim formu hatası:", error);
+      res.status(500).json({ 
+        success: false, 
+        message: "İletişim formu gönderilirken bir hata oluştu." 
+      });
     }
   });
 
