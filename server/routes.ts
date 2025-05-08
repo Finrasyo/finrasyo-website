@@ -9,6 +9,7 @@ import {
   insertReportSchema,
   insertPaymentSchema
 } from "@shared/schema";
+import { getCompanyFinancials, getAllCompaniesFinancials } from "./api/company-financials";
 
 const contactFormSchema = z.object({
   name: z.string().min(2),
@@ -19,6 +20,10 @@ const contactFormSchema = z.object({
 export async function registerRoutes(app: Express): Promise<Server> {
   // sets up /api/register, /api/login, /api/logout, /api/user
   setupAuth(app);
+  
+  // Şirket finansal verileri API'leri
+  app.get("/api/company-financials/:companyCode", getCompanyFinancials);
+  app.get("/api/company-financials", getAllCompaniesFinancials);
 
   // Company routes
   app.get("/api/companies", async (req, res) => {
