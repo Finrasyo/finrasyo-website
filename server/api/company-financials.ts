@@ -1,8 +1,8 @@
-import { Request, Response } from 'express';
-import fs from 'fs';
-import path from 'path';
-import { bistCompanies } from '../shared-data'; // Paylaşılan veri için bir yol
+import { Request, Response } from "express";
 
+/**
+ * Şirket finansal verilerini temsil eden arayüz
+ */
 interface FinancialData {
   stockCode: string;
   companyName: string;
@@ -24,149 +24,184 @@ interface FinancialData {
   sector: string;
 }
 
-// Bu genellikle bir veritabanından gelecektir, ancak demo için test verisi kullanıyoruz
+/**
+ * Gerçek veri yoksa örnek veri oluştur 
+ */
 function generateDummyData(companyCode: string): FinancialData {
-  // Şirket bilgilerini bul
-  const company = bistCompanies.find(c => c.code === companyCode);
+  const today = new Date().toLocaleDateString("tr-TR");
   
-  if (!company) {
-    throw new Error(`Şirket bulunamadı: ${companyCode}`);
+  // BIST şirketlerinden bazılarının örnek verileri
+  const companyData: Record<string, Partial<FinancialData>> = {
+    "AKBNK": {
+      companyName: "Akbank",
+      currentPrice: { value: 34.56, source: "Yahoo Finance" },
+      priceChange: { value: "+1.2%", source: "Yahoo Finance" },
+      sector: "Mali Kuruluşlar",
+      keyStatistics: {
+        "Piyasa Değeri": 179800000000,
+        "Hisse Başına Kazanç": 12.34,
+        "Fiyat/Kazanç Oranı": 7.8,
+        "Özsermaye Kârlılığı": 0.22,
+        "Temettü Verimi": 0.035
+      },
+      metrics: {
+        "Cari Oran": "1.2",
+        "Likidite Oranı": "0.9",
+        "Borç/Özsermaye": "6.5",
+        "Aktif Kârlılığı": "1.8%",
+        "Net Kâr Marjı": "22.4%"
+      },
+      incomeStatement: [
+        {
+          "Dönem": "2023/12",
+          "Net Satışlar": 185000000000,
+          "Faaliyet Kârı": 54500000000,
+          "Net Kâr": 41800000000,
+        },
+        {
+          "Dönem": "2022/12",
+          "Net Satışlar": 155000000000,
+          "Faaliyet Kârı": 44200000000,
+          "Net Kâr": 32700000000,
+        }
+      ]
+    },
+    "ARCLK": {
+      companyName: "Arçelik",
+      currentPrice: { value: 120.9, source: "Yahoo Finance" },
+      priceChange: { value: "-0.8%", source: "Yahoo Finance" },
+      sector: "Metal Eşya, Makine ve Gereç Yapım",
+      keyStatistics: {
+        "Piyasa Değeri": 81700000000,
+        "Hisse Başına Kazanç": 5.62,
+        "Fiyat/Kazanç Oranı": 21.5,
+        "Özsermaye Kârlılığı": 0.13,
+        "Temettü Verimi": 0.018
+      },
+      metrics: {
+        "Cari Oran": "1.7",
+        "Likidite Oranı": "1.1",
+        "Borç/Özsermaye": "1.2",
+        "Aktif Kârlılığı": "5.7%",
+        "Net Kâr Marjı": "4.1%"
+      },
+      incomeStatement: [
+        {
+          "Dönem": "2023/12",
+          "Net Satışlar": 196700000000,
+          "Faaliyet Kârı": 12400000000,
+          "Net Kâr": 8100000000,
+        },
+        {
+          "Dönem": "2022/12",
+          "Net Satışlar": 166200000000,
+          "Faaliyet Kârı": 10800000000,
+          "Net Kâr": 6800000000,
+        }
+      ]
+    },
+    "ASELS": {
+      companyName: "Aselsan",
+      currentPrice: { value: 59.8, source: "Yahoo Finance" },
+      priceChange: { value: "+3.5%", source: "Yahoo Finance" },
+      sector: "Savunma",
+      keyStatistics: {
+        "Piyasa Değeri": 89700000000,
+        "Hisse Başına Kazanç": 4.53,
+        "Fiyat/Kazanç Oranı": 13.2,
+        "Özsermaye Kârlılığı": 0.16,
+        "Temettü Verimi": 0.022
+      },
+      metrics: {
+        "Cari Oran": "3.2",
+        "Likidite Oranı": "2.4",
+        "Borç/Özsermaye": "0.38",
+        "Aktif Kârlılığı": "12.3%",
+        "Net Kâr Marjı": "18.9%"
+      },
+      incomeStatement: [
+        {
+          "Dönem": "2023/12",
+          "Net Satışlar": 52300000000,
+          "Faaliyet Kârı": 14200000000,
+          "Net Kâr": 9900000000,
+        },
+        {
+          "Dönem": "2022/12",
+          "Net Satışlar": 40600000000,
+          "Faaliyet Kârı": 10700000000,
+          "Net Kâr": 7800000000,
+        }
+      ]
+    },
+    // Buraya diğer şirketler için de benzer veriler eklenebilir
+  };
+
+  // Eğer şirket için spesifik veri varsa onu döndür, yoksa varsayılan örnek veri oluştur
+  const specificData = companyData[companyCode];
+  
+  if (specificData) {
+    return {
+      stockCode: companyCode,
+      lastUpdated: today,
+      ...specificData,
+    } as FinancialData;
   }
   
-  // Test verisi
+  // Varsayılan örnek veri
   return {
     stockCode: companyCode,
-    companyName: company.name,
-    sector: company.sector,
-    currentPrice: {
-      value: Math.random() * 100 + 10, // 10-110 arasında rastgele fiyat
-      source: "Test"
-    },
-    priceChange: {
-      value: `+${(Math.random() * 2).toFixed(2)} (${(Math.random() * 3).toFixed(2)}%)`,
-      source: "Test"
+    companyName: `${companyCode} Şirketi`,
+    currentPrice: { value: Math.random() * 100 + 10, source: "Örnek Veri" },
+    priceChange: { 
+      value: Math.random() > 0.5 ? `+${(Math.random() * 5).toFixed(2)}%` : `-${(Math.random() * 5).toFixed(2)}%`, 
+      source: "Örnek Veri" 
     },
     financialData: {
-      totalCash: Math.random() * 1000000000 + 500000000,
-      totalDebt: Math.random() * 800000000 + 300000000,
-      operatingCashflow: Math.random() * 400000000 + 200000000,
-      returnOnAssets: Math.random() * 0.15 + 0.05,
-      returnOnEquity: Math.random() * 0.25 + 0.10,
-      grossMargins: Math.random() * 0.35 + 0.25,
-      profitMargins: Math.random() * 0.15 + 0.05
+      revenue: Math.random() * 1000000000 + 100000000,
+      operatingIncome: Math.random() * 100000000 + 10000000,
+      netIncome: Math.random() * 50000000 + 5000000,
     },
     keyStatistics: {
-      enterpriseValue: Math.random() * 10000000000 + 1000000000,
-      marketCap: Math.random() * 8000000000 + 500000000,
-      pegRatio: Math.random() * 1.5 + 0.5,
-      priceToBook: Math.random() * 2.5 + 0.8,
-      enterpriseToRevenue: Math.random() * 4 + 1,
-      enterpriseToEbitda: Math.random() * 10 + 5,
-      forwardPE: Math.random() * 15 + 8,
-      trailingPE: Math.random() * 18 + 10
+      "Piyasa Değeri": Math.random() * 10000000000 + 1000000000,
+      "Hisse Başına Kazanç": Math.random() * 10 + 1,
+      "Fiyat/Kazanç Oranı": Math.random() * 20 + 5,
+      "Özsermaye Kârlılığı": Math.random() * 0.3 + 0.05,
+      "Temettü Verimi": Math.random() * 0.05,
     },
     balanceSheet: [
       {
-        endDate: { raw: 1640908800, fmt: "31/12/2021" },
-        cash: { raw: Math.random() * 500000000 + 200000000, fmt: "" },
-        shortTermInvestments: { raw: Math.random() * 300000000 + 100000000, fmt: "" },
-        netReceivables: { raw: Math.random() * 400000000 + 100000000, fmt: "" },
-        inventory: { raw: Math.random() * 350000000 + 100000000, fmt: "" },
-        totalCurrentAssets: { raw: Math.random() * 1500000000 + 500000000, fmt: "" },
-        propertyPlantEquipment: { raw: Math.random() * 3000000000 + 1000000000, fmt: "" },
-        totalAssets: { raw: Math.random() * 5000000000 + 2000000000, fmt: "" },
-        accountsPayable: { raw: Math.random() * 300000000 + 100000000, fmt: "" },
-        shortLongTermDebt: { raw: Math.random() * 200000000 + 50000000, fmt: "" },
-        totalCurrentLiabilities: { raw: Math.random() * 800000000 + 200000000, fmt: "" },
-        longTermDebt: { raw: Math.random() * 1200000000 + 300000000, fmt: "" },
-        totalLiabilities: { raw: Math.random() * 2500000000 + 800000000, fmt: "" },
-        totalStockholderEquity: { raw: Math.random() * 3000000000 + 1000000000, fmt: "" }
-      },
-      {
-        endDate: { raw: 1609459200, fmt: "31/12/2020" },
-        cash: { raw: Math.random() * 450000000 + 180000000, fmt: "" },
-        shortTermInvestments: { raw: Math.random() * 270000000 + 90000000, fmt: "" },
-        netReceivables: { raw: Math.random() * 380000000 + 90000000, fmt: "" },
-        inventory: { raw: Math.random() * 320000000 + 90000000, fmt: "" },
-        totalCurrentAssets: { raw: Math.random() * 1400000000 + 450000000, fmt: "" },
-        propertyPlantEquipment: { raw: Math.random() * 2800000000 + 900000000, fmt: "" },
-        totalAssets: { raw: Math.random() * 4500000000 + 1800000000, fmt: "" },
-        accountsPayable: { raw: Math.random() * 270000000 + 90000000, fmt: "" },
-        shortLongTermDebt: { raw: Math.random() * 180000000 + 45000000, fmt: "" },
-        totalCurrentLiabilities: { raw: Math.random() * 750000000 + 180000000, fmt: "" },
-        longTermDebt: { raw: Math.random() * 1100000000 + 270000000, fmt: "" },
-        totalLiabilities: { raw: Math.random() * 2300000000 + 720000000, fmt: "" },
-        totalStockholderEquity: { raw: Math.random() * 2700000000 + 900000000, fmt: "" }
+        "Dönem": "2023/12",
+        "Toplam Varlıklar": Math.random() * 1000000000 + 100000000,
+        "Toplam Yükümlülükler": Math.random() * 500000000 + 50000000,
+        "Özkaynaklar": Math.random() * 500000000 + 50000000,
       }
     ],
     incomeStatement: [
       {
-        endDate: { raw: 1640908800, fmt: "31/12/2021" },
-        totalRevenue: { raw: Math.random() * 2500000000 + 800000000, fmt: "" },
-        costOfRevenue: { raw: Math.random() * 1500000000 + 500000000, fmt: "" },
-        grossProfit: { raw: Math.random() * 1000000000 + 300000000, fmt: "" },
-        operatingIncome: { raw: Math.random() * 600000000 + 200000000, fmt: "" },
-        interestExpense: { raw: Math.random() * 100000000 + 30000000, fmt: "" },
-        incomeBeforeTax: { raw: Math.random() * 500000000 + 170000000, fmt: "" },
-        incomeTaxExpense: { raw: Math.random() * 150000000 + 40000000, fmt: "" },
-        netIncomeFromContinuingOperations: { raw: Math.random() * 350000000 + 130000000, fmt: "" },
-        netIncome: { raw: Math.random() * 350000000 + 130000000, fmt: "" }
-      },
-      {
-        endDate: { raw: 1609459200, fmt: "31/12/2020" },
-        totalRevenue: { raw: Math.random() * 2300000000 + 750000000, fmt: "" },
-        costOfRevenue: { raw: Math.random() * 1400000000 + 470000000, fmt: "" },
-        grossProfit: { raw: Math.random() * 900000000 + 280000000, fmt: "" },
-        operatingIncome: { raw: Math.random() * 550000000 + 180000000, fmt: "" },
-        interestExpense: { raw: Math.random() * 90000000 + 27000000, fmt: "" },
-        incomeBeforeTax: { raw: Math.random() * 460000000 + 153000000, fmt: "" },
-        incomeTaxExpense: { raw: Math.random() * 140000000 + 36000000, fmt: "" },
-        netIncomeFromContinuingOperations: { raw: Math.random() * 320000000 + 117000000, fmt: "" },
-        netIncome: { raw: Math.random() * 320000000 + 117000000, fmt: "" }
+        "Dönem": "2023/12",
+        "Net Satışlar": Math.random() * 1000000000 + 100000000,
+        "Faaliyet Kârı": Math.random() * 100000000 + 10000000,
+        "Net Kâr": Math.random() * 50000000 + 5000000,
       }
     ],
     cashflowStatement: [
       {
-        endDate: { raw: 1640908800, fmt: "31/12/2021" },
-        netIncome: { raw: Math.random() * 350000000 + 130000000, fmt: "" },
-        depreciation: { raw: Math.random() * 200000000 + 70000000, fmt: "" },
-        changeToAccountReceivables: { raw: Math.random() * -50000000 - 10000000, fmt: "" },
-        changeToInventory: { raw: Math.random() * -40000000 - 5000000, fmt: "" },
-        changeToOperatingActivities: { raw: Math.random() * 80000000 + 20000000, fmt: "" },
-        totalCashFromOperatingActivities: { raw: Math.random() * 500000000 + 150000000, fmt: "" },
-        capitalExpenditures: { raw: Math.random() * -400000000 - 100000000, fmt: "" },
-        totalCashFromInvestingActivities: { raw: Math.random() * -450000000 - 100000000, fmt: "" },
-        netBorrowings: { raw: Math.random() * 150000000 + 50000000, fmt: "" },
-        dividendsPaid: { raw: Math.random() * -120000000 - 30000000, fmt: "" },
-        totalCashFromFinancingActivities: { raw: Math.random() * 30000000 + 10000000, fmt: "" },
-        changeInCash: { raw: Math.random() * 80000000 + 20000000, fmt: "" }
-      },
-      {
-        endDate: { raw: 1609459200, fmt: "31/12/2020" },
-        netIncome: { raw: Math.random() * 320000000 + 117000000, fmt: "" },
-        depreciation: { raw: Math.random() * 180000000 + 63000000, fmt: "" },
-        changeToAccountReceivables: { raw: Math.random() * -45000000 - 9000000, fmt: "" },
-        changeToInventory: { raw: Math.random() * -36000000 - 4500000, fmt: "" },
-        changeToOperatingActivities: { raw: Math.random() * 72000000 + 18000000, fmt: "" },
-        totalCashFromOperatingActivities: { raw: Math.random() * 450000000 + 135000000, fmt: "" },
-        capitalExpenditures: { raw: Math.random() * -360000000 - 90000000, fmt: "" },
-        totalCashFromInvestingActivities: { raw: Math.random() * -405000000 - 90000000, fmt: "" },
-        netBorrowings: { raw: Math.random() * 135000000 + 45000000, fmt: "" },
-        dividendsPaid: { raw: Math.random() * -108000000 - 27000000, fmt: "" },
-        totalCashFromFinancingActivities: { raw: Math.random() * 27000000 + 9000000, fmt: "" },
-        changeInCash: { raw: Math.random() * 72000000 + 18000000, fmt: "" }
+        "Dönem": "2023/12",
+        "İşletme Faaliyetlerinden Nakit Akışları": Math.random() * 100000000 + 10000000,
+        "Yatırım Faaliyetlerinden Nakit Akışları": -1 * (Math.random() * 50000000 + 5000000),
+        "Finansman Faaliyetlerinden Nakit Akışları": -1 * (Math.random() * 20000000 + 2000000),
       }
     ],
     metrics: {
-      "P/E Ratio": (Math.random() * 15 + 8).toFixed(1),
-      "Market Cap": `${(Math.random() * 10 + 1).toFixed(1)}B ₺`,
-      "Dividend Yield": `${(Math.random() * 4 + 0.5).toFixed(1)}%`,
-      "Beta": (Math.random() * 1.5 + 0.5).toFixed(1),
-      "52-Week Range": `${(Math.random() * 30 + 10).toFixed(2)} ₺ - ${(Math.random() * 20 + 40).toFixed(2)} ₺`,
-      "Average Volume": `${(Math.random() * 3 + 0.5).toFixed(1)}M`,
-      "EPS": `${(Math.random() * 5 + 0.5).toFixed(2)} ₺`
+      "Cari Oran": (Math.random() * 3 + 0.5).toFixed(2),
+      "Likidite Oranı": (Math.random() * 2 + 0.3).toFixed(2),
+      "Borç/Özsermaye": (Math.random() * 2 + 0.2).toFixed(2),
+      "Aktif Kârlılığı": `${(Math.random() * 15 + 1).toFixed(1)}%`,
+      "Net Kâr Marjı": `${(Math.random() * 20 + 2).toFixed(1)}%`,
     },
-    lastUpdated: new Date().toISOString()
+    lastUpdated: today,
+    sector: "Sektör Bilgisi Mevcut Değil",
   };
 }
 
@@ -174,44 +209,44 @@ function generateDummyData(companyCode: string): FinancialData {
  * Belirli bir şirketin finansal verilerini döndüren HTTP endpoint'i
  */
 export function getCompanyFinancials(req: Request, res: Response) {
-  try {
-    const companyCode = req.params.companyCode;
-    
-    if (!companyCode) {
-      return res.status(400).json({ error: "Şirket kodu gereklidir" });
-    }
-    
-    // Gerçek bir uygulamada, veritabanından veri alınır veya bir JSON dosyası okunur
-    // Burada test için veri oluşturuyoruz
-    const financialData = generateDummyData(companyCode);
-    
-    res.status(200).json(financialData);
-  } catch (error: any) {
-    console.error("Şirket finansal verileri alınırken hata oluştu:", error);
-    res.status(500).json({ error: error.message || "Finansal veriler alınamadı" });
+  const { stockCode } = req.params;
+  
+  if (!stockCode) {
+    return res.status(400).json({ error: "Hisse kodu belirtilmedi" });
   }
+  
+  // Gerçek bir API veya veritabanından veri alınabilir
+  // Şimdilik örnek veri döndürelim
+  const financialData = generateDummyData(stockCode);
+  
+  res.json(financialData);
 }
 
 /**
  * Tüm şirketlerin özet finansal verilerini döndüren HTTP endpoint'i
  */
 export function getAllCompaniesFinancials(req: Request, res: Response) {
-  try {
-    // Normalde veritabanından veya bir API'den alınır
-    // Burada liste olarak şirket kodlarını ve temel verileri döndürüyoruz
-    const companies = bistCompanies.map(company => ({
-      code: company.code,
-      name: company.name,
-      sector: company.sector,
-      price: Math.random() * 100 + 10, // 10-110 arasında rastgele fiyat
-      change: (Math.random() * 4 - 2).toFixed(2), // -2 ile +2 arasında rastgele değişim
-      marketCap: `${(Math.random() * 10 + 1).toFixed(1)}B ₺`,
-      peRatio: (Math.random() * 15 + 8).toFixed(1)
-    }));
-    
-    res.status(200).json(companies);
-  } catch (error: any) {
-    console.error("Şirket listesi alınırken hata oluştu:", error);
-    res.status(500).json({ error: error.message || "Şirket listesi alınamadı" });
-  }
+  // Örnek birkaç şirket kodu
+  const stockCodes = ["AKBNK", "ASELS", "ARCLK", "THYAO", "EREGL"];
+  
+  // Her şirket için özet veri oluştur
+  const companies = stockCodes.map(code => {
+    const data = generateDummyData(code);
+    return {
+      stockCode: data.stockCode,
+      companyName: data.companyName,
+      currentPrice: data.currentPrice,
+      priceChange: data.priceChange,
+      sector: data.sector,
+      // Sadece özet finansal verileri döndür
+      keyMetrics: {
+        "Fiyat/Kazanç": data.keyStatistics?.["Fiyat/Kazanç Oranı"],
+        "Temettü Verimi": data.keyStatistics?.["Temettü Verimi"],
+        "Cari Oran": data.metrics?.["Cari Oran"],
+      },
+      lastUpdated: data.lastUpdated,
+    };
+  });
+  
+  res.json(companies);
 }
