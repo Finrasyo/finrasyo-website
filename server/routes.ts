@@ -277,14 +277,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Create report
       const report = await storage.createReport({
         ...validatedData,
-        // Ek meta verilerini de kaydet
-        meta: {
-          numCompanies: companies,
-          numPeriods: periods, 
-          numRatios: ratios,
-          price: totalPrice,
-          credits: requiredCredits
-        }
+        name: `${company.name} Finansal Oran Raporu`,
+        companyName: company.name,
+        format: req.body.format || "pdf"
       });
       
       // Admin değilse kredi düşülür
