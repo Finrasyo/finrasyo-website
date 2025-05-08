@@ -80,15 +80,17 @@ export default function ResetPasswordPage() {
       
       toast({
         title: "Şifre Sıfırlama İsteği Gönderildi",
-        description: "Şifre sıfırlama talimatları e-posta adresinize gönderilmiştir.",
+        description: "Şifre sıfırlama talimatları e-posta adresinize gönderilmiştir. (Geliştirme aşamasında konsol ekranında görüntülenir)",
       });
       
       // DEV ONLY: Token'ı doğrudan al - gerçek uygulamada bu olmayacak
       if (data.token) {
+        console.log("Token alındı:", data.token);
         setToken(data.token);
         setStep("reset");
       }
     } catch (error) {
+      console.error("Şifre sıfırlama hatası:", error);
       toast({
         title: "Hata",
         description: "Şifre sıfırlama isteği gönderilirken bir hata oluştu.",
@@ -110,6 +112,7 @@ export default function ResetPasswordPage() {
       return;
     }
     
+    console.log("Şifre sıfırlama isteği gönderiliyor, token:", token);
     setIsLoading(true);
     
     try {
@@ -117,6 +120,8 @@ export default function ResetPasswordPage() {
         token,
         password: values.password,
       });
+      
+      console.log("Şifre sıfırlama yanıtı:", response.status);
       
       if (response.ok) {
         toast({
@@ -130,9 +135,11 @@ export default function ResetPasswordPage() {
         }, 2000);
       } else {
         const data = await response.json();
+        console.error("Şifre sıfırlama hatası:", data);
         throw new Error(data.message || "Şifre sıfırlama işlemi başarısız oldu.");
       }
     } catch (error: any) {
+      console.error("Şifre sıfırlama hatası:", error);
       toast({
         title: "Hata",
         description: error.message || "Şifre sıfırlanırken bir hata oluştu.",

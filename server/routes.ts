@@ -57,6 +57,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // ${process.env.SITE_URL || 'http://localhost:5000'}/reset-password?token=${token}`);
       
       console.log(`Şifre sıfırlama token'ı (gerçek uygulamada mail ile gönderilecek): ${token}`);
+      console.log(`Şifre sıfırlama bağlantısı: http://localhost:5000/reset-password?token=${token}`);
       
       res.status(200).json({ 
         message: "Şifre sıfırlama talimatları e-posta adresinize gönderilmiştir",
