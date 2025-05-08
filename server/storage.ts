@@ -6,6 +6,7 @@ import {
   payments, Payment, InsertPayment
 } from "@shared/schema";
 import session from "express-session";
+import { Store as SessionStore } from "express-session";
 import createMemoryStore from "memorystore";
 
 const MemoryStore = createMemoryStore(session);
@@ -14,7 +15,7 @@ const MemoryStore = createMemoryStore(session);
 // you might need
 export interface IStorage {
   // Session store
-  sessionStore: session.SessionStore;
+  sessionStore: SessionStore;
   
   // User methods
   getUser(id: number): Promise<User | undefined>;
@@ -23,6 +24,11 @@ export interface IStorage {
   createUser(user: InsertUser): Promise<User>;
   updateUserCredits(userId: number, credits: number): Promise<User>;
   updateUserStripeCustomerId(userId: number, customerId: string): Promise<User>;
+  
+  // Admin methods
+  getAllUsers(): Promise<User[]>;
+  updateUserRole(userId: number, role: string): Promise<User>;
+  searchUsers(query: string): Promise<User[]>;
 
   // Company methods
   getCompany(id: number): Promise<Company | undefined>;
@@ -61,7 +67,7 @@ export class MemStorage implements IStorage {
   private reports: Map<number, Report>;
   private payments: Map<number, Payment>;
   
-  sessionStore: session.SessionStore;
+  sessionStore: SessionStore;
   
   currentUserId: number;
   currentCompanyId: number;
@@ -106,7 +112,9 @@ export class MemStorage implements IStorage {
 
   async createUser(insertUser: InsertUser): Promise<User> {
     const id = this.currentUserId++;
-    const user: User = { ...insertUser, id, credits: 5, stripeCustomerId: null };
+    // İlk kullanıcı admin olsun, diğerleri normal kullanıcı
+    const role = this.users.size === 0 ? "admin" : "user";
+    const user: User = { ...insertUser, id, role, credits: 5, stripeCustomerId: null };
     this.users.set(id, user);
     return user;
   }
@@ -127,6 +135,31 @@ export class MemStorage implements IStorage {
     const updatedUser = { ...user, stripeCustomerId: customerId };
     this.users.set(userId, updatedUser);
     return updatedUser;
+  }
+  
+  // Admin methods
+  async getAllUsers(): Promise<User[]> {
+    return Array.from(this.users.values())
+      .sort((a, b) => a.id - b.id); // Sort by user ID ascending
+  }
+  
+  async updateUserRole(userId: number, role: string): Promise<User> {
+    const user = await this.getUser(userId);
+    if (!user) throw new Error('User not found');
+    
+    const updatedUser = { ...user, role };
+    this.users.set(userId, updatedUser);
+    return updatedUser;
+  }
+  
+  async searchUsers(query: string): Promise<User[]> {
+    const lowercaseQuery = query.toLowerCase();
+    return Array.from(this.users.values())
+      .filter(user => 
+        user.username.toLowerCase().includes(lowercaseQuery) || 
+        user.email.toLowerCase().includes(lowercaseQuery)
+      )
+      .sort((a, b) => a.id - b.id); // Sort by user ID ascending
   }
   
   // Company methods

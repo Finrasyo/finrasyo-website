@@ -8,6 +8,7 @@ export const users = pgTable("users", {
   username: text("username").notNull().unique(),
   password: text("password").notNull(),
   email: text("email").notNull(),
+  role: text("role").notNull().default("user"),  // "user" veya "admin"
   credits: integer("credits").notNull().default(0),
   stripeCustomerId: text("stripe_customer_id"),
 });
