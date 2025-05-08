@@ -39,8 +39,11 @@ export default function ReportGenerator({
   const handleGenerate = async () => {
     if (!user) return;
     
-    // Check if user has enough credits
-    if (user.credits < 1) {
+    // Admin kullanıcılar için kredi kontrolü yapılmaz
+    const isAdmin = user.role === "admin";
+    
+    // Admin değilse ve yeterli kredisi yoksa işlemi durdur
+    if (!isAdmin && user.credits < 1) {
       toast({
         title: "Yetersiz Kredi",
         description: "Rapor oluşturmak için yeterli krediniz bulunmamaktadır. Lütfen kredi satın alın.",
@@ -61,7 +64,9 @@ export default function ReportGenerator({
       
       toast({
         title: "Rapor Oluşturuldu",
-        description: `Rapor başarıyla oluşturuldu ve 1 kredi kullanıldı.`,
+        description: isAdmin 
+          ? "Rapor başarıyla oluşturuldu." 
+          : "Rapor başarıyla oluşturuldu ve 1 kredi kullanıldı.",
       });
       
       onClose();
@@ -83,15 +88,19 @@ export default function ReportGenerator({
           <DialogTitle>Rapor İndir</DialogTitle>
           <DialogDescription>
             Raporu indirmek için format seçin ve indir butonuna tıklayın.
-            Her indirme işlemi 1 kredi kullanır.
+            {user?.role === "admin" 
+              ? "Admin olarak rapor oluşturma işlemi ücretsizdir." 
+              : "Her indirme işlemi 1 kredi kullanır."}
           </DialogDescription>
         </DialogHeader>
         
-        <div className="flex items-center justify-between mt-2">
-          <div className="text-sm font-medium text-neutral-700">
-            Kalan Krediniz: {user?.credits || 0}
+        {user?.role !== "admin" && (
+          <div className="flex items-center justify-between mt-2">
+            <div className="text-sm font-medium text-neutral-700">
+              Kalan Krediniz: {user?.credits || 0}
+            </div>
           </div>
-        </div>
+        )}
         
         <Tabs value={reportFormat} onValueChange={setReportFormat}>
           <TabsList className="grid grid-cols-4">
@@ -154,7 +163,10 @@ export default function ReportGenerator({
           <Button variant="outline" onClick={onClose} disabled={isGenerating}>
             İptal
           </Button>
-          <Button onClick={handleGenerate} disabled={isGenerating || (user?.credits || 0) < 1}>
+          <Button 
+            onClick={handleGenerate} 
+            disabled={isGenerating || (!user?.role || user.role !== "admin") && (user?.credits || 0) < 1}
+          >
             {isGenerating ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -163,7 +175,7 @@ export default function ReportGenerator({
             ) : (
               <>
                 <Download className="mr-2 h-4 w-4" />
-                İndir (1 Kredi)
+                {user?.role === "admin" ? "İndir" : "İndir (1 Kredi)"}
               </>
             )}
           </Button>

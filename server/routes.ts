@@ -233,14 +233,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const { companyId, financialDataId, type } = req.body;
       
-      // Check if user has enough credits
-      if (req.user.credits < 1) {
+      // Admin kullanıcılar için kredi kontrolü yapılmaz
+      const isAdmin = req.user.role === "admin";
+      
+      // Normal kullanıcılar için kredi kontrolü
+      if (!isAdmin && req.user.credits < 1) {
         return res.status(402).json({ message: "Yeterli krediniz yok. Lütfen kredi satın alın." });
       }
       
-      // Validate company ownership
+      // Validate company ownership - admin ise sahiplik kontrolü yapılmaz
       const company = await storage.getCompany(companyId);
-      if (!company || company.userId !== req.user.id) {
+      if (!company || (!isAdmin && company.userId !== req.user.id)) {
         return res.status(403).json({ message: "Bu şirket için rapor oluşturma izniniz yok" });
       }
       
@@ -260,8 +263,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Create report
       const report = await storage.createReport(validatedData);
       
-      // Deduct credit
-      await storage.updateUserCredits(req.user.id, req.user.credits - 1);
+      // Admin değilse kredi düşülür
+      if (!isAdmin) {
+        await storage.updateUserCredits(req.user.id, req.user.credits - 1);
+      }
       
       res.status(201).json(report);
     } catch (error: any) {
