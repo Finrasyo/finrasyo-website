@@ -13,6 +13,7 @@ import AboutPage from "@/pages/about-page";
 import HowItWorksPage from "@/pages/how-it-works-page";
 import ContactPage from "@/pages/contact-page";
 import AdminPage from "@/pages/admin-page";
+import CompanyAnalysisPage from "@/pages/company-analysis";
 import { ProtectedRoute } from "./lib/protected-route";
 import { ThemeProvider } from "next-themes";
 import { AuthProvider } from "./hooks/use-auth";
@@ -24,6 +25,7 @@ function Router() {
       <ProtectedRoute path="/" component={HomePage} />
       <ProtectedRoute path="/company/:id" component={CompanyPage} />
       <ProtectedRoute path="/analysis/:id" component={AnalysisPage} />
+      <ProtectedRoute path="/analiz/:companyCode" component={CompanyAnalysisPage} />
       <ProtectedRoute path="/reports" component={ReportsPage} />
       <ProtectedRoute path="/payment" component={PaymentPage} />
       <ProtectedRoute path="/report/:id" component={ReportPage} />
