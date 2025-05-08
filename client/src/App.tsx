@@ -27,7 +27,7 @@ function Router() {
       <ProtectedRoute path="/reports" component={ReportsPage} />
       <ProtectedRoute path="/payment" component={PaymentPage} />
       <ProtectedRoute path="/report/:id" component={ReportPage} />
-      <ProtectedRoute path="/admin" component={AdminPage} />
+      <ProtectedRoute path="/admin" component={() => <AdminPage />} />
       <Route path="/auth" component={AuthPage} />
       <Route path="/about" component={AboutPage} />
       <Route path="/how-it-works" component={HowItWorksPage} />

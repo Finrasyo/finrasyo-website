@@ -6,7 +6,8 @@ import {
   User, 
   LogOut, 
   ChevronDown, 
-  PlusCircle 
+  PlusCircle,
+  UserCog
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -114,6 +115,14 @@ export default function Navbar() {
                     <PlusCircle className="mr-2 h-4 w-4" />
                     <span>Şirket Ekle</span>
                   </DropdownMenuItem>
+                  {user.role === 'admin' && (
+                    <DropdownMenuItem asChild>
+                      <Link href="/admin">
+                        <UserCog className="mr-2 h-4 w-4" />
+                        <span>Admin Paneli</span>
+                      </Link>
+                    </DropdownMenuItem>
+                  )}
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={handleLogout}>
                     <LogOut className="mr-2 h-4 w-4" />
@@ -169,6 +178,16 @@ export default function Navbar() {
                           Profil
                         </a>
                       </Link>
+                      {user.role === 'admin' && (
+                        <Link href="/admin" onClick={() => setIsOpen(false)}>
+                          <a className="block px-3 py-2 rounded-md text-base font-medium text-neutral-600 hover:bg-neutral-50 hover:text-neutral-800">
+                            <div className="flex items-center">
+                              <UserCog className="mr-2 h-4 w-4" />
+                              <span>Admin Paneli</span>
+                            </div>
+                          </a>
+                        </Link>
+                      )}
                       <div className="block px-3 py-2 rounded-md text-base font-medium text-neutral-600">
                         Bakiye: <strong>{formatCurrency(user.credits * 5)}</strong>
                       </div>
