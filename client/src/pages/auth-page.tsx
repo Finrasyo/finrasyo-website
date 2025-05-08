@@ -279,7 +279,7 @@ export default function AuthPage() {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                     </svg>
                     <span className="text-neutral-700">
-                      Cari oran, likidite oranı ve asit-test oranı hesaplamaları
+                      Çok sayıda finansal oran hesaplaması
                     </span>
                   </li>
                   <li className="flex items-start">
