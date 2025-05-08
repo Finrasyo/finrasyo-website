@@ -114,7 +114,7 @@ export class MemStorage implements IStorage {
     const id = this.currentUserId++;
     // İlk kullanıcı veya drosmankursat@yandex.com e-postası admin olsun, diğerleri normal kullanıcı
     const role = this.users.size === 0 || insertUser.email === "drosmankursat@yandex.com" ? "admin" : "user";
-    const user: User = { ...insertUser, id, role, credits: 5, stripeCustomerId: null };
+    const user: User = { ...insertUser, id, role, credits: 0, stripeCustomerId: null };
     this.users.set(id, user);
     return user;
   }

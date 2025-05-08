@@ -87,7 +87,7 @@ export default function Navbar() {
           <div className="hidden sm:ml-6 sm:flex sm:items-center">
             <div className="flex items-center space-x-4">
               <span className="text-neutral-600 text-sm font-medium">
-                Bakiye: <strong>{formatCurrency(user.credits * 5)}</strong>
+                Bakiye: <strong>{formatCurrency(user.credits)}</strong>
               </span>
               
               <Button variant="default" asChild>
@@ -189,7 +189,7 @@ export default function Navbar() {
                         </Link>
                       )}
                       <div className="block px-3 py-2 rounded-md text-base font-medium text-neutral-600">
-                        Bakiye: <strong>{formatCurrency(user.credits * 5)}</strong>
+                        Bakiye: <strong>{formatCurrency(user.credits)}</strong>
                       </div>
                       <Button variant="default" className="w-full my-2" asChild>
                         <Link href="/credits">

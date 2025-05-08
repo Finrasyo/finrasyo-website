@@ -15,7 +15,7 @@ export default function CreditInfo() {
   
   if (!user) return null;
   
-  const maxCredits = 20; // Maximum credits for display purposes
+  const maxCredits = 100; // Maximum credits for display purposes
   const percentage = Math.min((user.credits / maxCredits) * 100, 100);
   
   return (
