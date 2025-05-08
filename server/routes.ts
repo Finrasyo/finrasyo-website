@@ -1,4 +1,4 @@
-import type { Express, Request, Response } from "express";
+import type { Express, Request, Response, NextFunction } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { setupAuth } from "./auth";
@@ -356,6 +356,130 @@ export async function registerRoutes(app: Express): Promise<Server> {
         success: false, 
         message: "İletişim formu gönderilirken bir hata oluştu." 
       });
+    }
+  });
+  
+  // Admin API rotaları
+  // Admin yetkisini kontrol eden middleware
+  const isAdmin = (req: Request, res: Response, next: NextFunction) => {
+    if (!req.isAuthenticated()) {
+      return res.status(401).json({ message: "Oturum açmanız gerekiyor" });
+    }
+    
+    if (req.user?.role !== "admin") {
+      return res.status(403).json({ message: "Admin yetkiniz bulunmuyor" });
+    }
+    
+    next();
+  };
+  
+  // Tüm kullanıcıları getir (sadece admin)
+  app.get("/api/admin/users", isAdmin, async (req: Request, res: Response) => {
+    try {
+      const users = await storage.getAllUsers();
+      res.json(users);
+    } catch (error) {
+      console.error("Kullanıcıları getirme hatası:", error);
+      res.status(500).json({ message: "Kullanıcılar yüklenirken hata oluştu" });
+    }
+  });
+  
+  // Kullanıcı ara (sadece admin)
+  app.get("/api/admin/users/search", isAdmin, async (req: Request, res: Response) => {
+    try {
+      const query = req.query.q as string;
+      if (!query) {
+        const users = await storage.getAllUsers();
+        return res.json(users);
+      }
+      
+      const users = await storage.searchUsers(query);
+      res.json(users);
+    } catch (error) {
+      console.error("Kullanıcı arama hatası:", error);
+      res.status(500).json({ message: "Kullanıcı araması yapılırken hata oluştu" });
+    }
+  });
+  
+  // Kullanıcı rolünü güncelle (sadece admin)
+  app.patch("/api/admin/users/:id/role", isAdmin, async (req: Request, res: Response) => {
+    try {
+      const userId = parseInt(req.params.id);
+      const { role } = req.body;
+      
+      if (!role || !["admin", "user"].includes(role)) {
+        return res.status(400).json({ message: "Geçersiz rol" });
+      }
+      
+      const updatedUser = await storage.updateUserRole(userId, role);
+      res.json(updatedUser);
+    } catch (error) {
+      console.error("Rol güncelleme hatası:", error);
+      res.status(500).json({ message: "Kullanıcı rolü güncellenirken hata oluştu" });
+    }
+  });
+  
+  // Kullanıcı kredilerini güncelle (sadece admin)
+  app.patch("/api/admin/users/:id/credits", isAdmin, async (req: Request, res: Response) => {
+    try {
+      const userId = parseInt(req.params.id);
+      const { credits } = req.body;
+      
+      if (typeof credits !== "number" || credits < 0) {
+        return res.status(400).json({ message: "Geçersiz kredi miktarı" });
+      }
+      
+      const updatedUser = await storage.updateUserCredits(userId, credits);
+      res.json(updatedUser);
+    } catch (error) {
+      console.error("Kredi güncelleme hatası:", error);
+      res.status(500).json({ message: "Kullanıcı kredileri güncellenirken hata oluştu" });
+    }
+  });
+  
+  // Tüm raporları getir (sadece admin)
+  app.get("/api/admin/reports", isAdmin, async (req: Request, res: Response) => {
+    try {
+      // Tüm kullanıcıları al
+      const users = await storage.getAllUsers();
+      
+      // Her bir kullanıcının raporlarını al
+      const reportsPromises = users.map(user => storage.getReportsForUser(user.id));
+      const reportsArrays = await Promise.all(reportsPromises);
+      
+      // Tüm raporları birleştir
+      const allReports = reportsArrays.flat();
+      
+      // Oluşturulma tarihine göre sırala (en yeni en üstte)
+      allReports.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+      
+      res.json(allReports);
+    } catch (error) {
+      console.error("Rapor getirme hatası:", error);
+      res.status(500).json({ message: "Raporlar yüklenirken hata oluştu" });
+    }
+  });
+  
+  // Tüm ödemeleri getir (sadece admin)
+  app.get("/api/admin/payments", isAdmin, async (req: Request, res: Response) => {
+    try {
+      // Tüm kullanıcıları al
+      const users = await storage.getAllUsers();
+      
+      // Her bir kullanıcının ödemelerini al
+      const paymentsPromises = users.map(user => storage.getPaymentsForUser(user.id));
+      const paymentsArrays = await Promise.all(paymentsPromises);
+      
+      // Tüm ödemeleri birleştir
+      const allPayments = paymentsArrays.flat();
+      
+      // Oluşturulma tarihine göre sırala (en yeni en üstte)
+      allPayments.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+      
+      res.json(allPayments);
+    } catch (error) {
+      console.error("Ödeme getirme hatası:", error);
+      res.status(500).json({ message: "Ödemeler yüklenirken hata oluştu" });
     }
   });
 
