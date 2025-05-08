@@ -8,7 +8,17 @@ type FinancialDataContextType = {
   saveFinancialData: (data: Omit<InsertFinancialData, "userId">) => Promise<FinancialData>;
   getFinancialData: (id: number) => Promise<FinancialData>;
   getCompanyFinancialData: (companyId: number) => Promise<FinancialData[]>;
-  generateReport: (companyId: number, financialDataId: number, type: string) => Promise<any>;
+  generateReport: (
+    companyId: number, 
+    financialDataId: number, 
+    type: string, 
+    options?: {
+      numCompanies?: number;
+      numPeriods?: number;
+      numRatios?: number;
+      price?: number;
+    }
+  ) => Promise<any>;
 };
 
 const FinancialDataContext = createContext<FinancialDataContextType | null>(null);
@@ -42,15 +52,26 @@ export function FinancialDataProvider({ children }: { children: ReactNode }) {
       companyId,
       financialDataId,
       type,
+      options,
     }: {
       companyId: number;
       financialDataId: number;
       type: string;
+      options?: {
+        numCompanies?: number;
+        numPeriods?: number;
+        numRatios?: number;
+        price?: number;
+      };
     }) => {
       const res = await apiRequest("POST", "/api/reports", {
         companyId,
         financialDataId,
         type,
+        numCompanies: options?.numCompanies || 1,
+        numPeriods: options?.numPeriods || 1,
+        numRatios: options?.numRatios || 1,
+        price: options?.price || 0.25,
       });
       return await res.json();
     },
@@ -88,11 +109,22 @@ export function FinancialDataProvider({ children }: { children: ReactNode }) {
     return await res.json();
   };
 
-  const generateReport = async (companyId: number, financialDataId: number, type: string) => {
+  const generateReport = async (
+    companyId: number, 
+    financialDataId: number, 
+    type: string, 
+    options?: {
+      numCompanies?: number;
+      numPeriods?: number;
+      numRatios?: number;
+      price?: number;
+    }
+  ) => {
     return await generateReportMutation.mutateAsync({
       companyId,
       financialDataId,
       type,
+      options
     });
   };
 

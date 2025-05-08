@@ -231,14 +231,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
     if (!req.isAuthenticated()) return res.sendStatus(401);
     
     try {
-      const { companyId, financialDataId, type } = req.body;
+      const { companyId, financialDataId, type, numCompanies, numPeriods, numRatios, price } = req.body;
+      
+      // Fiyat parametrelerini al veya varsayılan değerleri kullan
+      const companies = numCompanies || 1;
+      const periods = numPeriods || 1;
+      const ratios = numRatios || 1;
+      const unitPrice = 0.25; // TL cinsinden birim fiyat
+      
+      // Dinamik toplam fiyat hesaplaması
+      const totalPrice = price || (companies * periods * ratios * unitPrice);
+      
+      // Gereken kredi sayısı (1 TL = 1 kredi)
+      const requiredCredits = Math.ceil(totalPrice);
       
       // Admin kullanıcılar için kredi kontrolü yapılmaz
       const isAdmin = req.user.role === "admin";
       
       // Normal kullanıcılar için kredi kontrolü
-      if (!isAdmin && req.user.credits < 1) {
-        return res.status(402).json({ message: "Yeterli krediniz yok. Lütfen kredi satın alın." });
+      if (!isAdmin && req.user.credits < requiredCredits) {
+        return res.status(402).json({ 
+          message: `Yeterli krediniz yok. Bu rapor için ${requiredCredits} kredi gerekiyor, ancak hesabınızda ${req.user.credits} kredi bulunmaktadır. Lütfen kredi satın alın.`
+        });
       }
       
       // Validate company ownership - admin ise sahiplik kontrolü yapılmaz
@@ -261,11 +275,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
       
       // Create report
-      const report = await storage.createReport(validatedData);
+      const report = await storage.createReport({
+        ...validatedData,
+        // Ek meta verilerini de kaydet
+        meta: {
+          numCompanies: companies,
+          numPeriods: periods, 
+          numRatios: ratios,
+          price: totalPrice,
+          credits: requiredCredits
+        }
+      });
       
       // Admin değilse kredi düşülür
       if (!isAdmin) {
-        await storage.updateUserCredits(req.user.id, req.user.credits - 1);
+        await storage.updateUserCredits(req.user.id, req.user.credits - requiredCredits);
       }
       
       res.status(201).json(report);

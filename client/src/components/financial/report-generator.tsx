@@ -214,7 +214,7 @@ export default function ReportGenerator({
           </Button>
           <Button 
             onClick={handleGenerate} 
-            disabled={isGenerating || (!user?.role || user.role !== "admin") && (user?.credits || 0) < 1}
+            disabled={isGenerating || (!user?.role || user.role !== "admin") && (user?.credits || 0) < requiredCredits}
           >
             {isGenerating ? (
               <>
@@ -224,7 +224,7 @@ export default function ReportGenerator({
             ) : (
               <>
                 <Download className="mr-2 h-4 w-4" />
-                {user?.role === "admin" ? "İndir" : "İndir (1 Kredi)"}
+                {user?.role === "admin" ? "İndir" : `İndir (${requiredCredits} Kredi)`}
               </>
             )}
           </Button>
