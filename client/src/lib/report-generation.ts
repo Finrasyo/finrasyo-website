@@ -42,15 +42,19 @@ export async function generatePDFReport(
     title = "Finansal Analiz Raporu"
   } = options;
   
+  // Logo ekle
+  const logoPath = '/assets/images/finrasyo-logo.jpg';
+  doc.addImage(logoPath, 'JPEG', 65, 5, 80, 20);
+  
   // Başlık ekle
   doc.setFontSize(20);
-  doc.text(title, 105, 15, { align: 'center' });
+  doc.text(title, 105, 35, { align: 'center' });
   
   // Şirket bilgileri
   doc.setFontSize(12);
-  doc.text(`Şirket: ${company.name} (${company.code})`, 14, 30);
-  doc.text(`Sektör: ${company.sector}`, 14, 38);
-  doc.text(`Rapor Tarihi: ${new Date().toLocaleDateString('tr-TR')}`, 14, 46);
+  doc.text(`Şirket: ${company.name} (${company.code})`, 14, 50);
+  doc.text(`Sektör: ${company.sector}`, 14, 58);
+  doc.text(`Rapor Tarihi: ${new Date().toLocaleDateString('tr-TR')}`, 14, 66);
   
   let yPosition = 60;
   
