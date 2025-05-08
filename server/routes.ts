@@ -40,14 +40,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "E-posta adresi gereklidir" });
       }
       
+      console.log("Şifre sıfırlama isteği yapıldı:", email);
       const user = await storage.getUserByEmail(email);
       
       if (!user) {
+        console.log("Kullanıcı bulunamadı:", email);
         // Güvenlik nedeniyle kullanıcı bulunamasa bile başarılı yanıt döndür
         return res.status(200).json({ 
           message: "Şifre sıfırlama talimatları e-posta adresinize gönderilmiştir" 
         });
       }
+      
+      console.log("Kullanıcı bulundu:", user.username, user.id);
       
       // Token oluştur
       const token = generatePasswordResetToken(user.id);
