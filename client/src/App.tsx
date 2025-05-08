@@ -4,6 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/not-found";
 import HomePage from "@/pages/home-page";
 import AuthPage from "@/pages/auth-page";
+import ResetPasswordPage from "@/pages/reset-password";
 import CompanyPage from "@/pages/company-page";
 import CompanyNewPage from "@/pages/company-new-page";
 import AnalysisPage from "@/pages/analysis-page";
@@ -33,6 +34,7 @@ function Router() {
       <ProtectedRoute path="/report/:id" component={ReportPage} />
       <ProtectedRoute path="/admin" component={() => <AdminPage />} />
       <Route path="/auth" component={AuthPage} />
+      <Route path="/reset-password" component={ResetPasswordPage} />
       <Route path="/about" component={AboutPage} />
       <Route path="/how-it-works" component={HowItWorksPage} />
       <Route path="/contact" component={ContactPage} />
