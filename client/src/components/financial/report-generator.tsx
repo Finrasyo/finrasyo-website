@@ -13,8 +13,10 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Loader2, Download, FileText, FileSpreadsheet } from "lucide-react";
+import { Loader2, Download, FileText, FileSpreadsheet, AlertCircle } from "lucide-react";
 import { exportReport } from "@/lib/report-generation";
+import { PriceCalculator } from "./price-calculator";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 interface ReportGeneratorProps {
   financialData: FinancialData;
@@ -36,6 +38,19 @@ export default function ReportGenerator({
   const [reportFormat, setReportFormat] = useState<string>("pdf");
   const [isGenerating, setIsGenerating] = useState(false);
   
+  // Dinamik fiyatlandırma değişkenleri
+  const [numCompanies, setNumCompanies] = useState(1);
+  const [numPeriods, setNumPeriods] = useState(1);
+  const [numRatios, setNumRatios] = useState(3); // Varsayılan olarak 3 oran
+  const [totalPrice, setTotalPrice] = useState(0.75); // Varsayılan fiyat
+  const [requiredCredits, setRequiredCredits] = useState(1); // Varsayılan kredi
+  
+  // Fiyat değişimini yönet
+  const handlePriceChange = (price: number, credits: number) => {
+    setTotalPrice(price);
+    setRequiredCredits(credits);
+  };
+  
   const handleGenerate = async () => {
     if (!user) return;
     
@@ -43,10 +58,10 @@ export default function ReportGenerator({
     const isAdmin = user.role === "admin";
     
     // Admin değilse ve yeterli kredisi yoksa işlemi durdur
-    if (!isAdmin && user.credits < 1) {
+    if (!isAdmin && (user.credits || 0) < requiredCredits) {
       toast({
         title: "Yetersiz Kredi",
-        description: "Rapor oluşturmak için yeterli krediniz bulunmamaktadır. Lütfen kredi satın alın.",
+        description: `Rapor oluşturmak için ${requiredCredits} kredi gerekiyor, ancak hesabınızda ${user.credits || 0} kredi bulunmaktadır. Lütfen kredi satın alın.`,
         variant: "destructive"
       });
       return;
@@ -56,7 +71,12 @@ export default function ReportGenerator({
     
     try {
       // Generate report on the server
-      await generateReportAPI(company.id, financialData.id, reportFormat);
+      await generateReportAPI(company.id, financialData.id, reportFormat, {
+        numCompanies,
+        numPeriods,
+        numRatios,
+        price: totalPrice
+      });
       
       // Generate and download the report on the client side
       const companyInfo = {
@@ -72,7 +92,7 @@ export default function ReportGenerator({
         title: "Rapor Oluşturuldu",
         description: isAdmin 
           ? "Rapor başarıyla oluşturuldu." 
-          : "Rapor başarıyla oluşturuldu ve 1 kredi kullanıldı.",
+          : `Rapor başarıyla oluşturuldu ve ${requiredCredits} kredi kullanıldı.`,
       });
       
       onClose();
@@ -164,6 +184,29 @@ export default function ReportGenerator({
             </div>
           </TabsContent>
         </Tabs>
+        
+        {/* Fiyatlandırma hesaplayıcı */}
+        <div className="mt-4">
+          <h3 className="font-medium text-base mb-2">Fiyatlandırma</h3>
+          <PriceCalculator 
+            onPriceChange={handlePriceChange}
+            initialCompanies={numCompanies}
+            initialPeriods={numPeriods}
+            initialRatios={numRatios}
+          />
+          
+          {!user?.role || user.role !== "admin" ? (
+            <Alert variant="default" className="mt-2">
+              <AlertCircle className="h-4 w-4" />
+              <AlertDescription>
+                Bu rapor için {requiredCredits} kredi gerekecek.
+                {user?.credits && user.credits < requiredCredits ? 
+                  ` Hesabınızda yeterli kredi bulunmuyor (${user.credits}/${requiredCredits}).` : 
+                  ''}
+              </AlertDescription>
+            </Alert>
+          ) : null}
+        </div>
         
         <DialogFooter className="mt-4">
           <Button variant="outline" onClick={onClose} disabled={isGenerating}>
