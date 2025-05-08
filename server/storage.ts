@@ -179,6 +179,7 @@ export class MemStorage implements IStorage {
       ...company, 
       id, 
       code: company.code || null,
+      sector: company.sector || "Genel",
       lastUpdated: new Date() 
     };
     this.companies.set(id, newCompany);

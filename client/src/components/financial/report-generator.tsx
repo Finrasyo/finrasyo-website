@@ -61,7 +61,7 @@ export default function ReportGenerator({
       // Generate and download the report on the client side
       const companyInfo = {
         name: company.name,
-        code: company.code,
+        code: company.code || "Bilinmiyor",
         sector: company.sector || "Genel"
       };
       

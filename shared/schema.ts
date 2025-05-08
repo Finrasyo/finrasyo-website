@@ -25,6 +25,7 @@ export const companies = pgTable("companies", {
   userId: integer("user_id").notNull(),
   name: text("name").notNull(),
   code: text("code"),
+  sector: text("sector").default("Genel"),
   lastUpdated: timestamp("last_updated").notNull().defaultNow(),
 });
 
@@ -32,6 +33,7 @@ export const insertCompanySchema = createInsertSchema(companies).pick({
   userId: true,
   name: true,
   code: true,
+  sector: true,
 });
 
 // Financial data schema

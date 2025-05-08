@@ -20,7 +20,7 @@ function addTurkishSupport(doc: jsPDF) {
  * Finansal verileri kullanarak PDF raporu oluşturur
  */
 export async function generatePDFReport(
-  company: { name: string; code: string; sector: string },
+  company: { name: string; code: string | null; sector: string | null },
   financialData: any,
   options: { 
     includeRatios?: boolean; 
@@ -248,7 +248,7 @@ export async function generatePDFReport(
  * Finansal verileri kullanarak Excel raporu oluşturur
  */
 export async function generateExcelReport(
-  company: { name: string; code: string; sector: string },
+  company: { name: string; code: string | null; sector: string | null },
   financialData: any,
   options: { 
     includeRatios?: boolean; 
@@ -444,7 +444,7 @@ export async function generateExcelReport(
  * CSV formatında bir rapor oluşturur
  */
 export function generateCSVReport(
-  company: { name: string; code: string; sector: string },
+  company: { name: string; code: string | null; sector: string | null },
   financialData: any
 ): Blob {
   let csvContent = `FinRasyo\nFinansal Veri Sunum Platformu\n\nŞirket Adı,${company.name}\nŞirket Kodu,${company.code}\nSektör,${company.sector}\nRapor Tarihi,${new Date().toLocaleDateString('tr-TR')}\n\n`;
@@ -486,7 +486,7 @@ export function generateCSVReport(
  */
 export async function exportReport(
   format: 'pdf' | 'excel' | 'csv',
-  company: { name: string; code: string; sector: string },
+  company: { name: string; code: string | null; sector: string | null },
   financialData: any,
   options?: {
     includeRatios?: boolean;
