@@ -275,14 +275,24 @@ export async function generateExcelReport(
   
   // Ana bilgiler sayfası
   const infoSheet = workbook.addWorksheet('Şirket Bilgileri');
+  
+  // Logo için boşluk bırak
+  infoSheet.addRow(["FinRasyo"]);
+  infoSheet.addRow(["Finansal Veri Sunum Platformu"]);
+  infoSheet.addRow([]);
+  
+  // Logo metnini biçimlendir
+  infoSheet.getCell('A1').font = { size: 24, bold: true, color: { argb: '0091E5FF' } };
+  infoSheet.getCell('A2').font = { size: 16, color: { argb: '00000000' } };
+  
   infoSheet.addRow([title]);
   infoSheet.addRow([]);
   infoSheet.addRow(['Şirket:', `${company.name} (${company.code})`]);
   infoSheet.addRow(['Sektör:', company.sector]);
   infoSheet.addRow(['Rapor Tarihi:', new Date().toLocaleDateString('tr-TR')]);
   
-  // Başlığı biçimlendir
-  infoSheet.getCell('A1').font = { size: 16, bold: true };
+  // Başlık biçimlendirmesi
+  infoSheet.getCell('A4').font = { size: 16, bold: true };
   infoSheet.getColumn('A').width = 20;
   infoSheet.getColumn('B').width = 40;
   
@@ -437,7 +447,7 @@ export function generateCSVReport(
   company: { name: string; code: string; sector: string },
   financialData: any
 ): Blob {
-  let csvContent = `Şirket Adı,${company.name}\nŞirket Kodu,${company.code}\nSektör,${company.sector}\nRapor Tarihi,${new Date().toLocaleDateString('tr-TR')}\n\n`;
+  let csvContent = `FinRasyo\nFinansal Veri Sunum Platformu\n\nŞirket Adı,${company.name}\nŞirket Kodu,${company.code}\nSektör,${company.sector}\nRapor Tarihi,${new Date().toLocaleDateString('tr-TR')}\n\n`;
   
   // Finansal veriler
   csvContent += "Finansal Veriler\n";

@@ -14,7 +14,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Loader2, Download, FileText, FileSpreadsheet } from "lucide-react";
-import { generateReport, downloadReport } from "@/lib/report-generation";
+import { exportReport } from "@/lib/report-generation";
 
 interface ReportGeneratorProps {
   financialData: FinancialData;
@@ -59,8 +59,14 @@ export default function ReportGenerator({
       await generateReportAPI(company.id, financialData.id, reportFormat);
       
       // Generate and download the report on the client side
-      const result = await generateReport(financialData, company, reportFormat);
-      downloadReport(result.blob, result.filename);
+      const companyInfo = {
+        name: company.name,
+        code: company.code,
+        sector: company.sector || "Genel"
+      };
+      
+      // Raporu doğrudan indir
+      await exportReport(reportFormat as any, companyInfo, financialData);
       
       toast({
         title: "Rapor Oluşturuldu",
