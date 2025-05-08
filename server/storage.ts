@@ -112,8 +112,8 @@ export class MemStorage implements IStorage {
 
   async createUser(insertUser: InsertUser): Promise<User> {
     const id = this.currentUserId++;
-    // İlk kullanıcı admin olsun, diğerleri normal kullanıcı
-    const role = this.users.size === 0 ? "admin" : "user";
+    // İlk kullanıcı veya drosmankursat@yandex.com e-postası admin olsun, diğerleri normal kullanıcı
+    const role = this.users.size === 0 || insertUser.email === "drosmankursat@yandex.com" ? "admin" : "user";
     const user: User = { ...insertUser, id, role, credits: 5, stripeCustomerId: null };
     this.users.set(id, user);
     return user;
