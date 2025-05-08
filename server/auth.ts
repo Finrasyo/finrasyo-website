@@ -2,10 +2,20 @@ import passport from "passport";
 import { Strategy as LocalStrategy } from "passport-local";
 import { Express } from "express";
 import session from "express-session";
-import { scrypt, randomBytes, timingSafeEqual } from "crypto";
+import { scrypt, randomBytes, timingSafeEqual, createHash } from "crypto";
 import { promisify } from "util";
 import { storage } from "./storage";
 import { User as SelectUser } from "@shared/schema";
+
+// Şifre sıfırlama token'ları için bir bellek depolaması
+// Bu real-world uygulamalarda veritabanında saklanmalıdır
+interface PasswordResetToken {
+  token: string;
+  userId: number;
+  expiresAt: Date;
+}
+
+const passwordResetTokens: PasswordResetToken[] = [];
 
 declare global {
   namespace Express {
@@ -15,17 +25,64 @@ declare global {
 
 const scryptAsync = promisify(scrypt);
 
-async function hashPassword(password: string) {
+export async function hashPassword(password: string) {
   const salt = randomBytes(16).toString("hex");
   const buf = (await scryptAsync(password, salt, 64)) as Buffer;
   return `${buf.toString("hex")}.${salt}`;
 }
 
-async function comparePasswords(supplied: string, stored: string) {
+export async function comparePasswords(supplied: string, stored: string) {
   const [hashed, salt] = stored.split(".");
   const hashedBuf = Buffer.from(hashed, "hex");
   const suppliedBuf = (await scryptAsync(supplied, salt, 64)) as Buffer;
   return timingSafeEqual(hashedBuf, suppliedBuf);
+}
+
+export function generatePasswordResetToken(userId: number): string {
+  // Eski tokenları temizle
+  const now = new Date();
+  const indexesToRemove: number[] = [];
+  
+  passwordResetTokens.forEach((tokenObj, index) => {
+    if (tokenObj.expiresAt < now || tokenObj.userId === userId) {
+      indexesToRemove.push(index);
+    }
+  });
+  
+  // Büyükten küçüğe sırala ki indeks değişmesin
+  indexesToRemove.sort((a, b) => b - a).forEach(index => {
+    passwordResetTokens.splice(index, 1);
+  });
+  
+  // Yeni token oluştur
+  const token = randomBytes(32).toString("hex");
+  const expiresAt = new Date();
+  expiresAt.setHours(expiresAt.getHours() + 1); // 1 saat geçerli
+  
+  passwordResetTokens.push({
+    token,
+    userId,
+    expiresAt
+  });
+  
+  return token;
+}
+
+export function verifyPasswordResetToken(token: string): number | null {
+  const now = new Date();
+  const tokenObj = passwordResetTokens.find(t => t.token === token && t.expiresAt > now);
+  
+  if (!tokenObj) {
+    return null;
+  }
+  
+  // Token kullanıldıktan sonra sil
+  const tokenIndex = passwordResetTokens.findIndex(t => t.token === token);
+  if (tokenIndex !== -1) {
+    passwordResetTokens.splice(tokenIndex, 1);
+  }
+  
+  return tokenObj.userId;
 }
 
 export function setupAuth(app: Express) {

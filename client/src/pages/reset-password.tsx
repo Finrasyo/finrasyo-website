@@ -3,9 +3,6 @@ import { useLocation, Link } from "wouter";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { useMutation } from "@tanstack/react-query";
-import { apiRequest } from "@/lib/queryClient";
-import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -14,46 +11,49 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-  FormDescription,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Loader2, ArrowLeft, AlertCircle, Check } from "lucide-react";
+import { Loader2 } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+import { apiRequest } from "@/lib/queryClient";
 
-// Email schema
+// Şifre sıfırlama isteği formu için validasyon şeması
 const requestResetSchema = z.object({
   email: z.string().email("Geçerli bir e-posta adresi giriniz"),
 });
 
-// Password reset schema
-const passwordResetSchema = z.object({
-  token: z.string().min(1, "Token gereklidir"),
+// Yeni şifre formu için validasyon şeması
+const resetPasswordSchema = z.object({
   password: z.string().min(6, "Şifre en az 6 karakter olmalıdır"),
-  confirmPassword: z.string().min(6, "Şifre en az 6 karakter olmalıdır"),
+  confirmPassword: z.string().min(6, "Şifre tekrarı en az 6 karakter olmalıdır"),
 }).refine((data) => data.password === data.confirmPassword, {
   message: "Şifreler eşleşmiyor",
   path: ["confirmPassword"],
 });
 
 type RequestResetFormValues = z.infer<typeof requestResetSchema>;
-type PasswordResetFormValues = z.infer<typeof passwordResetSchema>;
+type ResetPasswordFormValues = z.infer<typeof resetPasswordSchema>;
 
 export default function ResetPasswordPage() {
-  const [location, navigate] = useLocation();
-  const { toast } = useToast();
-  const [submitted, setSubmitted] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [step, setStep] = useState<"request" | "reset">("request");
   const [token, setToken] = useState<string | null>(null);
+  const [_, navigate] = useLocation();
+  const { toast } = useToast();
   
-  // Parse token from URL query parameters
+  // URL'den token varsa al
   useEffect(() => {
-    if (location.includes("?token=")) {
-      const urlToken = location.split("?token=")[1];
-      setToken(urlToken);
+    const params = new URLSearchParams(window.location.search);
+    const tokenParam = params.get("token");
+    
+    if (tokenParam) {
+      setToken(tokenParam);
+      setStep("reset");
     }
-  }, [location]);
+  }, []);
   
-  // Request reset form
+  // Şifre sıfırlama isteği formu
   const requestResetForm = useForm<RequestResetFormValues>({
     resolver: zodResolver(requestResetSchema),
     defaultValues: {
@@ -61,125 +61,159 @@ export default function ResetPasswordPage() {
     },
   });
   
-  // Password reset form
-  const passwordResetForm = useForm<PasswordResetFormValues>({
-    resolver: zodResolver(passwordResetSchema),
+  // Yeni şifre belirleme formu
+  const resetPasswordForm = useForm<ResetPasswordFormValues>({
+    resolver: zodResolver(resetPasswordSchema),
     defaultValues: {
-      token: token || "",
       password: "",
       confirmPassword: "",
     },
   });
   
-  // Set token from URL to form
-  useEffect(() => {
-    if (token) {
-      passwordResetForm.setValue("token", token);
+  // Şifre sıfırlama isteği gönderme
+  const onRequestResetSubmit = async (values: RequestResetFormValues) => {
+    setIsLoading(true);
+    
+    try {
+      const response = await apiRequest("POST", "/api/request-password-reset", values);
+      const data = await response.json();
+      
+      toast({
+        title: "Şifre Sıfırlama İsteği Gönderildi",
+        description: "Şifre sıfırlama talimatları e-posta adresinize gönderilmiştir.",
+      });
+      
+      // DEV ONLY: Token'ı doğrudan al - gerçek uygulamada bu olmayacak
+      if (data.token) {
+        setToken(data.token);
+        setStep("reset");
+      }
+    } catch (error) {
+      toast({
+        title: "Hata",
+        description: "Şifre sıfırlama isteği gönderilirken bir hata oluştu.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
     }
-  }, [token, passwordResetForm]);
-  
-  // Request password reset mutation
-  const requestResetMutation = useMutation({
-    mutationFn: async (data: RequestResetFormValues) => {
-      const res = await apiRequest("POST", "/api/request-password-reset", data);
-      return await res.json();
-    },
-    onSuccess: () => {
-      setSubmitted(true);
-      toast({
-        title: "Şifre sıfırlama isteği gönderildi",
-        description: "E-posta adresinize şifre sıfırlama talimatları gönderildi.",
-      });
-    },
-    onError: (error: Error) => {
-      toast({
-        title: "Şifre sıfırlama isteği başarısız",
-        description: "E-posta adresiniz sistemde bulunamadı.",
-        variant: "destructive",
-      });
-    },
-  });
-  
-  // Reset password mutation
-  const resetPasswordMutation = useMutation({
-    mutationFn: async (data: PasswordResetFormValues) => {
-      const res = await apiRequest("POST", "/api/reset-password", data);
-      return await res.json();
-    },
-    onSuccess: () => {
-      toast({
-        title: "Şifre başarıyla sıfırlandı",
-        description: "Yeni şifrenizle giriş yapabilirsiniz.",
-      });
-      setTimeout(() => {
-        navigate("/auth");
-      }, 2000);
-    },
-    onError: (error: Error) => {
-      toast({
-        title: "Şifre sıfırlama başarısız",
-        description: "Geçersiz veya süresi dolmuş token. Lütfen tekrar şifre sıfırlama isteği gönderin.",
-        variant: "destructive",
-      });
-    },
-  });
-  
-  const onRequestResetSubmit = (values: RequestResetFormValues) => {
-    requestResetMutation.mutate(values);
   };
   
-  const onPasswordResetSubmit = (values: PasswordResetFormValues) => {
-    resetPasswordMutation.mutate(values);
+  // Yeni şifre belirleme
+  const onResetPasswordSubmit = async (values: ResetPasswordFormValues) => {
+    if (!token) {
+      toast({
+        title: "Hata",
+        description: "Geçersiz veya eksik token.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    setIsLoading(true);
+    
+    try {
+      const response = await apiRequest("POST", "/api/reset-password", {
+        token,
+        password: values.password,
+      });
+      
+      if (response.ok) {
+        toast({
+          title: "Başarılı",
+          description: "Şifreniz başarıyla sıfırlandı. Şimdi yeni şifrenizle giriş yapabilirsiniz.",
+        });
+        
+        // 2 saniye sonra giriş sayfasına yönlendir
+        setTimeout(() => {
+          navigate("/auth");
+        }, 2000);
+      } else {
+        const data = await response.json();
+        throw new Error(data.message || "Şifre sıfırlama işlemi başarısız oldu.");
+      }
+    } catch (error: any) {
+      toast({
+        title: "Hata",
+        description: error.message || "Şifre sıfırlanırken bir hata oluştu.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
   
   return (
-    <div className="min-h-screen bg-neutral-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+    <div className="min-h-screen flex flex-col justify-center py-12 sm:px-6 lg:px-8 bg-neutral-50">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
-        <h2 className="text-center text-3xl font-extrabold text-neutral-900">
+        <h1 className="text-center text-3xl font-bold text-primary">FinRasyo</h1>
+        <h2 className="mt-2 text-center text-2xl font-bold text-neutral-900">
           Şifre Sıfırlama
         </h2>
-        <p className="mt-2 text-center text-sm text-neutral-600">
-          <Link href="/auth">
-            <a className="font-medium text-primary hover:text-primary-dark inline-flex items-center">
-              <ArrowLeft className="h-4 w-4 mr-1" />
-              Giriş sayfasına dön
-            </a>
-          </Link>
-        </p>
       </div>
-
+      
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
         <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
-          {token ? (
-            // If token is present, show password reset form
+          {step === "request" ? (
             <Card>
               <CardHeader>
-                <CardTitle>Yeni Şifre Belirleyin</CardTitle>
+                <CardTitle>Şifre Sıfırlama İsteği</CardTitle>
+                <CardDescription>
+                  Hesabınızla ilişkili e-posta adresinizi girin
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Form {...requestResetForm}>
+                  <form onSubmit={requestResetForm.handleSubmit(onRequestResetSubmit)} className="space-y-4">
+                    <FormField
+                      control={requestResetForm.control}
+                      name="email"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>E-posta Adresi</FormLabel>
+                          <FormControl>
+                            <Input type="email" placeholder="ornek@mail.com" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <Button 
+                      type="submit" 
+                      className="w-full" 
+                      disabled={isLoading}
+                    >
+                      {isLoading ? (
+                        <>
+                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                          İşleniyor...
+                        </>
+                      ) : (
+                        "Şifre Sıfırlama Bağlantısı Gönder"
+                      )}
+                    </Button>
+                  </form>
+                </Form>
+              </CardContent>
+              <CardFooter className="flex justify-center">
+                <Link to="/auth" className="text-sm text-primary hover:underline">
+                  Giriş sayfasına dön
+                </Link>
+              </CardFooter>
+            </Card>
+          ) : (
+            <Card>
+              <CardHeader>
+                <CardTitle>Yeni Şifre Oluştur</CardTitle>
                 <CardDescription>
                   Lütfen yeni şifrenizi girin
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <Form {...passwordResetForm}>
-                  <form onSubmit={passwordResetForm.handleSubmit(onPasswordResetSubmit)} className="space-y-4">
+                <Form {...resetPasswordForm}>
+                  <form onSubmit={resetPasswordForm.handleSubmit(onResetPasswordSubmit)} className="space-y-4">
                     <FormField
-                      control={passwordResetForm.control}
-                      name="token"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Token</FormLabel>
-                          <FormControl>
-                            <Input readOnly {...field} />
-                          </FormControl>
-                          <FormDescription>
-                            Bu token otomatik olarak URL'den alınmıştır.
-                          </FormDescription>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={passwordResetForm.control}
+                      control={resetPasswordForm.control}
                       name="password"
                       render={({ field }) => (
                         <FormItem>
@@ -192,7 +226,7 @@ export default function ResetPasswordPage() {
                       )}
                     />
                     <FormField
-                      control={passwordResetForm.control}
+                      control={resetPasswordForm.control}
                       name="confirmPassword"
                       render={({ field }) => (
                         <FormItem>
@@ -207,12 +241,12 @@ export default function ResetPasswordPage() {
                     <Button 
                       type="submit" 
                       className="w-full" 
-                      disabled={resetPasswordMutation.isPending}
+                      disabled={isLoading}
                     >
-                      {resetPasswordMutation.isPending ? (
+                      {isLoading ? (
                         <>
                           <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                          Şifre Sıfırlanıyor...
+                          İşleniyor...
                         </>
                       ) : (
                         "Şifreyi Sıfırla"
@@ -221,62 +255,12 @@ export default function ResetPasswordPage() {
                   </form>
                 </Form>
               </CardContent>
+              <CardFooter className="flex justify-center">
+                <Link to="/auth" className="text-sm text-primary hover:underline">
+                  Giriş sayfasına dön
+                </Link>
+              </CardFooter>
             </Card>
-          ) : (
-            // If no token, show email form
-            <>
-              {submitted ? (
-                <Alert className="mb-6">
-                  <Check className="h-4 w-4" />
-                  <AlertTitle>E-posta gönderildi</AlertTitle>
-                  <AlertDescription>
-                    E-posta adresinize şifre sıfırlama talimatları gönderildi. Lütfen e-postanızı kontrol edin.
-                  </AlertDescription>
-                </Alert>
-              ) : null}
-              
-              <Card>
-                <CardHeader>
-                  <CardTitle>Şifre Sıfırlama İsteği</CardTitle>
-                  <CardDescription>
-                    Hesabınıza bağlı e-posta adresinizi girin
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <Form {...requestResetForm}>
-                    <form onSubmit={requestResetForm.handleSubmit(onRequestResetSubmit)} className="space-y-4">
-                      <FormField
-                        control={requestResetForm.control}
-                        name="email"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>E-posta Adresi</FormLabel>
-                            <FormControl>
-                              <Input placeholder="ornek@email.com" {...field} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <Button 
-                        type="submit" 
-                        className="w-full" 
-                        disabled={requestResetMutation.isPending}
-                      >
-                        {requestResetMutation.isPending ? (
-                          <>
-                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                            İstek Gönderiliyor...
-                          </>
-                        ) : (
-                          "Sıfırlama Bağlantısı Gönder"
-                        )}
-                      </Button>
-                    </form>
-                  </Form>
-                </CardContent>
-              </Card>
-            </>
           )}
         </div>
       </div>

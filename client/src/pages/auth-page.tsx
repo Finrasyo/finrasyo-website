@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useAuth } from "@/hooks/use-auth";
-import { useLocation } from "wouter";
+import { useLocation, Link } from "wouter";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -134,20 +134,28 @@ export default function AuthPage() {
                               </FormItem>
                             )}
                           />
-                          <Button 
-                            type="submit" 
-                            className="w-full" 
-                            disabled={loginMutation.isPending}
-                          >
-                            {loginMutation.isPending ? (
-                              <>
-                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                Giriş Yapılıyor...
-                              </>
-                            ) : (
-                              "Giriş Yap"
-                            )}
-                          </Button>
+                          <div className="space-y-4">
+                            <Button 
+                              type="submit" 
+                              className="w-full" 
+                              disabled={loginMutation.isPending}
+                            >
+                              {loginMutation.isPending ? (
+                                <>
+                                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                  Giriş Yapılıyor...
+                                </>
+                              ) : (
+                                "Giriş Yap"
+                              )}
+                            </Button>
+                            
+                            <div className="text-right">
+                              <Link to="/reset-password" className="text-sm text-primary hover:underline">
+                                Şifrenizi mi Unuttunuz?
+                              </Link>
+                            </div>
+                          </div>
                         </form>
                       </Form>
                     </CardContent>

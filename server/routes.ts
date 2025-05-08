@@ -1,7 +1,7 @@
 import type { Express, Request, Response, NextFunction } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { setupAuth } from "./auth";
+import { setupAuth, generatePasswordResetToken, verifyPasswordResetToken, comparePasswords, hashPassword } from "./auth";
 import { z } from "zod";
 import { 
   insertCompanySchema, 
@@ -11,6 +11,7 @@ import {
 } from "@shared/schema";
 import { getCompanyFinancials, getAllCompaniesFinancials } from "./api/company-financials";
 import Stripe from 'stripe';
+import crypto from 'crypto';
 
 const contactFormSchema = z.object({
   name: z.string().min(2),
@@ -29,6 +30,78 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
 export async function registerRoutes(app: Express): Promise<Server> {
   // sets up /api/register, /api/login, /api/logout, /api/user
   setupAuth(app);
+  
+  // Şifre sıfırlama endpointleri
+  app.post("/api/request-password-reset", async (req, res) => {
+    try {
+      const { email } = req.body;
+      
+      if (!email) {
+        return res.status(400).json({ message: "E-posta adresi gereklidir" });
+      }
+      
+      const user = await storage.getUserByEmail(email);
+      
+      if (!user) {
+        // Güvenlik nedeniyle kullanıcı bulunamasa bile başarılı yanıt döndür
+        return res.status(200).json({ 
+          message: "Şifre sıfırlama talimatları e-posta adresinize gönderilmiştir" 
+        });
+      }
+      
+      // Token oluştur
+      const token = generatePasswordResetToken(user.id);
+      
+      // Gerçek uygulamada burada e-posta gönderilecek
+      // sendEmail(email, `Şifrenizi sıfırlamak için aşağıdaki bağlantıya tıklayın:
+      // ${process.env.SITE_URL || 'http://localhost:5000'}/reset-password?token=${token}`);
+      
+      console.log(`Şifre sıfırlama token'ı (gerçek uygulamada mail ile gönderilecek): ${token}`);
+      
+      res.status(200).json({ 
+        message: "Şifre sıfırlama talimatları e-posta adresinize gönderilmiştir",
+        // DEV ONLY: Gerçek uygulamada bu token kullanıcıya gösterilmez
+        token: token
+      });
+    } catch (error: any) {
+      console.error("Şifre sıfırlama hatası:", error);
+      res.status(500).json({ message: "Şifre sıfırlama isteği başarısız oldu" });
+    }
+  });
+  
+  app.post("/api/reset-password", async (req, res) => {
+    try {
+      const { token, password } = req.body;
+      
+      if (!token || !password) {
+        return res.status(400).json({ message: "Token ve yeni şifre gereklidir" });
+      }
+      
+      // Token'ı doğrula
+      const userId = verifyPasswordResetToken(token);
+      
+      if (!userId) {
+        return res.status(400).json({ message: "Geçersiz veya süresi dolmuş token" });
+      }
+      
+      // Kullanıcıyı bul
+      const user = await storage.getUser(userId);
+      
+      if (!user) {
+        return res.status(404).json({ message: "Kullanıcı bulunamadı" });
+      }
+      
+      // Şifreyi güncelle
+      const hashedPassword = await hashPassword(password);
+      
+      // Şifreyi veritabanında güncelle
+      await storage.updateUserPassword(userId, hashedPassword);
+      res.status(200).json({ message: "Şifreniz başarıyla sıfırlandı" });
+    } catch (error: any) {
+      console.error("Şifre sıfırlama hatası:", error);
+      res.status(500).json({ message: "Şifre sıfırlama başarısız oldu" });
+    }
+  });
   
   // Şirket finansal verileri API'leri
   app.get("/api/company-financials/:companyCode", getCompanyFinancials);

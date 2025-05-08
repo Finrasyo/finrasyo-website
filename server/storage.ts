@@ -24,6 +24,7 @@ export interface IStorage {
   createUser(user: InsertUser): Promise<User>;
   updateUserCredits(userId: number, credits: number): Promise<User>;
   updateUserStripeCustomerId(userId: number, customerId: string): Promise<User>;
+  updateUserPassword(userId: number, password: string): Promise<User>;
   
   // Admin methods
   getAllUsers(): Promise<User[]>;
@@ -133,6 +134,15 @@ export class MemStorage implements IStorage {
     if (!user) throw new Error('User not found');
     
     const updatedUser = { ...user, stripeCustomerId: customerId };
+    this.users.set(userId, updatedUser);
+    return updatedUser;
+  }
+  
+  async updateUserPassword(userId: number, password: string): Promise<User> {
+    const user = await this.getUser(userId);
+    if (!user) throw new Error('User not found');
+    
+    const updatedUser = { ...user, password };
     this.users.set(userId, updatedUser);
     return updatedUser;
   }
