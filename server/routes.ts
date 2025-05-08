@@ -10,11 +10,20 @@ import {
   insertPaymentSchema
 } from "@shared/schema";
 import { getCompanyFinancials, getAllCompaniesFinancials } from "./api/company-financials";
+import Stripe from 'stripe';
 
 const contactFormSchema = z.object({
   name: z.string().min(2),
   email: z.string().email(),
   message: z.string().min(10)
+});
+
+// Stripe client kurulumu
+if (!process.env.STRIPE_SECRET_KEY) {
+  throw new Error("STRIPE_SECRET_KEY çevre değişkeni eksik");
+}
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
+  apiVersion: '2023-10-16' as any,
 });
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -263,23 +272,85 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Credit purchase
-  app.post("/api/credits/purchase", async (req, res) => {
+  // Stripe Payment Intent oluşturma (ödeme niyeti)
+  app.post("/api/credits/payment-intent", async (req, res) => {
     if (!req.isAuthenticated()) return res.sendStatus(401);
     
     try {
       const { amount, credits } = req.body;
       
-      // Create payment record
+      // Doğrulama
+      if (!amount || typeof amount !== 'number' || amount <= 0) {
+        return res.status(400).json({ message: "Geçersiz ödeme tutarı" });
+      }
+      
+      if (!credits || typeof credits !== 'number' || credits <= 0) {
+        return res.status(400).json({ message: "Geçersiz kredi miktarı" });
+      }
+      
+      // Kuruşa çevir (ör. 99.99 TL -> 9999 kuruş)
+      const amountInCents = Math.round(amount * 100);
+      
+      // Stripe ödeme niyeti oluştur
+      const paymentIntent = await stripe.paymentIntents.create({
+        amount: amountInCents,
+        currency: 'try', // Türk Lirası
+        metadata: {
+          userId: req.user.id.toString(),
+          credits: credits.toString()
+        }
+      });
+      
+      // Ödeme client secret'ı frontend'e gönder
+      res.json({
+        clientSecret: paymentIntent.client_secret
+      });
+    } catch (error: any) {
+      console.error("Ödeme niyeti oluşturma hatası:", error);
+      res.status(500).json({ 
+        message: "Ödeme başlatılırken bir hata oluştu", 
+        error: error.message 
+      });
+    }
+  });
+  
+  // Ödeme tamamlandığında
+  app.post("/api/credits/payment-complete", async (req, res) => {
+    if (!req.isAuthenticated()) return res.sendStatus(401);
+    
+    try {
+      const { paymentIntentId } = req.body;
+      
+      if (!paymentIntentId) {
+        return res.status(400).json({ message: "Ödeme bilgisi eksik" });
+      }
+      
+      // Stripe'dan ödeme bilgisini al
+      const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
+      
+      // Ödeme başarılı mı kontrol et
+      if (paymentIntent.status !== 'succeeded') {
+        return res.status(400).json({ message: "Ödeme henüz tamamlanmamış" });
+      }
+      
+      // Kullanıcı doğrulama (metadata'dan kullanıcı kimliğini kontrol et)
+      if (paymentIntent.metadata.userId !== req.user.id.toString()) {
+        return res.status(403).json({ message: "Bu ödeme işlemi sizin hesabınıza ait değil" });
+      }
+      
+      const credits = parseInt(paymentIntent.metadata.credits);
+      const amount = paymentIntent.amount / 100; // Kuruştan TL'ye çevir
+      
+      // Ödeme kaydı oluştur
       const payment = await storage.createPayment({
         userId: req.user.id,
         amount,
         credits,
-        stripePaymentId: "dummy-payment-id", // In a real implementation, this would be from Stripe
+        stripePaymentId: paymentIntent.id,
         status: "completed"
       });
       
-      // Add credits to user
+      // Kullanıcıya kredileri ekle
       const updatedUser = await storage.updateUserCredits(
         req.user.id, 
         req.user.credits + credits
@@ -287,6 +358,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       res.status(201).json({ payment, user: updatedUser });
     } catch (error: any) {
+      console.error("Ödeme tamamlama hatası:", error);
       res.status(500).json({ message: error.message });
     }
   });
