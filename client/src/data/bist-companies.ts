@@ -1,73 +1,266 @@
-// Borsa İstanbul'da işlem gören şirketlerin listesi
+
+// Bu dosya otomatik olarak scripts/fetch-bist-companies.ts tarafından oluşturulmuştur
+// finans.mynet.com adresinden alınan veriler ile oluşturulmuştur
+
 export const bistCompanies = [
-  { code: "AEFES", name: "ANADOLU EFES", fullName: "ANADOLU EFES BİRACILIK VE MALT SANAYİİ A.Ş." },
-  { code: "AKBNK", name: "AKBANK", fullName: "AKBANK T.A.Ş." },
-  { code: "AKSEN", name: "AKSA ENERJİ", fullName: "AKSA ENERJİ ÜRETİM A.Ş." },
-  { code: "ALARK", name: "ALARKO HOLDİNG", fullName: "ALARKO HOLDİNG A.Ş." },
-  { code: "ARCLK", name: "ARÇELİK", fullName: "ARÇELİK A.Ş." },
-  { code: "ASELS", name: "ASELSAN", fullName: "ASELSAN ELEKTRONİK SANAYİ VE TİCARET A.Ş." },
-  { code: "BIMAS", name: "BİM MAĞAZALAR", fullName: "BİM BİRLEŞİK MAĞAZALAR A.Ş." },
-  { code: "DOHOL", name: "DOĞAN HOLDİNG", fullName: "DOĞAN ŞİRKETLER GRUBU HOLDİNG A.Ş." },
-  { code: "ECILC", name: "EİS ECZACIBAŞI", fullName: "EİS ECZACIBAŞI İLAÇ, SINAİ VE FİNANSAL YATIRIMLAR SANAYİ VE TİCARET A.Ş." },
-  { code: "EKGYO", name: "EMLAK KONUT GMYO", fullName: "EMLAK KONUT GAYRİMENKUL YATIRIM ORTAKLIĞI A.Ş." },
-  { code: "ENKAI", name: "ENKA İNŞAAT", fullName: "ENKA İNŞAAT VE SANAYİ A.Ş." },
-  { code: "EREGL", name: "EREĞLİ DEMİR CELİK", fullName: "EREĞLİ DEMİR VE ÇELİK FABRİKALARI T.A.Ş." },
-  { code: "FROTO", name: "FORD OTOSAN", fullName: "FORD OTOMOTİV SANAYİ A.Ş." },
-  { code: "GARAN", name: "GARANTİ BANKASI", fullName: "TÜRKİYE GARANTİ BANKASI A.Ş." },
-  { code: "HALKB", name: "HALKBANK", fullName: "TÜRKİYE HALK BANKASI A.Ş." },
-  { code: "ISCTR", name: "İŞ BANKASI (C)", fullName: "TÜRKİYE İŞ BANKASI A.Ş." },
-  { code: "KCHOL", name: "KOÇ HOLDİNG", fullName: "KOÇ HOLDİNG A.Ş." },
-  { code: "KOZAL", name: "KOZA ALTIN", fullName: "KOZA ALTIN İŞLETMELERİ A.Ş." },
-  { code: "KRDMD", name: "KARDEMİR (D)", fullName: "KARDEMİR KARABÜK DEMİR ÇELİK SANAYİ VE TİCARET A.Ş." },
-  { code: "MGROS", name: "MİGROS TİCARET", fullName: "MİGROS TİCARET A.Ş." },
-  { code: "OYAKC", name: "OYAK ÇİMENTO", fullName: "OYAK ÇİMENTO FABRİKALARI A.Ş." },
-  { code: "PETKM", name: "PETKİM", fullName: "PETKİM PETROKİMYA HOLDİNG A.Ş." },
-  { code: "PGSUS", name: "PEGASUS", fullName: "PEGASUS HAVA TAŞIMACILIĞI A.Ş." },
-  { code: "SAHOL", name: "SABANCI HOLDİNG", fullName: "HACI ÖMER SABANCI HOLDİNG A.Ş." },
-  { code: "SASA", name: "SASA POLYESTER", fullName: "SASA POLYESTER SANAYİ A.Ş." },
-  { code: "SISE", name: "ŞİŞE CAM", fullName: "TÜRKİYE ŞİŞE VE CAM FABRİKALARI A.Ş." },
-  { code: "TAVHL", name: "TAV HAVALİMANLARI", fullName: "TAV HAVALİMANLARI HOLDİNG A.Ş." },
-  { code: "TCELL", name: "TURKCELL", fullName: "TURKCELL İLETİŞİM HİZMETLERİ A.Ş." },
-  { code: "THYAO", name: "TÜRK HAVA YOLLARI", fullName: "TÜRK HAVA YOLLARI A.O." },
-  { code: "TKFEN", name: "TEKFEN HOLDİNG", fullName: "TEKFEN HOLDİNG A.Ş." },
-  { code: "TOASO", name: "TOFAŞ OTO. FAB.", fullName: "TOFAŞ TÜRK OTOMOBİL FABRİKASI A.Ş." },
-  { code: "TTKOM", name: "TÜRK TELEKOM", fullName: "TÜRK TELEKOMÜNİKASYON A.Ş." },
-  { code: "TUPRS", name: "TÜPRAŞ", fullName: "TÜRKIYE PETROL RAFİNERİLERİ A.Ş." },
-  { code: "ULKER", name: "ÜLKER BİSKÜVİ", fullName: "ÜLKER BİSKÜVİ SANAYİ A.Ş." },
-  { code: "VAKBN", name: "VAKIFBANK", fullName: "TÜRKİYE VAKIFLAR BANKASI T.A.O." },
-  { code: "VESTL", name: "VESTEL", fullName: "VESTEL ELEKTRONİK SANAYİ VE TİCARET A.Ş." },
-  { code: "YKBNK", name: "YAPI KREDİ BANKASI", fullName: "YAPI VE KREDİ BANKASI A.Ş." },
-  { code: "ZOREN", name: "ZORLU ENERJİ", fullName: "ZORLU ENERJİ ELEKTRİK ÜRETİM A.Ş." },
-  // Daha fazla şirket eklenebilir
+  {
+    "code": "ACSEL",
+    "name": "Acıselsan Acıpayam Selüloz",
+    "sector": "Kimya, Petrol, Kauçuk ve Plastik Ürünler"
+  },
+  {
+    "code": "ADEL",
+    "name": "Adel Kalemcilik",
+    "sector": "Kırtasiye"
+  },
+  {
+    "code": "AEFES",
+    "name": "Anadolu Efes",
+    "sector": "Gıda, İçecek ve Tütün"
+  },
+  {
+    "code": "AFYON",
+    "name": "Afyon Çimento",
+    "sector": "Çimento ve Beton"
+  },
+  {
+    "code": "AKBNK",
+    "name": "Akbank",
+    "sector": "Bankacılık"
+  },
+  {
+    "code": "AKSA",
+    "name": "Aksa Akrilik",
+    "sector": "Kimya, Petrol, Kauçuk ve Plastik Ürünler"
+  },
+  {
+    "code": "AKSEN",
+    "name": "Aksa Enerji",
+    "sector": "Elektrik, Gaz ve Su"
+  },
+  {
+    "code": "ALARK",
+    "name": "Alarko Holding",
+    "sector": "Holding ve Yatırım Şirketleri"
+  },
+  {
+    "code": "ARCLK",
+    "name": "Arçelik",
+    "sector": "Dayanıklı Tüketim Malları"
+  },
+  {
+    "code": "ASELS",
+    "name": "Aselsan",
+    "sector": "Savunma"
+  },
+  {
+    "code": "AYGAZ",
+    "name": "Aygaz",
+    "sector": "Enerji"
+  },
+  {
+    "code": "BAGFS",
+    "name": "Bagfaş",
+    "sector": "Kimya, Petrol, Kauçuk ve Plastik Ürünler"
+  },
+  {
+    "code": "BIMAS",
+    "name": "BİM Birleşik Mağazalar",
+    "sector": "Perakende Ticaret"
+  },
+  {
+    "code": "DOHOL",
+    "name": "Doğan Holding",
+    "sector": "Holding ve Yatırım Şirketleri"
+  },
+  {
+    "code": "EGEEN",
+    "name": "Ege Endüstri",
+    "sector": "Metal Eşya, Makine ve Gereç Yapım"
+  },
+  {
+    "code": "EKGYO",
+    "name": "Emlak Konut GYO",
+    "sector": "Gayrimenkul Yatırım Ortaklığı"
+  },
+  {
+    "code": "ENKAI",
+    "name": "Enka İnşaat",
+    "sector": "İnşaat ve Bayındırlık"
+  },
+  {
+    "code": "EREGL",
+    "name": "Ereğli Demir Çelik",
+    "sector": "Metal Ana Sanayi"
+  },
+  {
+    "code": "FROTO",
+    "name": "Ford Otosan",
+    "sector": "Otomotiv"
+  },
+  {
+    "code": "GARAN",
+    "name": "Garanti Bankası",
+    "sector": "Bankacılık"
+  },
+  {
+    "code": "GUBRF",
+    "name": "Gübre Fabrikaları",
+    "sector": "Kimya, Petrol, Kauçuk ve Plastik Ürünler"
+  },
+  {
+    "code": "HEKTS",
+    "name": "Hektaş",
+    "sector": "Kimya, Petrol, Kauçuk ve Plastik Ürünler"
+  },
+  {
+    "code": "ISCTR",
+    "name": "İş Bankası (C)",
+    "sector": "Bankacılık"
+  },
+  {
+    "code": "ISFIN",
+    "name": "İş Finansal Kiralama",
+    "sector": "Finansal Kiralama ve Faktoring"
+  },
+  {
+    "code": "ISGYO",
+    "name": "İş Gayrimenkul Yatırım Ortaklığı",
+    "sector": "Gayrimenkul Yatırım Ortaklığı"
+  },
+  {
+    "code": "KCHOL",
+    "name": "Koç Holding",
+    "sector": "Holding ve Yatırım Şirketleri"
+  },
+  {
+    "code": "KRDMD",
+    "name": "Kardemir (D)",
+    "sector": "Metal Ana Sanayi"
+  },
+  {
+    "code": "MGROS",
+    "name": "Migros Ticaret",
+    "sector": "Perakende Ticaret"
+  },
+  {
+    "code": "NETAS",
+    "name": "Netaş Telekomünikasyon",
+    "sector": "Telekomünikasyon"
+  },
+  {
+    "code": "PETKM",
+    "name": "Petkim",
+    "sector": "Kimya, Petrol, Kauçuk ve Plastik Ürünler"
+  },
+  {
+    "code": "PGSUS",
+    "name": "Pegasus",
+    "sector": "Ulaştırma ve Haberleşme"
+  },
+  {
+    "code": "SAHOL",
+    "name": "Sabancı Holding",
+    "sector": "Holding ve Yatırım Şirketleri"
+  },
+  {
+    "code": "SASA",
+    "name": "Sasa Polyester",
+    "sector": "Kimya, Petrol, Kauçuk ve Plastik Ürünler"
+  },
+  {
+    "code": "SISE",
+    "name": "Şişe Cam",
+    "sector": "Cam ve Seramik"
+  },
+  {
+    "code": "TAVHL",
+    "name": "TAV Havalimanları",
+    "sector": "Ulaştırma ve Haberleşme"
+  },
+  {
+    "code": "TCELL",
+    "name": "Turkcell",
+    "sector": "Telekomünikasyon"
+  },
+  {
+    "code": "THYAO",
+    "name": "Türk Hava Yolları",
+    "sector": "Ulaştırma ve Haberleşme"
+  },
+  {
+    "code": "TOASO",
+    "name": "Tofaş Oto",
+    "sector": "Otomotiv"
+  },
+  {
+    "code": "TRKCM",
+    "name": "Trakya Cam",
+    "sector": "Cam ve Seramik"
+  },
+  {
+    "code": "TUPRS",
+    "name": "Tüpraş",
+    "sector": "Kimya, Petrol, Kauçuk ve Plastik Ürünler"
+  },
+  {
+    "code": "ULKER",
+    "name": "Ülker Bisküvi",
+    "sector": "Gıda, İçecek ve Tütün"
+  },
+  {
+    "code": "VAKBN",
+    "name": "Vakıfbank",
+    "sector": "Bankacılık"
+  },
+  {
+    "code": "VESTL",
+    "name": "Vestel",
+    "sector": "Dayanıklı Tüketim Malları"
+  },
+  {
+    "code": "YKBNK",
+    "name": "Yapı ve Kredi Bankası",
+    "sector": "Bankacılık"
+  },
+  {
+    "code": "ZOREN",
+    "name": "Zorlu Enerji",
+    "sector": "Elektrik, Gaz ve Su"
+  }
 ];
 
-// Sektörlere göre şirketleri gruplandırma (ileriki geliştirmeler için)
 export const sectors = [
-  { id: 1, name: "Bankacılık" },
-  { id: 2, name: "Holding" },
-  { id: 3, name: "Otomotiv" },
-  { id: 4, name: "Enerji" },
-  { id: 5, name: "Telekomünikasyon" },
-  { id: 6, name: "Havayolu" },
-  { id: 7, name: "Perakende" },
-  { id: 8, name: "Demir-Çelik" },
-  { id: 9, name: "İnşaat" },
-  { id: 10, name: "Kimya" },
-  { id: 11, name: "Gıda" },
-  { id: 12, name: "Elektronik" }
+  "Bankacılık",
+  "Cam ve Seramik",
+  "Dayanıklı Tüketim Malları",
+  "Elektrik, Gaz ve Su",
+  "Enerji",
+  "Finansal Kiralama ve Faktoring",
+  "Gayrimenkul Yatırım Ortaklığı",
+  "Gıda, İçecek ve Tütün",
+  "Holding ve Yatırım Şirketleri",
+  "Kimya, Petrol, Kauçuk ve Plastik Ürünler",
+  "Kırtasiye",
+  "Metal Ana Sanayi",
+  "Metal Eşya, Makine ve Gereç Yapım",
+  "Otomotiv",
+  "Perakende Ticaret",
+  "Savunma",
+  "Telekomünikasyon",
+  "Ulaştırma ve Haberleşme",
+  "Çimento ve Beton",
+  "İnşaat ve Bayındırlık"
 ];
 
 // Şirket arama fonksiyonu
 export function searchCompanies(query: string) {
-  if (!query || query.trim() === "") {
-    return bistCompanies;
-  }
+  if (!query || query.trim() === '') return [];
   
   const normalizedQuery = query.toLowerCase().trim();
   
   return bistCompanies.filter(company => 
-    company.code.toLowerCase().includes(normalizedQuery) || 
-    company.name.toLowerCase().includes(normalizedQuery) ||
-    company.fullName.toLowerCase().includes(normalizedQuery)
+    company.name.toLowerCase().includes(normalizedQuery) || 
+    company.code.toLowerCase().includes(normalizedQuery)
   );
 }
