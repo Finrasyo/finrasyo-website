@@ -5,6 +5,7 @@ import NotFound from "@/pages/not-found";
 import HomePage from "@/pages/home-page";
 import AuthPage from "@/pages/auth-page";
 import CompanyPage from "@/pages/company-page";
+import CompanyNewPage from "@/pages/company-new-page";
 import AnalysisPage from "@/pages/analysis-page";
 import ReportsPage from "@/pages/reports-page";
 import PaymentPage from "@/pages/payment-page";
@@ -23,6 +24,7 @@ function Router() {
   return (
     <Switch>
       <ProtectedRoute path="/" component={HomePage} />
+      <ProtectedRoute path="/company/new" component={CompanyNewPage} />
       <ProtectedRoute path="/company/:id" component={CompanyPage} />
       <ProtectedRoute path="/analysis/:id" component={AnalysisPage} />
       <ProtectedRoute path="/analiz/:companyCode" component={CompanyAnalysisPage} />
