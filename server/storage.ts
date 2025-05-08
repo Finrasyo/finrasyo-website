@@ -178,6 +178,7 @@ export class MemStorage implements IStorage {
     const newCompany: Company = { 
       ...company, 
       id, 
+      code: company.code || null,
       lastUpdated: new Date() 
     };
     this.companies.set(id, newCompany);
@@ -251,6 +252,7 @@ export class MemStorage implements IStorage {
     const newReport: Report = {
       ...report,
       id,
+      format: report.format || 'pdf',
       createdAt: new Date()
     };
     this.reports.set(id, newReport);
@@ -273,6 +275,7 @@ export class MemStorage implements IStorage {
     const newPayment: Payment = {
       ...payment,
       id,
+      stripePaymentId: payment.stripePaymentId || null,
       createdAt: new Date()
     };
     this.payments.set(id, newPayment);

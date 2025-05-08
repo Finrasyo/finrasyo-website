@@ -12,6 +12,7 @@ import ReportPage from "@/pages/report-page";
 import AboutPage from "@/pages/about-page";
 import HowItWorksPage from "@/pages/how-it-works-page";
 import ContactPage from "@/pages/contact-page";
+import AdminPage from "@/pages/admin-page";
 import { ProtectedRoute } from "./lib/protected-route";
 import { ThemeProvider } from "next-themes";
 import { AuthProvider } from "./hooks/use-auth";
@@ -26,6 +27,7 @@ function Router() {
       <ProtectedRoute path="/reports" component={ReportsPage} />
       <ProtectedRoute path="/payment" component={PaymentPage} />
       <ProtectedRoute path="/report/:id" component={ReportPage} />
+      <ProtectedRoute path="/admin" component={AdminPage} />
       <Route path="/auth" component={AuthPage} />
       <Route path="/about" component={AboutPage} />
       <Route path="/how-it-works" component={HowItWorksPage} />
