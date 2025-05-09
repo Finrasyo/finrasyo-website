@@ -1,23 +1,8 @@
 import { useState, useEffect } from "react";
-import { Check, ChevronsUpDown, Search, X } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-} from "@/components/ui/command";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { bistCompanies } from "@/data/bist-companies";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Search } from "lucide-react";
+import { bistCompanies } from "@/data/bist-companies";
 
 interface Company {
   code: string;
@@ -26,136 +11,112 @@ interface Company {
 }
 
 interface MultiCompanySelectorProps {
-  selectedCompanies: Company[];
-  onSelect: (companies: Company[]) => void;
-  maxSelections?: number;
+  onSelectCompanies: (companies: Company[]) => void;
+  initialSelectedCompanies?: Company[];
+  maxResults?: number;
 }
 
-export default function MultiCompanySelector({ 
-  selectedCompanies,
-  onSelect,
-  maxSelections = 10
+export default function MultiCompanySelector({
+  onSelectCompanies,
+  initialSelectedCompanies = [],
+  maxResults = 10
 }: MultiCompanySelectorProps) {
-  const [open, setOpen] = useState(false);
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedCompanies, setSelectedCompanies] = useState<Company[]>(initialSelectedCompanies);
   
-  // Filtreleme işlemi için bistCompanies'tan şirketleri filtrele
-  const filteredCompanies = bistCompanies.filter((company) => {
-    const search = searchTerm.toLowerCase();
-    return (
-      company.code.toLowerCase().includes(search) ||
-      company.name.toLowerCase().includes(search)
-    );
-  });
-
-  // Şirket seçimi
+  useEffect(() => {
+    // Seçilen şirketleri ana bileşene bildir
+    onSelectCompanies(selectedCompanies);
+  }, [selectedCompanies, onSelectCompanies]);
+  
+  const filteredCompanies = bistCompanies
+    .filter(company => 
+      company.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      company.code.toLowerCase().includes(searchQuery.toLowerCase())
+    )
+    .slice(0, maxResults);
+  
   const handleCompanySelect = (company: Company) => {
-    // Zaten seçili mi kontrol et
-    const isAlreadySelected = selectedCompanies.some(
-      (selected) => selected.code === company.code
-    );
-
-    if (isAlreadySelected) {
-      // Seçili ise, listeden çıkar
-      onSelect(selectedCompanies.filter((c) => c.code !== company.code));
+    if (selectedCompanies.some(c => c.code === company.code)) {
+      setSelectedCompanies(selectedCompanies.filter(c => c.code !== company.code));
     } else {
-      // Maksimum seçim sayısını kontrol et
-      if (selectedCompanies.length >= maxSelections) {
-        return;
-      }
-      
-      // Seçili değilse, listeye ekle
-      onSelect([...selectedCompanies, company]);
+      setSelectedCompanies([...selectedCompanies, company]);
     }
   };
-
-  // Şirket seçimini kaldır
-  const handleRemoveCompany = (company: Company) => {
-    onSelect(selectedCompanies.filter((c) => c.code !== company.code));
+  
+  const removeSelectedCompany = (company: Company) => {
+    setSelectedCompanies(selectedCompanies.filter(c => c.code !== company.code));
   };
-
+  
   return (
-    <div className="space-y-4">
-      <div className="flex items-center gap-2">
-        <Popover open={open} onOpenChange={setOpen}>
-          <PopoverTrigger asChild>
-            <Button
-              variant="outline"
-              role="combobox"
-              aria-expanded={open}
-              className="w-full justify-between"
-            >
-              <span className="truncate">
-                {searchTerm || "Şirket ara..."}
-              </span>
-              <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent className="w-full p-0">
-            <Command>
-              <CommandInput
-                placeholder="Şirket ara..."
-                value={searchTerm}
-                onValueChange={setSearchTerm}
-              />
-              <CommandEmpty>Şirket bulunamadı.</CommandEmpty>
-              <ScrollArea className="h-72">
-                <CommandGroup>
-                  {filteredCompanies.map((company) => {
-                    const isSelected = selectedCompanies.some(
-                      (selected) => selected.code === company.code
-                    );
-                    
-                    return (
-                      <CommandItem
-                        key={company.code}
-                        value={company.code}
-                        onSelect={() => handleCompanySelect(company)}
-                      >
-                        <Check
-                          className={cn(
-                            "mr-2 h-4 w-4",
-                            isSelected ? "opacity-100" : "opacity-0"
-                          )}
-                        />
-                        <div className="flex flex-col">
-                          <span>{company.name}</span>
-                          <span className="text-sm text-muted-foreground">
-                            {company.code}
-                          </span>
-                        </div>
-                      </CommandItem>
-                    );
-                  })}
-                </CommandGroup>
-              </ScrollArea>
-            </Command>
-          </PopoverContent>
-        </Popover>
+    <div>
+      <div className="relative mb-4">
+        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+        <Input
+          placeholder="Şirket adı veya kodu ara..."
+          className="pl-10"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+        />
       </div>
-
-      {/* Seçilen şirketlerin gösterimi */}
-      {selectedCompanies.length > 0 && (
-        <div className="flex flex-wrap gap-2">
-          {selectedCompanies.map((company) => (
-            <Badge key={company.code} variant="secondary" className="flex items-center gap-1 p-2">
-              <span>{company.name} ({company.code})</span>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-4 w-4 p-0 hover:bg-transparent"
-                onClick={() => handleRemoveCompany(company)}
-              >
-                <X className="h-3 w-3" />
-              </Button>
-            </Badge>
-          ))}
-        </div>
-      )}
       
-      {/* Seçim sayısı bilgisi */}
-      <div className="text-xs text-muted-foreground">
-        {selectedCompanies.length} / {maxSelections} şirket seçildi
+      <div className="space-y-2 max-h-96 overflow-y-auto border rounded-md p-2">
+        {searchQuery.length > 0 && filteredCompanies.length === 0 ? (
+          <div className="p-3 text-center text-neutral-500">
+            "{searchQuery}" için sonuç bulunamadı
+          </div>
+        ) : searchQuery.length === 0 ? (
+          <div className="p-3 text-center text-neutral-500">
+            Şirket aramak için yazmaya başlayın
+          </div>
+        ) : (
+          filteredCompanies.map((company) => (
+            <div 
+              key={company.code}
+              className="flex items-center space-x-2 p-2 border-b last:border-0 hover:bg-neutral-50 cursor-pointer"
+              onClick={() => handleCompanySelect(company)}
+            >
+              <Checkbox 
+                id={`company-${company.code}`}
+                checked={selectedCompanies.some(c => c.code === company.code)}
+                onCheckedChange={() => handleCompanySelect(company)}
+              />
+              <div>
+                <label 
+                  htmlFor={`company-${company.code}`}
+                  className="font-medium text-sm cursor-pointer"
+                >
+                  {company.name} ({company.code})
+                </label>
+                <p className="text-xs text-neutral-500">{company.sector}</p>
+              </div>
+            </div>
+          ))
+        )}
+      </div>
+      
+      <div className="mt-4">
+        <h3 className="font-medium mb-2">Seçilen Şirketler ({selectedCompanies.length})</h3>
+        {selectedCompanies.length === 0 ? (
+          <div className="text-neutral-500 text-sm">Henüz şirket seçilmedi</div>
+        ) : (
+          <div className="flex flex-wrap gap-2">
+            {selectedCompanies.map((company) => (
+              <div 
+                key={company.code}
+                className="bg-primary-50 text-primary-800 px-3 py-1 rounded-full text-sm flex items-center"
+              >
+                {company.code}
+                <button 
+                  className="ml-2 hover:text-primary-900"
+                  onClick={() => removeSelectedCompany(company)}
+                >
+                  &times;
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

@@ -1,152 +1,255 @@
-import { useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useState, useEffect } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Label } from "@/components/ui/label";
-import { Percent, Calculator, PieChart, BarChart } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
-// Kullanılabilir finansal oranlar
-export type RatioType = 
-  | "currentRatio"
-  | "liquidityRatio" 
-  | "acidTestRatio"
-  | "debtToEquityRatio"
-  | "interestCoverageRatio"
-  | "assetTurnoverRatio"
-  | "inventoryTurnoverRatio"
-  | "returnOnAssetsRatio"
-  | "returnOnEquityRatio"
-  | "profitMarginRatio";
+// Finansal Oran Kategorileri ve Tanımları
+interface FinancialRatio {
+  id: string;
+  name: string;
+  description: string;
+  formula: string;
+}
 
-// Finansal oranlar hakkında bilgiler
-export const ratioInfo = {
-  currentRatio: {
-    name: "Cari Oran",
-    description: "Dönen varlıkların kısa vadeli yükümlülüklere bölünmesiyle elde edilir.",
-    formula: "Dönen Varlıklar / Kısa Vadeli Yükümlülükler",
-    category: "likidite"
+interface RatioCategory {
+  id: string;
+  name: string;
+  ratios: FinancialRatio[];
+}
+
+// Geçici olarak finansal oranları buraya tanımlıyoruz
+// Normalde lib/financial-ratios.ts'den içe aktarılacak
+const financialRatioCategories: RatioCategory[] = [
+  {
+    id: "liquidity",
+    name: "Likidite",
+    ratios: [
+      {
+        id: "currentRatio",
+        name: "Cari Oran",
+        description: "Dönen varlıkların kısa vadeli borçları karşılama oranı",
+        formula: "Dönen Varlıklar / Kısa Vadeli Yükümlülükler"
+      },
+      {
+        id: "quickRatio",
+        name: "Asit-Test Oranı",
+        description: "Likiditeyi ölçen, stoklardan arındırılmış oran",
+        formula: "(Dönen Varlıklar - Stoklar) / Kısa Vadeli Yükümlülükler"
+      },
+      {
+        id: "cashRatio",
+        name: "Nakit Oranı",
+        description: "Nakit ve benzeri varlıkların kısa vadeli borçları karşılama oranı",
+        formula: "Nakit ve Nakit Benzerleri / Kısa Vadeli Yükümlülükler"
+      }
+    ]
   },
-  liquidityRatio: {
-    name: "Likidite Oranı",
-    description: "Stoklar hariç dönen varlıkların kısa vadeli yükümlülüklere bölünmesiyle elde edilir.",
-    formula: "(Dönen Varlıklar - Stoklar) / Kısa Vadeli Yükümlülükler",
-    category: "likidite"
+  {
+    id: "leverage",
+    name: "Finansal Kaldıraç",
+    ratios: [
+      {
+        id: "debtRatio",
+        name: "Borç Oranı",
+        description: "Toplam borçların toplam varlıklara oranı",
+        formula: "Toplam Borçlar / Toplam Varlıklar"
+      },
+      {
+        id: "debtToEquity",
+        name: "Borç/Özsermaye Oranı",
+        description: "Şirketin borçlarının öz sermayeye oranı",
+        formula: "Toplam Borçlar / Özkaynaklar"
+      }
+    ]
   },
-  acidTestRatio: {
-    name: "Asit-Test Oranı",
-    description: "Nakit ve nakit benzerlerinin kısa vadeli yükümlülüklere bölünmesiyle elde edilir.",
-    formula: "Nakit ve Nakit Benzerleri / Kısa Vadeli Yükümlülükler",
-    category: "likidite"
+  {
+    id: "activity",
+    name: "Faaliyet",
+    ratios: [
+      {
+        id: "assetTurnover",
+        name: "Varlık Devir Hızı",
+        description: "Varlıkların ne kadar etkin kullanıldığını gösteren oran",
+        formula: "Net Satışlar / Ortalama Toplam Varlıklar"
+      },
+      {
+        id: "receivablesTurnover",
+        name: "Alacak Devir Hızı",
+        description: "Şirketin alacaklarını tahsil etme oranı",
+        formula: "Net Satışlar / Ortalama Ticari Alacaklar"
+      }
+    ]
   },
-  debtToEquityRatio: {
-    name: "Borç/Özkaynak Oranı",
-    description: "Toplam borçların özkaynağa bölünmesiyle elde edilir.",
-    formula: "Toplam Borç / Özkaynak",
-    category: "finansal yapı"
-  },
-  interestCoverageRatio: {
-    name: "Faiz Karşılama Oranı",
-    description: "FVÖK'ün faiz giderlerine bölünmesiyle elde edilir.",
-    formula: "FVÖK / Faiz Giderleri",
-    category: "finansal yapı"
-  },
-  assetTurnoverRatio: {
-    name: "Aktif Devir Hızı",
-    description: "Net satışların toplam varlıklara bölünmesiyle elde edilir.",
-    formula: "Net Satışlar / Toplam Varlıklar",
-    category: "faaliyet"
-  },
-  inventoryTurnoverRatio: {
-    name: "Stok Devir Hızı",
-    description: "Satılan malların maliyetinin ortalama stoklara bölünmesiyle elde edilir.",
-    formula: "SMM / Ortalama Stoklar",
-    category: "faaliyet"
-  },
-  returnOnAssetsRatio: {
-    name: "Aktif Karlılık Oranı (ROA)",
-    description: "Net karın toplam varlıklara bölünmesiyle elde edilir.",
-    formula: "Net Kar / Toplam Varlıklar",
-    category: "karlılık"
-  },
-  returnOnEquityRatio: {
-    name: "Özkaynak Karlılığı (ROE)",
-    description: "Net karın özkaynağa bölünmesiyle elde edilir.",
-    formula: "Net Kar / Özkaynak",
-    category: "karlılık"
-  },
-  profitMarginRatio: {
-    name: "Kar Marjı",
-    description: "Net karın net satışlara bölünmesiyle elde edilir.",
-    formula: "Net Kar / Net Satışlar",
-    category: "karlılık"
+  {
+    id: "profitability",
+    name: "Karlılık",
+    ratios: [
+      {
+        id: "grossProfitMargin",
+        name: "Brüt Kar Marjı",
+        description: "Brüt karın net satışlara oranı",
+        formula: "Brüt Kar / Net Satışlar"
+      },
+      {
+        id: "netProfitMargin",
+        name: "Net Kar Marjı",
+        description: "Net karın net satışlara oranı",
+        formula: "Net Kar / Net Satışlar"
+      }
+    ]
   }
-};
-
-// Kategori bilgileri
-const categories = [
-  { id: "likidite", name: "Likidite Oranları", icon: <Percent className="h-4 w-4" /> },
-  { id: "finansal yapı", name: "Finansal Yapı Oranları", icon: <Calculator className="h-4 w-4" /> },
-  { id: "faaliyet", name: "Faaliyet Oranları", icon: <BarChart className="h-4 w-4" /> },
-  { id: "karlılık", name: "Karlılık Oranları", icon: <PieChart className="h-4 w-4" /> }
 ];
 
 interface RatioSelectorProps {
-  selectedRatios: RatioType[];
-  onRatioSelect: (ratios: RatioType[]) => void;
+  onSelectRatios: (ratios: string[]) => void;
+  initialSelectedRatios?: string[];
 }
 
-export default function RatioSelector({ selectedRatios, onRatioSelect }: RatioSelectorProps) {
-  const handleRatioToggle = (ratio: RatioType) => {
-    if (selectedRatios.includes(ratio)) {
-      onRatioSelect(selectedRatios.filter(r => r !== ratio));
+export default function RatioSelector({
+  onSelectRatios,
+  initialSelectedRatios = []
+}: RatioSelectorProps) {
+  const [selectedRatios, setSelectedRatios] = useState<string[]>(initialSelectedRatios);
+  
+  useEffect(() => {
+    // Seçilen oranları ana bileşene bildir
+    onSelectRatios(selectedRatios);
+  }, [selectedRatios, onSelectRatios]);
+  
+  const handleRatioSelect = (ratioId: string) => {
+    if (selectedRatios.includes(ratioId)) {
+      setSelectedRatios(selectedRatios.filter(r => r !== ratioId));
     } else {
-      onRatioSelect([...selectedRatios, ratio]);
+      setSelectedRatios([...selectedRatios, ratioId]);
     }
   };
-
+  
+  const handleSelectAllInCategory = (categoryRatios: string[]) => {
+    // Kategori içindeki tüm oranları seç
+    const newSelectedRatios = [...selectedRatios];
+    
+    categoryRatios.forEach(ratioId => {
+      if (!newSelectedRatios.includes(ratioId)) {
+        newSelectedRatios.push(ratioId);
+      }
+    });
+    
+    setSelectedRatios(newSelectedRatios);
+  };
+  
+  const handleUnselectAllInCategory = (categoryRatios: string[]) => {
+    // Kategori içindeki tüm oranları kaldır
+    setSelectedRatios(selectedRatios.filter(ratioId => !categoryRatios.includes(ratioId)));
+  };
+  
+  // Kategori için seçim durumunu hesapla (tümü, kısmen, hiçbiri)
+  const getCategorySelectionStatus = (categoryRatios: string[]) => {
+    const selectedCount = categoryRatios.filter(ratio => selectedRatios.includes(ratio)).length;
+    
+    if (selectedCount === 0) return "none";
+    if (selectedCount === categoryRatios.length) return "all";
+    return "partial";
+  };
+  
   return (
-    <Card>
-      <CardHeader className="pb-3">
-        <CardTitle className="text-md flex items-center">
-          <Calculator className="mr-2 h-5 w-5" />
-          Oran Türü
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
-        <div className="space-y-6">
-          {categories.map(category => (
-            <div key={category.id} className="space-y-2">
-              <h3 className="flex items-center text-sm font-medium text-neutral-700">
-                {category.icon}
-                <span className="ml-2">{category.name}</span>
-              </h3>
-              <div className="ml-6 space-y-2">
-                {Object.entries(ratioInfo)
-                  .filter(([_, info]) => info.category === category.id)
-                  .map(([ratioKey, info]) => (
-                    <div key={ratioKey} className="flex items-start space-x-2">
-                      <Checkbox 
-                        id={ratioKey} 
-                        checked={selectedRatios.includes(ratioKey as RatioType)}
-                        onCheckedChange={() => handleRatioToggle(ratioKey as RatioType)}
-                      />
-                      <div className="grid gap-0.5 leading-none">
-                        <Label
-                          htmlFor={ratioKey}
-                          className="text-sm font-medium cursor-pointer"
-                        >
-                          {info.name}
-                        </Label>
-                        <p className="text-xs text-neutral-500 hidden group-hover:block">
-                          {info.formula}
-                        </p>
-                      </div>
-                    </div>
-                  ))}
+    <div>
+      <Tabs defaultValue="liquidity" className="w-full">
+        <TabsList className="grid grid-cols-4">
+          <TabsTrigger value="liquidity">Likidite</TabsTrigger>
+          <TabsTrigger value="leverage">Kaldıraç</TabsTrigger>
+          <TabsTrigger value="activity">Faaliyet</TabsTrigger>
+          <TabsTrigger value="profitability">Karlılık</TabsTrigger>
+        </TabsList>
+        
+        {financialRatioCategories.map((category) => (
+          <TabsContent key={category.id} value={category.id} className="space-y-4 pt-2">
+            <div className="flex justify-between items-center">
+              <h3 className="font-medium">{category.name} Oranları</h3>
+              <div className="flex gap-2">
+                <button
+                  className="text-sm text-primary hover:underline"
+                  onClick={() => handleSelectAllInCategory(category.ratios.map(r => r.id))}
+                >
+                  Tümünü Seç
+                </button>
+                <button
+                  className="text-sm text-primary hover:underline"
+                  onClick={() => handleUnselectAllInCategory(category.ratios.map(r => r.id))}
+                >
+                  Hiçbirini Seçme
+                </button>
               </div>
             </div>
-          ))}
-        </div>
-      </CardContent>
-    </Card>
+            
+            <div className="space-y-2 border rounded-md p-3">
+              {getCategorySelectionStatus(category.ratios.map(r => r.id)) === "all" && (
+                <div className="bg-green-50 text-green-700 text-sm p-2 rounded-md mb-4">
+                  Bu kategorideki tüm oranlar seçildi.
+                </div>
+              )}
+              
+              {category.ratios.map((ratio) => (
+                <div
+                  key={ratio.id}
+                  className="flex items-start space-x-2 p-2 border-b last:border-0 hover:bg-neutral-50 cursor-pointer"
+                  onClick={() => handleRatioSelect(ratio.id)}
+                >
+                  <Checkbox
+                    id={`ratio-${ratio.id}`}
+                    checked={selectedRatios.includes(ratio.id)}
+                    onCheckedChange={() => handleRatioSelect(ratio.id)}
+                    className="mt-1"
+                  />
+                  <div>
+                    <label
+                      htmlFor={`ratio-${ratio.id}`}
+                      className="font-medium text-sm cursor-pointer"
+                    >
+                      {ratio.name}
+                    </label>
+                    <p className="text-xs text-neutral-500">{ratio.description}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </TabsContent>
+        ))}
+      </Tabs>
+      
+      <div className="mt-6">
+        <h3 className="font-medium mb-2">Seçilen Oranlar ({selectedRatios.length})</h3>
+        {selectedRatios.length === 0 ? (
+          <div className="text-neutral-500 text-sm">Henüz oran seçilmedi</div>
+        ) : (
+          <div className="flex flex-wrap gap-2">
+            {selectedRatios.map((ratioId) => {
+              // Oran bilgilerini bul
+              let ratio;
+              for (const category of financialRatioCategories) {
+                const found = category.ratios.find(r => r.id === ratioId);
+                if (found) {
+                  ratio = found;
+                  break;
+                }
+              }
+              
+              return ratio ? (
+                <div
+                  key={ratioId}
+                  className="bg-primary-50 text-primary-800 px-3 py-1 rounded-full text-sm flex items-center"
+                >
+                  {ratio.name}
+                  <button
+                    className="ml-2 hover:text-primary-900"
+                    onClick={() => handleRatioSelect(ratioId)}
+                  >
+                    &times;
+                  </button>
+                </div>
+              ) : null;
+            })}
+          </div>
+        )}
+      </div>
+    </div>
   );
 }

@@ -1,261 +1,247 @@
-/**
- * FinRasyo Finansal Oran Hesaplamaları
- * 
- * Bu modül, şirketlerin finansal tablolarından hesaplanan finansal oranları içerir.
- * Hesaplamalar Türkiye Muhasebe Standartlarına uygun olarak yapılmıştır.
- */
-
-// 1. LİKİDİTE ORANLARI
-
-/**
- * Cari Oran = Dönen Varlıklar / Kısa Vadeli Yabancı Kaynaklar
- * 
- * Şirketin kısa vadeli borçlarını ödeme yeteneğini gösterir.
- * İdeal değer: 1.5-2 arasında
- */
-export function calculateCurrentRatio(currentAssets: number, shortTermLiabilities: number): number {
-  if (shortTermLiabilities === 0) return 0;
-  return currentAssets / shortTermLiabilities;
+// Finansal Oran Kategorileri ve Tanımları
+interface FinancialRatio {
+  id: string;
+  name: string;
+  description: string;
+  formula: string;
 }
 
-/**
- * Asit-Test Oranı = (Dönen Varlıklar - Stoklar) / Kısa Vadeli Yabancı Kaynaklar
- * 
- * Şirketin stokları olmadan kısa vadeli borçlarını ödeme yeteneğini gösterir.
- * İdeal değer: 1 civarında
- */
-export function calculateAcidTestRatio(currentAssets: number, inventory: number, shortTermLiabilities: number): number {
-  if (shortTermLiabilities === 0) return 0;
-  return (currentAssets - inventory) / shortTermLiabilities;
+interface RatioCategory {
+  id: string;
+  name: string;
+  ratios: FinancialRatio[];
 }
 
-/**
- * Nakit Oran = Nakit ve Nakit Benzerleri / Kısa Vadeli Yabancı Kaynaklar
- * 
- * Şirketin sadece nakit ve benzerlerini kullanarak kısa vadeli borçlarını ödeme yeteneğini gösterir.
- * İdeal değer: 0.2 civarında
- */
-export function calculateCashRatio(cashAndEquivalents: number, shortTermLiabilities: number): number {
-  if (shortTermLiabilities === 0) return 0;
-  return cashAndEquivalents / shortTermLiabilities;
-}
+// Export interface for other files to use
+export type { FinancialRatio, RatioCategory };
 
-// 2. FİNANSAL YAPI ORANLARI
-
-/**
- * Finansal Kaldıraç Oranı = (Kısa Vadeli Yabancı Kaynaklar + Uzun Vadeli Yabancı Kaynaklar) / Aktif Toplam
- * 
- * Şirketin varlıklarının ne kadarının yabancı kaynaklarla finanse edildiğini gösterir.
- * İdeal değer: 0.5 civarında
- */
-export function calculateFinancialLeverageRatio(shortTermLiabilities: number, longTermLiabilities: number, totalAssets: number): number {
-  if (totalAssets === 0) return 0;
-  return (shortTermLiabilities + longTermLiabilities) / totalAssets;
-}
-
-/**
- * Özkaynak-Aktif Toplam Oranı = Özkaynaklar / Aktif Toplam
- * 
- * Şirketin varlıklarının ne kadarının özkaynaklarla finanse edildiğini gösterir.
- * İdeal değer: 0.5 civarında
- */
-export function calculateEquityToAssetsRatio(equity: number, totalAssets: number): number {
-  if (totalAssets === 0) return 0;
-  return equity / totalAssets;
-}
-
-/**
- * Özkaynak-Toplam Yabancı Kaynak Oranı = Özkaynaklar / (Kısa Vadeli Yabancı Kaynak + Uzun Vadeli Yabancı Kaynak)
- * 
- * Şirketin borçlarına karşılık özkaynaklarının yeterliliğini gösterir.
- * İdeal değer: 1 veya üzeri
- */
-export function calculateEquityToDebtRatio(equity: number, shortTermLiabilities: number, longTermLiabilities: number): number {
-  const totalLiabilities = shortTermLiabilities + longTermLiabilities;
-  if (totalLiabilities === 0) return 0;
-  return equity / totalLiabilities;
-}
-
-/**
- * Kısa Vadeli Yabancı Kaynak Oranı = Kısa Vadeli Yabancı Kaynak / Pasif Toplam
- * 
- * Şirketin toplam kaynaklarının ne kadarının kısa vadeli yabancı kaynaklardan oluştuğunu gösterir.
- */
-export function calculateShortTermLiabilitiesToTotalLiabilitiesRatio(shortTermLiabilities: number, totalLiabilities: number): number {
-  if (totalLiabilities === 0) return 0;
-  return shortTermLiabilities / totalLiabilities;
-}
-
-/**
- * Uzun Vadeli Yabancı Kaynak Oranı = Uzun Vadeli Yabancı Kaynak / Pasif Toplam
- * 
- * Şirketin toplam kaynaklarının ne kadarının uzun vadeli yabancı kaynaklardan oluştuğunu gösterir.
- */
-export function calculateLongTermLiabilitiesToTotalLiabilitiesRatio(longTermLiabilities: number, totalLiabilities: number): number {
-  if (totalLiabilities === 0) return 0;
-  return longTermLiabilities / totalLiabilities;
-}
-
-/**
- * Duran Varlıkların Özkaynaklara Oranı = Duran Varlıklar / Özkaynaklar
- * 
- * Duran varlıkların ne kadarının özkaynaklarla finanse edildiğini gösterir.
- * İdeal değer: 1 civarında
- */
-export function calculateFixedAssetsToEquityRatio(fixedAssets: number, equity: number): number {
-  if (equity === 0) return 0;
-  return fixedAssets / equity;
-}
-
-/**
- * Duran Varlıkların Devamlı Sermayeye Oranı = Duran Varlıklar / (Uzun Vadeli Yabancı Kaynaklar + Özkaynaklar)
- * 
- * Duran varlıkların ne kadarının uzun vadeli kaynaklarla finanse edildiğini gösterir.
- * İdeal değer: 1 civarında
- */
-export function calculateFixedAssetsToPermanentCapitalRatio(fixedAssets: number, longTermLiabilities: number, equity: number): number {
-  const permanentCapital = longTermLiabilities + equity;
-  if (permanentCapital === 0) return 0;
-  return fixedAssets / permanentCapital;
-}
-
-/**
- * Maddi Duran Varlıkların Özkaynaklara Oranı = Maddi Duran Varlıklar / Özkaynaklar
- * 
- * Maddi duran varlıkların ne kadarının özkaynaklarla finanse edildiğini gösterir.
- */
-export function calculateTangibleFixedAssetsToEquityRatio(tangibleFixedAssets: number, equity: number): number {
-  if (equity === 0) return 0;
-  return tangibleFixedAssets / equity;
-}
-
-// 3. KARLILIK ORANLARI
-
-/**
- * Brüt Satış Kârlılığı Oranı = Brüt Satış Karı / Net Satışlar
- * 
- * Şirketin satışlarından elde ettiği brüt kar marjını gösterir.
- */
-export function calculateGrossProfitMarginRatio(grossProfit: number, netSales: number): number {
-  if (netSales === 0) return 0;
-  return grossProfit / netSales;
-}
-
-/**
- * Faaliyet Kârlılığı Oranı = Faaliyet Karı / Net Satışlar
- * 
- * Şirketin ana faaliyetlerinden elde ettiği kar marjını gösterir.
- */
-export function calculateOperatingProfitMarginRatio(operatingProfit: number, netSales: number): number {
-  if (netSales === 0) return 0;
-  return operatingProfit / netSales;
-}
-
-/**
- * Net Karlılık Oranı = Net Kar / Net Satışlar
- * 
- * Şirketin satışlarından elde ettiği net kar marjını gösterir.
- */
-export function calculateNetProfitMarginRatio(netProfit: number, netSales: number): number {
-  if (netSales === 0) return 0;
-  return netProfit / netSales;
-}
-
-/**
- * Özkaynak Karlılığı Oranı = Net Kar / Özkaynaklar
- * 
- * Şirketin özkaynaklarının ne kadar etkin kullanıldığını gösterir.
- */
-export function calculateReturnOnEquityRatio(netProfit: number, equity: number): number {
-  if (equity === 0) return 0;
-  return netProfit / equity;
-}
-
-/**
- * Aktif Karlılık Oranı = Net Kar / Aktif Toplam
- * 
- * Şirketin varlıklarının ne kadar etkin kullanıldığını gösterir.
- */
-export function calculateReturnOnAssetsRatio(netProfit: number, totalAssets: number): number {
-  if (totalAssets === 0) return 0;
-  return netProfit / totalAssets;
-}
-
-/**
- * Finansal oran değerlerine göre yorum yapar
- */
-export function evaluateRatio(ratioName: string, value: number): string {
-  // Varsayılan değerlendirme
-  let evaluation = "Bilgi yok";
-  
-  switch(ratioName) {
-    case "Cari Oran":
-      if (value > 2) evaluation = "Çok iyi";
-      else if (value >= 1.5) evaluation = "İyi";
-      else if (value >= 1) evaluation = "Orta";
-      else evaluation = "Dikkat edilmeli";
-      break;
-      
-    case "Asit-Test Oranı":
-      if (value > 1.5) evaluation = "Çok iyi";
-      else if (value >= 1) evaluation = "İyi";
-      else if (value >= 0.8) evaluation = "Orta";
-      else evaluation = "Dikkat edilmeli";
-      break;
-      
-    case "Nakit Oran":
-      if (value > 0.3) evaluation = "Çok iyi";
-      else if (value >= 0.2) evaluation = "İyi";
-      else if (value >= 0.1) evaluation = "Orta";
-      else evaluation = "Dikkat edilmeli";
-      break;
-      
-    case "Finansal Kaldıraç Oranı":
-      if (value < 0.4) evaluation = "Çok iyi";
-      else if (value <= 0.5) evaluation = "İyi";
-      else if (value <= 0.6) evaluation = "Orta";
-      else evaluation = "Dikkat edilmeli";
-      break;
-      
-    case "Özkaynak Karlılığı":
-      if (value > 0.2) evaluation = "Çok iyi";
-      else if (value >= 0.15) evaluation = "İyi";
-      else if (value >= 0.1) evaluation = "Orta";
-      else evaluation = "Dikkat edilmeli";
-      break;
-      
-    case "Net Kar Marjı":
-      if (value > 0.15) evaluation = "Çok iyi";
-      else if (value >= 0.1) evaluation = "İyi";
-      else if (value >= 0.05) evaluation = "Orta";
-      else evaluation = "Dikkat edilmeli";
-      break;
-      
-    default:
-      evaluation = "Değerlendirme yok";
-  }
-  
-  return evaluation;
-}
-
-// Finansal oran kategorileri
+// Eski yapıda olduğu gibi ratioCategories olarak da dışa aktar
 export const ratioCategories = {
-  liquidity: ["Cari Oran", "Asit-Test Oranı", "Nakit Oran"],
+  liquidity: [
+    {
+      id: "currentRatio",
+      name: "Cari Oran",
+      description: "Dönen varlıkların kısa vadeli borçları karşılama oranı",
+      formula: "Dönen Varlıklar / Kısa Vadeli Yükümlülükler"
+    },
+    {
+      id: "quickRatio",
+      name: "Asit-Test Oranı",
+      description: "Likiditeyi ölçen, stoklardan arındırılmış oran",
+      formula: "(Dönen Varlıklar - Stoklar) / Kısa Vadeli Yükümlülükler"
+    },
+    {
+      id: "cashRatio",
+      name: "Nakit Oranı",
+      description: "Nakit ve benzeri varlıkların kısa vadeli borçları karşılama oranı",
+      formula: "Nakit ve Nakit Benzerleri / Kısa Vadeli Yükümlülükler"
+    }
+  ],
   financialStructure: [
-    "Finansal Kaldıraç Oranı", 
-    "Özkaynak-Aktif Toplam Oranı", 
-    "Özkaynak-Toplam Yabancı Kaynak Oranı",
-    "Kısa Vadeli Yabancı Kaynak Oranı",
-    "Uzun Vadeli Yabancı Kaynak Oranı",
-    "Duran Varlıkların Özkaynaklara Oranı",
-    "Duran Varlıkların Devamlı Sermayeye Oranı",
-    "Maddi Duran Varlıkların Özkaynaklara Oranı"
+    {
+      id: "debtRatio",
+      name: "Borç Oranı",
+      description: "Toplam borçların toplam varlıklara oranı",
+      formula: "Toplam Borçlar / Toplam Varlıklar"
+    },
+    {
+      id: "debtToEquity",
+      name: "Borç/Özsermaye Oranı",
+      description: "Şirketin borçlarının öz sermayeye oranı",
+      formula: "Toplam Borçlar / Özkaynaklar"
+    },
+    {
+      id: "equityMultiplier",
+      name: "Özkaynak Çarpanı",
+      description: "Varlıkların özkaynaklara oranı",
+      formula: "Toplam Varlıklar / Özkaynaklar"
+    }
   ],
   profitability: [
-    "Brüt Satış Kârlılığı Oranı",
-    "Faaliyet Kârlılığı Oranı",
-    "Net Karlılık Oranı",
-    "Özkaynak Karlılığı Oranı",
-    "Aktif Karlılık Oranı"
+    {
+      id: "grossProfitMargin",
+      name: "Brüt Kar Marjı",
+      description: "Brüt karın net satışlara oranı",
+      formula: "Brüt Kar / Net Satışlar"
+    },
+    {
+      id: "netProfitMargin",
+      name: "Net Kar Marjı",
+      description: "Net karın net satışlara oranı",
+      formula: "Net Kar / Net Satışlar"
+    },
+    {
+      id: "roe",
+      name: "Özsermaye Karlılığı (ROE)",
+      description: "Özsermayenin karlılığı",
+      formula: "Net Kar / Ortalama Özkaynaklar"
+    },
+    {
+      id: "roa",
+      name: "Varlık Karlılığı (ROA)",
+      description: "Varlıkların karlılığı",
+      formula: "Net Kar / Ortalama Toplam Varlıklar"
+    }
   ]
+};
+
+export const financialRatioCategories: RatioCategory[] = [
+  {
+    id: "liquidity",
+    name: "Likidite",
+    ratios: [
+      {
+        id: "currentRatio",
+        name: "Cari Oran",
+        description: "Dönen varlıkların kısa vadeli borçları karşılama oranı",
+        formula: "Dönen Varlıklar / Kısa Vadeli Yükümlülükler"
+      },
+      {
+        id: "quickRatio",
+        name: "Asit-Test Oranı",
+        description: "Likiditeyi ölçen, stoklardan arındırılmış oran",
+        formula: "(Dönen Varlıklar - Stoklar) / Kısa Vadeli Yükümlülükler"
+      },
+      {
+        id: "cashRatio",
+        name: "Nakit Oranı",
+        description: "Nakit ve benzeri varlıkların kısa vadeli borçları karşılama oranı",
+        formula: "Nakit ve Nakit Benzerleri / Kısa Vadeli Yükümlülükler"
+      },
+      {
+        id: "workingCapital",
+        name: "Çalışma Sermayesi",
+        description: "İşletmenin günlük faaliyetlerini finanse etmek için kullanılan kaynak",
+        formula: "Dönen Varlıklar - Kısa Vadeli Yükümlülükler"
+      }
+    ]
+  },
+  {
+    id: "leverage",
+    name: "Finansal Kaldıraç",
+    ratios: [
+      {
+        id: "debtRatio",
+        name: "Borç Oranı",
+        description: "Toplam borçların toplam varlıklara oranı",
+        formula: "Toplam Borçlar / Toplam Varlıklar"
+      },
+      {
+        id: "debtToEquity",
+        name: "Borç/Özsermaye Oranı",
+        description: "Şirketin borçlarının öz sermayeye oranı",
+        formula: "Toplam Borçlar / Özkaynaklar"
+      },
+      {
+        id: "interestCoverage",
+        name: "Faiz Karşılama Oranı",
+        description: "Faiz ödemelerini karşılama gücü",
+        formula: "FVÖK / Faiz Giderleri"
+      },
+      {
+        id: "equityMultiplier",
+        name: "Özkaynak Çarpanı",
+        description: "Varlıkların özkaynaklara oranı",
+        formula: "Toplam Varlıklar / Özkaynaklar"
+      }
+    ]
+  },
+  {
+    id: "activity",
+    name: "Faaliyet",
+    ratios: [
+      {
+        id: "assetTurnover",
+        name: "Varlık Devir Hızı",
+        description: "Varlıkların ne kadar etkin kullanıldığını gösteren oran",
+        formula: "Net Satışlar / Ortalama Toplam Varlıklar"
+      },
+      {
+        id: "receivablesTurnover",
+        name: "Alacak Devir Hızı",
+        description: "Şirketin alacaklarını tahsil etme oranı",
+        formula: "Net Satışlar / Ortalama Ticari Alacaklar"
+      },
+      {
+        id: "inventoryTurnover",
+        name: "Stok Devir Hızı",
+        description: "Stokların ne kadar hızlı satıldığını gösteren oran",
+        formula: "Satılan Malın Maliyeti / Ortalama Stoklar"
+      },
+      {
+        id: "payablesTurnover",
+        name: "Borç Devir Hızı",
+        description: "Ticari borçların ödenme hızı",
+        formula: "Satın Alımlar / Ortalama Ticari Borçlar"
+      }
+    ]
+  },
+  {
+    id: "profitability",
+    name: "Karlılık",
+    ratios: [
+      {
+        id: "grossProfitMargin",
+        name: "Brüt Kar Marjı",
+        description: "Brüt karın net satışlara oranı",
+        formula: "Brüt Kar / Net Satışlar"
+      },
+      {
+        id: "operatingProfitMargin",
+        name: "Faaliyet Kar Marjı",
+        description: "Faaliyet karının net satışlara oranı",
+        formula: "Faaliyet Karı / Net Satışlar"
+      },
+      {
+        id: "netProfitMargin",
+        name: "Net Kar Marjı",
+        description: "Net karın net satışlara oranı",
+        formula: "Net Kar / Net Satışlar"
+      },
+      {
+        id: "roe",
+        name: "Özsermaye Karlılığı (ROE)",
+        description: "Özsermayenin karlılığı",
+        formula: "Net Kar / Ortalama Özkaynaklar"
+      },
+      {
+        id: "roa",
+        name: "Varlık Karlılığı (ROA)",
+        description: "Varlıkların karlılığı",
+        formula: "Net Kar / Ortalama Toplam Varlıklar"
+      },
+      {
+        id: "ebitdaMargin",
+        name: "FAVÖK Marjı",
+        description: "FAVÖK'ün net satışlara oranı",
+        formula: "FAVÖK / Net Satışlar"
+      }
+    ]
+  }
+];
+
+// Tüm oranları düz bir liste olarak al
+export const getAllRatios = (): FinancialRatio[] => {
+  const allRatios: FinancialRatio[] = [];
+  financialRatioCategories.forEach(category => {
+    category.ratios.forEach(ratio => {
+      allRatios.push(ratio);
+    });
+  });
+  return allRatios;
+};
+
+// ID'ye göre oran bilgilerini bul
+export const getRatioById = (id: string): FinancialRatio | undefined => {
+  for (const category of financialRatioCategories) {
+    const ratio = category.ratios.find(r => r.id === id);
+    if (ratio) return ratio;
+  }
+  return undefined;
+};
+
+// Kategori ID'sine göre oranları al
+export const getRatiosByCategory = (categoryId: string): FinancialRatio[] => {
+  const category = financialRatioCategories.find(c => c.id === categoryId);
+  return category ? category.ratios : [];
 };

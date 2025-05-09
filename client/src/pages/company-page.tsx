@@ -13,7 +13,7 @@ import { formatDate } from "@/lib/utils";
 import FinancialDataForm from "@/components/financial/financial-data-form";
 import HistoricalData from "@/components/financial/historical-data";
 import YearSelector from "@/components/financial/year-selector";
-import RatioSelector, { RatioType } from "@/components/financial/ratio-selector";
+import RatioSelector from "@/components/financial/ratio-selector";
 import ReportFormatSelector, { ReportFormat } from "@/components/financial/report-format-selector";
 
 export default function CompanyPage() {
@@ -27,7 +27,7 @@ export default function CompanyPage() {
   const [selectedYears, setSelectedYears] = useState<number[]>([new Date().getFullYear()]);
   
   // Seçilen oran türleri için state
-  const [selectedRatios, setSelectedRatios] = useState<RatioType[]>(["currentRatio", "liquidityRatio", "acidTestRatio"]);
+  const [selectedRatios, setSelectedRatios] = useState<string[]>(["currentRatio", "liquidityRatio", "acidTestRatio"]);
   
   // Seçilen rapor formatı için state
   const [selectedFormat, setSelectedFormat] = useState<ReportFormat>("pdf");
