@@ -1,105 +1,61 @@
 import { useState } from "react";
-import { useFinancialData } from "@/hooks/use-financial-data";
-import { useToast } from "@/hooks/use-toast";
-import { Company, FinancialData } from "@shared/schema";
-import { useAuth } from "@/hooks/use-auth";
-import { 
-  Dialog, 
-  DialogContent, 
-  DialogHeader, 
-  DialogTitle,
-  DialogDescription,
-  DialogFooter
-} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Loader2, Download, FileText, FileSpreadsheet, AlertCircle } from "lucide-react";
-import { exportReport } from "@/lib/report-generation";
-import { PriceCalculator } from "./legacy-price-calculator";
-import { Alert, AlertDescription } from "@/components/ui/alert";
+import { 
+  Card, 
+  CardContent, 
+  CardDescription, 
+  CardFooter, 
+  CardHeader, 
+  CardTitle 
+} from "@/components/ui/card";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Loader2, FileText, Download, File } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+import { useFinancialData } from "@/hooks/use-financial-data";
 
 interface ReportGeneratorProps {
-  financialData: FinancialData;
-  company: Company;
-  isOpen: boolean;
-  onClose: () => void;
+  companyId: number;
+  financialDataId: number;
+  onGenerated?: (reportUrl: string) => void;
+  children?: React.ReactNode;
 }
 
 export default function ReportGenerator({
-  financialData,
-  company,
-  isOpen,
-  onClose
+  companyId,
+  financialDataId,
+  onGenerated,
+  children
 }: ReportGeneratorProps) {
-  const { generateReport: generateReportAPI } = useFinancialData();
-  const { user } = useAuth();
-  const { toast } = useToast();
-  
-  const [reportFormat, setReportFormat] = useState<string>("pdf");
+  const [reportType, setReportType] = useState<string>("pdf");
   const [isGenerating, setIsGenerating] = useState(false);
+  const { toast } = useToast();
+  const { generateReport } = useFinancialData();
   
-  // Dinamik fiyatlandırma değişkenleri
-  const [numCompanies, setNumCompanies] = useState(1);
-  const [numPeriods, setNumPeriods] = useState(1);
-  const [numRatios, setNumRatios] = useState(3); // Varsayılan olarak 3 oran
-  const [totalPrice, setTotalPrice] = useState(0.75); // Varsayılan fiyat
-  const [requiredCredits, setRequiredCredits] = useState(1); // Varsayılan kredi
-  
-  // Fiyat değişimini yönet
-  const handlePriceChange = (price: number, credits: number) => {
-    setTotalPrice(price);
-    setRequiredCredits(credits);
-  };
-  
-  const handleGenerate = async () => {
-    if (!user) return;
-    
-    // Admin kullanıcılar için kredi kontrolü yapılmaz
-    const isAdmin = user.role === "admin";
-    
-    // Admin değilse ve yeterli kredisi yoksa işlemi durdur
-    if (!isAdmin && (user.credits || 0) < requiredCredits) {
-      toast({
-        title: "Yetersiz Kredi",
-        description: `Rapor oluşturmak için ${requiredCredits} kredi gerekiyor, ancak hesabınızda ${user.credits || 0} kredi bulunmaktadır. Lütfen kredi satın alın.`,
-        variant: "destructive"
-      });
-      return;
-    }
-    
-    setIsGenerating(true);
-    
+  const handleGenerateReport = async () => {
     try {
-      // Generate report on the server
-      await generateReportAPI(company.id, financialData.id, reportFormat, {
-        numCompanies,
-        numPeriods,
-        numRatios,
-        price: totalPrice
-      });
+      setIsGenerating(true);
       
-      // Generate and download the report on the client side
-      const companyInfo = {
-        name: company.name,
-        code: company.code || "Bilinmiyor",
-        sector: company.sector || "Genel"
-      };
-      
-      // Raporu doğrudan indir
-      await exportReport(reportFormat as any, companyInfo, financialData);
+      const response = await generateReport(companyId, financialDataId, reportType);
       
       toast({
-        title: "Rapor Oluşturuldu",
-        description: isAdmin 
-          ? "Rapor başarıyla oluşturuldu." 
-          : `Rapor başarıyla oluşturuldu ve ${requiredCredits} kredi kullanıldı.`,
+        title: "Rapor Hazır",
+        description: `Raporunuz ${reportType.toUpperCase()} formatında başarıyla oluşturuldu.`,
       });
       
-      onClose();
+      if (onGenerated && response.url) {
+        onGenerated(response.url);
+      }
     } catch (error: any) {
+      console.error("Rapor oluşturma hatası:", error);
       toast({
-        title: "Hata",
-        description: error.message || "Rapor oluşturulurken bir hata oluştu.",
+        title: "Rapor Oluşturma Hatası",
+        description: error.message || "Rapor oluşturulurken bir hata meydana geldi.",
         variant: "destructive"
       });
     } finally {
@@ -107,129 +63,70 @@ export default function ReportGenerator({
     }
   };
   
+  const getIconForType = () => {
+    switch (reportType) {
+      case "pdf":
+        return <File className="h-5 w-5" />;
+      case "excel":
+        return <File className="h-5 w-5" />;
+      case "csv":
+        return <FileText className="h-5 w-5" />;
+      case "word":
+        return <File className="h-5 w-5" />;
+      default:
+        return <Download className="h-5 w-5" />;
+    }
+  };
+  
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-md">
-        <DialogHeader>
-          <DialogTitle>Rapor İndir</DialogTitle>
-          <DialogDescription>
-            Raporu indirmek için format seçin ve indir butonuna tıklayın.
-            {user?.role === "admin" 
-              ? "Admin olarak rapor oluşturma işlemi ücretsizdir." 
-              : "Her indirme işlemi 1 kredi kullanır."}
-          </DialogDescription>
-        </DialogHeader>
+    <Card>
+      <CardHeader>
+        <CardTitle>Rapor Oluştur</CardTitle>
+        <CardDescription>
+          Analizinizi farklı formatlarda kaydedebilirsiniz
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        {children}
         
-        {user?.role !== "admin" && (
-          <div className="flex items-center justify-between mt-2">
-            <div className="text-sm font-medium text-neutral-700">
-              Kalan Krediniz: {user?.credits || 0}
-            </div>
+        <div className="mt-4 space-y-4">
+          <div className="space-y-2">
+            <label htmlFor="report-type" className="text-sm font-medium">
+              Rapor Formatı
+            </label>
+            <Select value={reportType} onValueChange={setReportType}>
+              <SelectTrigger id="report-type">
+                <SelectValue placeholder="Format seçin" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="pdf">PDF</SelectItem>
+                <SelectItem value="excel">Excel (XLSX)</SelectItem>
+                <SelectItem value="csv">CSV</SelectItem>
+                <SelectItem value="word">Word</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
-        )}
-        
-        <Tabs value={reportFormat} onValueChange={setReportFormat}>
-          <TabsList className="grid grid-cols-4">
-            <TabsTrigger value="pdf">PDF</TabsTrigger>
-            <TabsTrigger value="docx">Word</TabsTrigger>
-            <TabsTrigger value="xlsx">Excel</TabsTrigger>
-            <TabsTrigger value="csv">CSV</TabsTrigger>
-          </TabsList>
-          
-          <TabsContent value="pdf" className="mt-4">
-            <div className="flex justify-center items-center py-8 bg-neutral-50 rounded-md border">
-              <div className="text-center">
-                <FileText className="h-16 w-16 text-red-500 mx-auto" />
-                <h3 className="mt-2 font-medium text-neutral-800">PDF Raporu</h3>
-                <p className="mt-1 text-sm text-neutral-600">
-                  PDF formatı tüm cihazlarda görüntülenebilir ve yazdırılabilir.
-                </p>
-              </div>
-            </div>
-          </TabsContent>
-          
-          <TabsContent value="docx" className="mt-4">
-            <div className="flex justify-center items-center py-8 bg-neutral-50 rounded-md border">
-              <div className="text-center">
-                <FileText className="h-16 w-16 text-blue-600 mx-auto" />
-                <h3 className="mt-2 font-medium text-neutral-800">Word Raporu</h3>
-                <p className="mt-1 text-sm text-neutral-600">
-                  Word formatı düzenlenebilir bir belge sağlar.
-                </p>
-              </div>
-            </div>
-          </TabsContent>
-          
-          <TabsContent value="xlsx" className="mt-4">
-            <div className="flex justify-center items-center py-8 bg-neutral-50 rounded-md border">
-              <div className="text-center">
-                <FileSpreadsheet className="h-16 w-16 text-green-600 mx-auto" />
-                <h3 className="mt-2 font-medium text-neutral-800">Excel Raporu</h3>
-                <p className="mt-1 text-sm text-neutral-600">
-                  Excel formatı ileri düzey analiz için uygundur.
-                </p>
-              </div>
-            </div>
-          </TabsContent>
-          
-          <TabsContent value="csv" className="mt-4">
-            <div className="flex justify-center items-center py-8 bg-neutral-50 rounded-md border">
-              <div className="text-center">
-                <FileSpreadsheet className="h-16 w-16 text-blue-500 mx-auto" />
-                <h3 className="mt-2 font-medium text-neutral-800">CSV Raporu</h3>
-                <p className="mt-1 text-sm text-neutral-600">
-                  CSV formatı diğer sistemlerle uyumlu veri sağlar.
-                </p>
-              </div>
-            </div>
-          </TabsContent>
-        </Tabs>
-        
-        {/* Fiyatlandırma hesaplayıcı */}
-        <div className="mt-4">
-          <h3 className="font-medium text-base mb-2">Fiyatlandırma</h3>
-          <PriceCalculator 
-            onPriceChange={handlePriceChange}
-            initialCompanies={numCompanies}
-            initialPeriods={numPeriods}
-            initialRatios={numRatios}
-          />
-          
-          {!user?.role || user.role !== "admin" ? (
-            <Alert variant="default" className="mt-2">
-              <AlertCircle className="h-4 w-4" />
-              <AlertDescription>
-                Bu rapor için {requiredCredits} kredi gerekecek.
-                {user?.credits && user.credits < requiredCredits ? 
-                  ` Hesabınızda yeterli kredi bulunmuyor (${user.credits}/${requiredCredits}).` : 
-                  ''}
-              </AlertDescription>
-            </Alert>
-          ) : null}
         </div>
-        
-        <DialogFooter className="mt-4">
-          <Button variant="outline" onClick={onClose} disabled={isGenerating}>
-            İptal
-          </Button>
-          <Button 
-            onClick={handleGenerate} 
-            disabled={isGenerating || (!user?.role || user.role !== "admin") && (user?.credits || 0) < requiredCredits}
-          >
-            {isGenerating ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Oluşturuluyor...
-              </>
-            ) : (
-              <>
-                <Download className="mr-2 h-4 w-4" />
-                {user?.role === "admin" ? "İndir" : `İndir (${requiredCredits} Kredi)`}
-              </>
-            )}
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+      </CardContent>
+      <CardFooter>
+        <Button 
+          onClick={handleGenerateReport} 
+          disabled={isGenerating}
+          className="w-full"
+        >
+          {isGenerating ? (
+            <>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              Rapor oluşturuluyor...
+            </>
+          ) : (
+            <>
+              {getIconForType()}
+              <span className="ml-2">Rapor Oluştur</span>
+            </>
+          )}
+        </Button>
+      </CardFooter>
+    </Card>
   );
 }

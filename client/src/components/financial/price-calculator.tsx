@@ -1,146 +1,139 @@
 import { useState, useEffect } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Slider } from "@/components/ui/slider";
-import { Calculator } from "lucide-react";
+import { useAuth } from "@/hooks/use-auth";
 
 interface PriceCalculatorProps {
   onPriceChange: (price: number, credits: number) => void;
-  initialCompanies?: number;
-  initialPeriods?: number;
-  initialRatios?: number;
-  pricePerUnit?: number;
+  initialCompanies: number;
+  initialPeriods: number;
+  initialRatios: number;
+  pricePerUnit: number;
 }
 
 export function PriceCalculator({
   onPriceChange,
-  initialCompanies = 1,
-  initialPeriods = 1,
-  initialRatios = 1,
-  pricePerUnit = 0.25
+  initialCompanies,
+  initialPeriods,
+  initialRatios,
+  pricePerUnit
 }: PriceCalculatorProps) {
-  const [companies, setCompanies] = useState(initialCompanies);
-  const [periods, setPeriods] = useState(initialPeriods);
-  const [ratios, setRatios] = useState(initialRatios);
-  const [price, setPrice] = useState(0);
+  const { user } = useAuth();
+  const [companies, setCompanies] = useState<number>(initialCompanies);
+  const [periods, setPeriods] = useState<number>(initialPeriods);
+  const [ratios, setRatios] = useState<number>(initialRatios);
+  const [price, setPrice] = useState<number>(0);
+  const [credits, setCredits] = useState<number>(0);
   
-  // Fiyat hesapla: Şirket sayısı x Dönem sayısı x Oran sayısı x Birim fiyat
+  // Fiyat hesapla
   useEffect(() => {
     const calculatedPrice = companies * periods * ratios * pricePerUnit;
+    const calculatedCredits = Math.ceil(calculatedPrice);
+    
     setPrice(calculatedPrice);
-    onPriceChange(calculatedPrice, calculatedPrice); // Kredi miktarı değeri fiyata eşit (1 TL = 1 kredi)
+    setCredits(calculatedCredits);
+    onPriceChange(calculatedPrice, calculatedCredits);
   }, [companies, periods, ratios, pricePerUnit, onPriceChange]);
   
-  const handleCompaniesChange = (value: number[]) => {
-    setCompanies(value[0]);
-  };
-  
-  const handlePeriodsChange = (value: number[]) => {
-    setPeriods(value[0]);
-  };
-  
-  const handleRatiosChange = (value: number[]) => {
-    setRatios(value[0]);
-  };
-  
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center">
-          <Calculator className="mr-2 h-5 w-5" /> Fiyat Hesaplama
-        </CardTitle>
-        <CardDescription>
-          Seçimlerinize göre ödeyeceğiniz kredi miktarı otomatik hesaplanır
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        <div className="space-y-2">
-          <div className="flex justify-between items-center">
-            <Label htmlFor="companies">Şirket Sayısı: {companies}</Label>
-            <Input
-              id="companies-input"
-              type="number"
-              value={companies}
-              onChange={(e) => setCompanies(parseInt(e.target.value) || 1)}
-              className="w-20 h-8"
-              min={1}
-              max={10}
-            />
-          </div>
+    <div className="space-y-6">
+      <div className="space-y-4">
+        <div>
+          <Label>Şirket Sayısı: {companies}</Label>
           <Slider
-            id="companies"
+            value={[companies]}
             min={1}
             max={10}
             step={1}
-            value={[companies]}
-            onValueChange={handleCompaniesChange}
+            onValueChange={(value) => setCompanies(value[0])}
+            className="mt-2"
           />
         </div>
         
-        <div className="space-y-2">
-          <div className="flex justify-between items-center">
-            <Label htmlFor="periods">Dönem Sayısı: {periods}</Label>
-            <Input
-              id="periods-input"
-              type="number"
-              value={periods}
-              onChange={(e) => setPeriods(parseInt(e.target.value) || 1)}
-              className="w-20 h-8"
-              min={1}
-              max={5}
-            />
-          </div>
+        <div>
+          <Label>Dönem Sayısı: {periods}</Label>
           <Slider
-            id="periods"
+            value={[periods]}
             min={1}
             max={5}
             step={1}
-            value={[periods]}
-            onValueChange={handlePeriodsChange}
+            onValueChange={(value) => setPeriods(value[0])}
+            className="mt-2"
           />
         </div>
         
-        <div className="space-y-2">
-          <div className="flex justify-between items-center">
-            <Label htmlFor="ratios">Oran Sayısı: {ratios}</Label>
-            <Input
-              id="ratios-input"
-              type="number"
-              value={ratios}
-              onChange={(e) => setRatios(parseInt(e.target.value) || 1)}
-              className="w-20 h-8"
-              min={1}
-              max={18}
-            />
-          </div>
+        <div>
+          <Label>Oran Sayısı: {ratios}</Label>
           <Slider
-            id="ratios"
-            min={1}
-            max={18}
-            step={1}
             value={[ratios]}
-            onValueChange={handleRatiosChange}
+            min={1}
+            max={16}
+            step={1}
+            onValueChange={(value) => setRatios(value[0])}
+            className="mt-2"
           />
         </div>
-        
-        <div className="pt-4 border-t">
-          <div className="flex justify-between items-center">
-            <div>
-              <Label>Oran Başına Fiyat</Label>
-              <p className="text-sm text-muted-foreground">{pricePerUnit.toFixed(2)} ₺</p>
+      </div>
+      
+      <Card className="border-primary/20">
+        <CardContent className="p-6">
+          <div className="grid grid-cols-1 gap-4">
+            <div className="space-y-1">
+              <Label>Formül</Label>
+              <div className="text-sm text-muted-foreground mt-1">
+                <code className="bg-muted px-1 py-0.5 rounded">
+                  Şirketler × Dönemler × Oranlar × {pricePerUnit.toFixed(2)}₺
+                </code>
+              </div>
             </div>
-            <div className="text-right">
-              <Label>Toplam Fiyat</Label>
-              <p className="text-xl font-bold text-primary">{price.toFixed(2)} ₺</p>
+            
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-1">
+                <Label>Toplam Fiyat</Label>
+                <Input 
+                  value={`${price.toFixed(2)} ₺`} 
+                  className="text-right font-medium" 
+                  readOnly 
+                />
+              </div>
+              
+              <div className="space-y-1">
+                <Label>Gerekli Kredi</Label>
+                <Input 
+                  value={credits.toString()} 
+                  className="text-right font-medium" 
+                  readOnly 
+                />
+              </div>
             </div>
+            
+            {user && (
+              <div className="pt-2 flex items-center justify-between">
+                <span className="text-sm text-muted-foreground">Mevcut Krediniz:</span>
+                <span className="font-medium">
+                  {user.credits} {user.credits >= credits ? (
+                    <span className="text-green-600 text-xs ml-1">(Yeterli)</span>
+                  ) : (
+                    <span className="text-red-600 text-xs ml-1">(Yetersiz)</span>
+                  )}
+                </span>
+              </div>
+            )}
+            
+            {(user?.role === "admin") && (
+              <div className="rounded-md bg-blue-50 p-3 mt-2">
+                <div className="flex">
+                  <p className="text-sm text-blue-700">
+                    Admin kullanıcı olduğunuz için ödeme yapmanız gerekmez.
+                  </p>
+                </div>
+              </div>
+            )}
           </div>
-          
-          <div className="mt-2 text-sm text-muted-foreground">
-            Hesaplama: {companies} şirket × {periods} dönem × {ratios} oran × {pricePerUnit.toFixed(2)} ₺
-          </div>
-        </div>
-      </CardContent>
-    </Card>
+        </CardContent>
+      </Card>
+    </div>
   );
 }

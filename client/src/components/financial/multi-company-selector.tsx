@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
-import { Input } from "@/components/ui/input";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Search } from "lucide-react";
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Search, X } from "lucide-react";
 import { bistCompanies } from "@/data/bist-companies";
 
 interface Company {
@@ -21,103 +22,134 @@ export default function MultiCompanySelector({
   initialSelectedCompanies = [],
   maxResults = 10
 }: MultiCompanySelectorProps) {
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
   const [selectedCompanies, setSelectedCompanies] = useState<Company[]>(initialSelectedCompanies);
+  const [filteredCompanies, setFilteredCompanies] = useState<Company[]>([]);
   
+  // Arama yapıldığında şirketleri filtrele
   useEffect(() => {
-    // Seçilen şirketleri ana bileşene bildir
+    if (searchTerm.trim().length < 2) {
+      setFilteredCompanies([]);
+      return;
+    }
+    
+    const searchTermLower = searchTerm.toLowerCase();
+    
+    const filtered = bistCompanies
+      .filter(company => 
+        company.code.toLowerCase().includes(searchTermLower) || 
+        company.name.toLowerCase().includes(searchTermLower)
+      )
+      .slice(0, maxResults);
+    
+    setFilteredCompanies(filtered);
+  }, [searchTerm, maxResults]);
+  
+  // Başlangıç seçili şirketleri
+  useEffect(() => {
+    if (initialSelectedCompanies && initialSelectedCompanies.length > 0) {
+      setSelectedCompanies(initialSelectedCompanies);
+    }
+  }, [initialSelectedCompanies]);
+  
+  // Seçimleri parent'a bildir
+  useEffect(() => {
     onSelectCompanies(selectedCompanies);
   }, [selectedCompanies, onSelectCompanies]);
   
-  const filteredCompanies = bistCompanies
-    .filter(company => 
-      company.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      company.code.toLowerCase().includes(searchQuery.toLowerCase())
-    )
-    .slice(0, maxResults);
-  
-  const handleCompanySelect = (company: Company) => {
+  // Şirket seçimini işle
+  const handleSelectCompany = (company: Company) => {
+    // Zaten seçili ise ekleme
     if (selectedCompanies.some(c => c.code === company.code)) {
-      setSelectedCompanies(selectedCompanies.filter(c => c.code !== company.code));
-    } else {
-      setSelectedCompanies([...selectedCompanies, company]);
+      return;
     }
+    
+    setSelectedCompanies([...selectedCompanies, company]);
+    setSearchTerm("");
   };
   
-  const removeSelectedCompany = (company: Company) => {
-    setSelectedCompanies(selectedCompanies.filter(c => c.code !== company.code));
+  // Şirket seçimini kaldır
+  const handleRemoveCompany = (companyCode: string) => {
+    setSelectedCompanies(selectedCompanies.filter(c => c.code !== companyCode));
+  };
+  
+  // Tüm seçimleri temizle
+  const handleClearAll = () => {
+    setSelectedCompanies([]);
   };
   
   return (
-    <div>
-      <div className="relative mb-4">
-        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
-        <Input
-          placeholder="Şirket adı veya kodu ara..."
-          className="pl-10"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-        />
+    <div className="space-y-4">
+      <div className="relative">
+        <Command className="rounded-lg border shadow-md">
+          <div className="flex items-center border-b px-3">
+            <Search className="mr-2 h-4 w-4 shrink-0 opacity-50" />
+            <CommandInput 
+              placeholder="Şirket adı veya kodu ara..."
+              value={searchTerm}
+              onValueChange={setSearchTerm}
+              className="flex-1 w-full"
+            />
+          </div>
+          <CommandList>
+            <CommandEmpty>Sonuç bulunamadı...</CommandEmpty>
+            <CommandGroup heading="Şirketler">
+              {filteredCompanies.map(company => (
+                <CommandItem
+                  key={company.code}
+                  onSelect={() => handleSelectCompany(company)}
+                  className="flex justify-between"
+                >
+                  <div>
+                    <span className="font-medium">{company.code}</span>
+                    <span className="ml-2 text-neutral-500">{company.name}</span>
+                  </div>
+                  <span className="text-xs text-neutral-400">{company.sector}</span>
+                </CommandItem>
+              ))}
+            </CommandGroup>
+          </CommandList>
+        </Command>
       </div>
       
-      <div className="space-y-2 max-h-96 overflow-y-auto border rounded-md p-2">
-        {searchQuery.length > 0 && filteredCompanies.length === 0 ? (
-          <div className="p-3 text-center text-neutral-500">
-            "{searchQuery}" için sonuç bulunamadı
-          </div>
-        ) : searchQuery.length === 0 ? (
-          <div className="p-3 text-center text-neutral-500">
-            Şirket aramak için yazmaya başlayın
-          </div>
-        ) : (
-          filteredCompanies.map((company) => (
-            <div 
-              key={company.code}
-              className="flex items-center space-x-2 p-2 border-b last:border-0 hover:bg-neutral-50 cursor-pointer"
-              onClick={() => handleCompanySelect(company)}
+      {selectedCompanies.length > 0 && (
+        <div>
+          <div className="flex items-center justify-between mb-2">
+            <h3 className="text-sm font-medium text-neutral-500">
+              Seçilen Şirketler ({selectedCompanies.length})
+            </h3>
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              onClick={handleClearAll}
+              className="h-8 px-2 text-neutral-500"
             >
-              <Checkbox 
-                id={`company-${company.code}`}
-                checked={selectedCompanies.some(c => c.code === company.code)}
-                onCheckedChange={() => handleCompanySelect(company)}
-              />
-              <div>
-                <label 
-                  htmlFor={`company-${company.code}`}
-                  className="font-medium text-sm cursor-pointer"
-                >
-                  {company.name} ({company.code})
-                </label>
-                <p className="text-xs text-neutral-500">{company.sector}</p>
-              </div>
-            </div>
-          ))
-        )}
-      </div>
-      
-      <div className="mt-4">
-        <h3 className="font-medium mb-2">Seçilen Şirketler ({selectedCompanies.length})</h3>
-        {selectedCompanies.length === 0 ? (
-          <div className="text-neutral-500 text-sm">Henüz şirket seçilmedi</div>
-        ) : (
+              Tümünü Temizle
+            </Button>
+          </div>
+          
           <div className="flex flex-wrap gap-2">
-            {selectedCompanies.map((company) => (
-              <div 
-                key={company.code}
-                className="bg-primary-50 text-primary-800 px-3 py-1 rounded-full text-sm flex items-center"
+            {selectedCompanies.map(company => (
+              <Badge 
+                key={company.code} 
+                variant="secondary"
+                className="pl-2 pr-1 py-1 flex items-center"
               >
-                {company.code}
-                <button 
-                  className="ml-2 hover:text-primary-900"
-                  onClick={() => removeSelectedCompany(company)}
+                <span className="font-semibold mr-1">{company.code}</span>
+                <span className="text-xs mr-1 truncate max-w-[150px]">{company.name}</span>
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  onClick={() => handleRemoveCompany(company.code)}
+                  className="h-5 w-5 p-0 ml-1 rounded-full"
                 >
-                  &times;
-                </button>
-              </div>
+                  <X className="h-3 w-3" />
+                </Button>
+              </Badge>
             ))}
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 }
