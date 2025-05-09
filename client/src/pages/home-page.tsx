@@ -1,15 +1,25 @@
 import { useEffect } from "react";
 import { useAuth } from "@/hooks/use-auth";
+import { useLocation } from "wouter";
 import Navbar from "@/components/layout/navbar";
 import Footer from "@/components/layout/footer";
-import CompanySelector from "@/components/dashboard/company-selector";
-import QuickActions from "@/components/dashboard/quick-actions";
-import CreditInfo from "@/components/dashboard/credit-info";
+import { Button } from "@/components/ui/button";
+import { BarChart3, FileUp, ChevronRight, Building, FileText } from "lucide-react";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 
 export default function HomePage() {
   const { user } = useAuth();
   const { toast } = useToast();
+  const [_, navigate] = useLocation();
+  
+  const goToNewAnalysis = () => {
+    navigate("/analysis-selection");
+  };
+  
+  const goToNewCompany = () => {
+    navigate("/company/new");
+  };
   
   useEffect(() => {
     // Welcome message on first render
@@ -26,24 +36,113 @@ export default function HomePage() {
       <Navbar />
       
       <main className="flex-grow">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          {/* Dashboard Header */}
-          <div className="mb-8">
-            <h1 className="text-2xl font-bold text-neutral-800">Finansal Veri Sunumu</h1>
-            <p className="text-neutral-600 mt-1">Şirketlerin finansal verilerini analiz edin ve raporları indirin</p>
-            
-            <div className="mt-4 grid grid-cols-1 md:grid-cols-4 gap-4">
-              <div className="col-span-1 md:col-span-3">
-                <CompanySelector />
-              </div>
-              
-              <div className="col-span-1 space-y-4">
-                <QuickActions />
-                <CreditInfo />
+        {/* Hero Section */}
+        <section className="bg-gradient-to-br from-primary/10 via-background to-background py-20">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="max-w-4xl mx-auto text-center">
+              <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight mb-6 bg-gradient-to-br from-primary to-primary-600 bg-clip-text text-transparent">
+                FinRasyo
+              </h1>
+              <p className="text-xl sm:text-2xl text-neutral-600 mb-10">
+                Finansal Veri Sunum Platformu
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <Button size="lg" onClick={goToNewAnalysis}>
+                  <BarChart3 className="mr-2 h-5 w-5" />
+                  Hemen Analiz Yap
+                </Button>
+                <Button variant="outline" size="lg" onClick={goToNewCompany}>
+                  <FileUp className="mr-2 h-5 w-5" />
+                  Şirket Ekle
+                </Button>
               </div>
             </div>
           </div>
-        </div>
+        </section>
+        
+        {/* Features */}
+        <section className="py-20 bg-background">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center mb-16">
+              <h2 className="text-3xl font-bold">Kolay Finansal Analiz</h2>
+              <p className="mt-4 text-lg text-neutral-600 max-w-3xl mx-auto">
+                BIST şirketlerinin finansal verilerini analiz edin, raporlayın ve paylaşın
+              </p>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              <Card>
+                <CardHeader>
+                  <Building className="h-10 w-10 text-primary mb-2" />
+                  <CardTitle>Şirket Seçimi</CardTitle>
+                  <CardDescription>
+                    BIST'te işlem gören şirketler arasından seçim yapın veya kendi şirketinizi ekleyin
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm text-neutral-600">
+                    Borsa İstanbul'da işlem gören tüm şirketler için hazır finansal veriler ve özel şirketleriniz için veri girişi imkanı
+                  </p>
+                  <Button variant="ghost" size="sm" className="mt-4" onClick={goToNewCompany}>
+                    Şirket Ekle <ChevronRight className="ml-1 h-4 w-4" />
+                  </Button>
+                </CardContent>
+              </Card>
+              
+              <Card>
+                <CardHeader>
+                  <BarChart3 className="h-10 w-10 text-primary mb-2" />
+                  <CardTitle>Oran Analizi</CardTitle>
+                  <CardDescription>
+                    Likidite, Kaldıraç, Faaliyet ve Karlılık oranlarını hesaplayın
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm text-neutral-600">
+                    Cari Oran, Asit-Test Oranı, Finansal Kaldıraç Oranı ve daha fazlasını tek tıkla hesaplayın
+                  </p>
+                  <Button variant="ghost" size="sm" className="mt-4" onClick={goToNewAnalysis}>
+                    Analiz Yap <ChevronRight className="ml-1 h-4 w-4" />
+                  </Button>
+                </CardContent>
+              </Card>
+              
+              <Card>
+                <CardHeader>
+                  <FileText className="h-10 w-10 text-primary mb-2" />
+                  <CardTitle>Raporlama</CardTitle>
+                  <CardDescription>
+                    PDF, Excel, Word ve CSV formatlarında rapor oluşturun
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm text-neutral-600">
+                    Hazır şablonlar ile profesyonel görünümlü raporlar oluşturun ve paylaşın
+                  </p>
+                  <Button variant="ghost" size="sm" className="mt-4" onClick={() => navigate("/reports")}>
+                    Raporlarım <ChevronRight className="ml-1 h-4 w-4" />
+                  </Button>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        </section>
+        
+        {/* Call to Action */}
+        <section className="py-16 bg-primary-50">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="max-w-4xl mx-auto text-center">
+              <h2 className="text-3xl font-bold mb-4">Hemen Finansal Analizlere Başlayın</h2>
+              <p className="text-lg text-neutral-600 mb-8">
+                İstediğiniz şirket, dönem ve oran için raporlar oluşturabilirsiniz. Ödemenizi sadece oluşturduğunuz raporlar için yapın.
+              </p>
+              <Button size="lg" onClick={goToNewAnalysis}>
+                <BarChart3 className="mr-2 h-5 w-5" />
+                Analiz Yapmaya Başla
+              </Button>
+            </div>
+          </div>
+        </section>
       </main>
       
       <Footer />

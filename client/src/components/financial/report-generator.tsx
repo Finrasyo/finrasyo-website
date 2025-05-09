@@ -15,7 +15,7 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Loader2, Download, FileText, FileSpreadsheet, AlertCircle } from "lucide-react";
 import { exportReport } from "@/lib/report-generation";
-import PriceCalculator from "./price-calculator";
+import { PriceCalculator } from "./legacy-price-calculator";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
 interface ReportGeneratorProps {
