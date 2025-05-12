@@ -58,9 +58,8 @@ export default function AnalysisSelectionPage() {
     localStorage.setItem('selectedCompanies', JSON.stringify(selectedCompanies));
     localStorage.setItem('selectedYears', JSON.stringify(selectedYears));
     
-    // Şu anda analiz sayfası tek şirket için tasarlandığı için ilk şirketi gönder
-    const selectedCompany = selectedCompanies[0];
-    navigate(`/analiz/${selectedCompany.code}`);
+    // Doğrudan analiz sihirbazına yönlendir
+    navigate("/analysis-wizard");
   };
   
   return (

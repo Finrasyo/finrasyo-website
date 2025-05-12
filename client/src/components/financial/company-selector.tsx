@@ -29,7 +29,9 @@ export default function CompanySelector({ onSelect }: CompanySelectorProps) {
   
   // Filtreleme işlemi için bistCompanies'tan şirketleri filtrele
   const filteredCompanies = bistCompanies.filter((company) => {
+    // Arama terimini lowercase yap
     const search = searchTerm.toLowerCase();
+    // Şirket bilgilerini lowercase yaparak karşılaştır
     return (
       company.code.toLowerCase().includes(search) ||
       company.name.toLowerCase().includes(search) ||
@@ -47,7 +49,7 @@ export default function CompanySelector({ onSelect }: CompanySelectorProps) {
           className="w-full justify-between"
         >
           {value
-            ? bistCompanies.find((company) => company.code === value)?.name
+            ? bistCompanies.find((company) => company.code.toLowerCase() === value.toLowerCase())?.name
             : "Şirket seçin..."}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
@@ -67,7 +69,10 @@ export default function CompanySelector({ onSelect }: CompanySelectorProps) {
                   key={company.code}
                   value={company.code}
                   onSelect={(currentValue) => {
-                    const newValue = currentValue === value ? "" : currentValue;
+                    // Büyük/küçük harf duyarsız karşılaştırma
+                    const currentLower = currentValue.toLowerCase();
+                    const valueLower = value.toLowerCase();
+                    const newValue = currentLower === valueLower ? "" : currentValue;
                     setValue(newValue);
                     setOpen(false);
                     
@@ -83,7 +88,7 @@ export default function CompanySelector({ onSelect }: CompanySelectorProps) {
                   <Check
                     className={cn(
                       "mr-2 h-4 w-4",
-                      value === company.code ? "opacity-100" : "opacity-0"
+                      value.toLowerCase() === company.code.toLowerCase() ? "opacity-100" : "opacity-0"
                     )}
                   />
                   <div className="flex flex-col">
