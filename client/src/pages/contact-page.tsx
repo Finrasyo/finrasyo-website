@@ -19,6 +19,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Mail, Phone, MapPin, Send, Loader2 } from "lucide-react";
+import { FaWhatsapp } from "react-icons/fa";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -183,6 +184,20 @@ export default function ContactPage() {
                       <span>Serra Yazılım</span>
                       <span>MAKÜ-BAKA Teknokent Zemin Kat No:102</span>
                       <span>Merkez / BURDUR</span>
+                    </div>
+                  </li>
+                  <li className="flex items-start">
+                    <FaWhatsapp className="h-6 w-6 text-green-500 mr-3 flex-shrink-0" />
+                    <div className="flex flex-col">
+                      <span>WhatsApp İletişim</span>
+                      <a 
+                        href="https://wa.me/905518845637" 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="text-green-600 hover:text-green-700 hover:underline font-medium flex items-center"
+                      >
+                        0551 884 5637
+                      </a>
                     </div>
                   </li>
                 </ul>
