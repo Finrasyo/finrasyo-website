@@ -38,8 +38,10 @@ export default function MultiCompanySelector({
   
   // Arama yapıldığında şirketleri filtrele
   useEffect(() => {
-    if (searchTerm.trim().length < 2) {
-      setFilteredCompanies([]);
+    if (searchTerm.trim().length === 0) {
+      // Arama terimi yoksa tüm şirketleri göster (maksimum sayıda)
+      setFilteredCompanies(bistCompanies.slice(0, maxResults));
+      setShowSuggestions(true);
       return;
     }
     
@@ -82,10 +84,14 @@ export default function MultiCompanySelector({
     setSelectedCompanies([]);
   };
 
+  // Bileşen ilk yüklendiğinde şirketleri göster
+  useEffect(() => {
+    setFilteredCompanies(bistCompanies.slice(0, maxResults));
+    setShowSuggestions(true);
+  }, [maxResults]);
+  
   const handleInputFocus = () => {
-    if (searchTerm.length >= 2) {
-      setShowSuggestions(true);
-    }
+    setShowSuggestions(true);
   };
   
   const handleInputBlur = () => {

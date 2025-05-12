@@ -30,8 +30,10 @@ export default function CompanySelector({ onSelect, initialValue }: CompanySelec
   
   // Arama yapıldığında şirketleri filtrele
   useEffect(() => {
-    if (searchTerm.trim().length < 2) {
-      setFilteredCompanies([]);
+    if (searchTerm.trim().length === 0) {
+      // Arama terimi yoksa tüm şirketleri göster (ilk 15)
+      setFilteredCompanies(bistCompanies.slice(0, 15));
+      setShowSuggestions(true);
       return;
     }
     
@@ -39,6 +41,12 @@ export default function CompanySelector({ onSelect, initialValue }: CompanySelec
     setFilteredCompanies(results);
     setShowSuggestions(true);
   }, [searchTerm]);
+  
+  // Bileşen ilk yüklendiğinde şirketleri göster
+  useEffect(() => {
+    setFilteredCompanies(bistCompanies.slice(0, 15));
+    setShowSuggestions(true);
+  }, []);
   
   const handleSelectCompany = (company: typeof bistCompanies[0]) => {
     setSelectedCompany(company);
@@ -48,9 +56,7 @@ export default function CompanySelector({ onSelect, initialValue }: CompanySelec
   };
   
   const handleInputFocus = () => {
-    if (searchTerm.length >= 2) {
-      setShowSuggestions(true);
-    }
+    setShowSuggestions(true);
   };
   
   const handleInputBlur = () => {
