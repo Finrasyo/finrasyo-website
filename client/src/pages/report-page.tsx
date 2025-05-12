@@ -13,8 +13,8 @@ import { FileDown, CheckCircle, Share, AlertTriangle, RefreshCcw } from "lucide-
 import { formatDate } from "@/lib/utils";
 
 export default function ReportPage() {
-  const { id } = useParams();
-  const reportId = parseInt(id);
+  const { id } = useParams<{ id: string }>();
+  const reportId = id ? parseInt(id) : NaN;
   const [_, navigate] = useLocation();
   const { toast } = useToast();
   
@@ -28,7 +28,7 @@ export default function ReportPage() {
     data: report,
     isLoading: isLoadingReport,
     error: reportError
-  } = useQuery<Report>({
+  } = useQuery<Report & { url?: string; companyName?: string }>({
     queryKey: [`/api/reports/${reportId}`],
     enabled: !isNaN(reportId),
   });
@@ -58,19 +58,25 @@ export default function ReportPage() {
   
   // Raporu indir
   const handleDownload = () => {
-    if (!report) return;
+    if (!report || !report.url) return;
     
-    // Gerçek uygulamada burada gerçek indirme işlemi yapılır
+    // Gerçek dosya indirme işlemi
+    const baseUrl = window.location.origin;
+    const fileUrl = `${baseUrl}${report.url}`;
+    
+    // Yeni sekme açarak dosyayı indir
+    window.open(fileUrl, '_blank');
+    
     toast({
       title: "Rapor İndiriliyor",
-      description: `${report.name} raporu indiriliyor...`,
+      description: `${report.companyName || 'Rapor'} başarıyla indiriliyor...`,
     });
     
     // İndirme simülasyonu
     setTimeout(() => {
       toast({
         title: "Rapor İndirildi",
-        description: `${report.name} raporu başarıyla indirildi.`,
+        description: `Rapor başarıyla indirildi.`,
         variant: "default",
       });
     }, 1500);
@@ -161,8 +167,8 @@ export default function ReportPage() {
   }
   
   // Format bilgisini al
-  const format = report.format || "pdf";
-  const formatData = formatInfo[format];
+  const format = report?.format || "pdf";
+  const formatData = formatInfo[format as keyof typeof formatInfo];
   
   return (
     <div className="flex flex-col min-h-screen">

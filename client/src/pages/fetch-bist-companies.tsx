@@ -37,7 +37,7 @@ export default function FetchBistCompaniesPage() {
           };
         }
         return null;
-      }).filter(Boolean);
+      }).filter((company): company is {code: string; name: string; sector: string} => company !== null);
       
       setCompanies(extractedCompanies);
     } catch (err) {
