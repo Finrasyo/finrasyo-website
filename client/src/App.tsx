@@ -18,6 +18,7 @@ import HowItWorksPage from "@/pages/how-it-works-page";
 import ContactPage from "@/pages/contact-page";
 import AdminPage from "@/pages/admin-page";
 import CompanyAnalysisPage from "@/pages/company-analysis";
+import FetchBistCompaniesPage from "@/pages/fetch-bist-companies";
 import { ProtectedRoute } from "./lib/protected-route";
 import { ThemeProvider } from "next-themes";
 import { AuthProvider } from "./hooks/use-auth";
@@ -42,6 +43,7 @@ function Router() {
       <Route path="/about" component={AboutPage} />
       <Route path="/how-it-works" component={HowItWorksPage} />
       <Route path="/contact" component={ContactPage} />
+      <Route path="/fetch-bist-companies" component={FetchBistCompaniesPage} />
       <Route component={NotFound} />
     </Switch>
   );

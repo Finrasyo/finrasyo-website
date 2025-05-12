@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Check, ChevronsUpDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -27,6 +27,14 @@ export default function CompanySelector({ onSelect, initialValue }: CompanySelec
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(initialValue || "");
   const [searchTerm, setSearchTerm] = useState("");
+  const popoverRef = useRef<HTMLDivElement>(null);
+  
+  // Eğer initialValue varsa, başlangıçta onu set et
+  useEffect(() => {
+    if (initialValue) {
+      setValue(initialValue);
+    }
+  }, [initialValue]);
   
   // Filtreleme işlemi için bistCompanies'tan şirketleri filtrele
   const filteredCompanies = searchTerm.length > 0
@@ -57,12 +65,18 @@ export default function CompanySelector({ onSelect, initialValue }: CompanySelec
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-full p-0" align="start">
-        <Command>
+      <PopoverContent 
+        className="w-full p-0" 
+        align="start"
+        ref={popoverRef}
+        style={{ maxWidth: "500px", width: "100%" }}
+      >
+        <Command className="w-full">
           <CommandInput
             placeholder="Şirket ara..."
             value={searchTerm}
             onValueChange={setSearchTerm}
+            className="h-9"
           />
           <CommandEmpty>Şirket bulunamadı.</CommandEmpty>
           <ScrollArea className="h-[300px]">
