@@ -44,7 +44,7 @@ export default function HomePage() {
                 FinRasyo
               </h1>
               <p className="text-xl sm:text-2xl text-neutral-600 mb-10">
-                Finansal Veri Sunum Platformu
+                Finansal Analiz Kolaylaştı
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Button size="lg" onClick={goToNewAnalysis}>
