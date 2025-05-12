@@ -28,16 +28,18 @@ export default function CompanySelector({ onSelect }: CompanySelectorProps) {
   const [searchTerm, setSearchTerm] = useState("");
   
   // Filtreleme işlemi için bistCompanies'tan şirketleri filtrele
-  const filteredCompanies = bistCompanies.filter((company) => {
-    // Arama terimini lowercase yap
-    const search = searchTerm.toLowerCase();
-    // Şirket bilgilerini lowercase yaparak karşılaştır
-    return (
-      company.code.toLowerCase().includes(search) ||
-      company.name.toLowerCase().includes(search) ||
-      company.sector.toLowerCase().includes(search)
-    );
-  });
+  const filteredCompanies = searchTerm.length === 0 ?
+    bistCompanies :
+    bistCompanies.filter((company) => {
+      // Arama terimini lowercase yap
+      const search = searchTerm.toLowerCase();
+      // Şirket bilgilerini lowercase yaparak karşılaştır
+      return (
+        company.code.toLowerCase().includes(search) ||
+        company.name.toLowerCase().includes(search) ||
+        company.sector.toLowerCase().includes(search)
+      );
+    });
 
   return (
     <Popover open={open} onOpenChange={setOpen}>

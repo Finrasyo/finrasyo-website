@@ -28,13 +28,16 @@ export default function MultiCompanySelector({
   // Arama yapıldığında şirketleri filtrele
   const searchTermLower = searchTerm.toLowerCase();
   
-  const filteredCompanies = bistCompanies
-    .filter(company => 
-      company.code.toLowerCase().includes(searchTermLower) || 
-      company.name.toLowerCase().includes(searchTermLower) ||
-      company.sector.toLowerCase().includes(searchTermLower)
-    )
-    .slice(0, maxResults);
+  // Boş arama yaparken de ilk 10 şirketi göster
+  const filteredCompanies = searchTermLower.length === 0 ? 
+    bistCompanies.slice(0, maxResults) : 
+    bistCompanies
+      .filter(company => 
+        company.code.toLowerCase().includes(searchTermLower) || 
+        company.name.toLowerCase().includes(searchTermLower) ||
+        company.sector.toLowerCase().includes(searchTermLower)
+      )
+      .slice(0, maxResults);
   
   // Başlangıç seçili şirketleri
   useEffect(() => {
