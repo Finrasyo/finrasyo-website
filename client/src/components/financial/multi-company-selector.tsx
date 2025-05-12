@@ -26,7 +26,16 @@ export default function MultiCompanySelector({
   const [selectedCompanies, setSelectedCompanies] = useState<Company[]>(initialSelectedCompanies);
   
   // Arama yapıldığında şirketleri filtrele
-  const filteredCompanies = bistCompanies;
+  const filteredCompanies = searchTerm.length > 0
+    ? bistCompanies.filter(company => {
+        const search = searchTerm.toLowerCase();
+        return (
+          company.code.toLowerCase().includes(search) || 
+          company.name.toLowerCase().includes(search) ||
+          company.sector.toLowerCase().includes(search)
+        );
+      }).slice(0, maxResults)
+    : bistCompanies.slice(0, maxResults);
   
   // Başlangıç seçili şirketleri
   useEffect(() => {
