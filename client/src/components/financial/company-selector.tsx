@@ -62,7 +62,7 @@ export default function CompanySelector({ onSelect }: CompanySelectorProps) {
             onValueChange={setSearchTerm}
           />
           <CommandEmpty>Şirket bulunamadı.</CommandEmpty>
-          <ScrollArea className="h-72">
+          <ScrollArea className="h-72 max-h-[300px] overflow-auto">
             <CommandGroup>
               {filteredCompanies.map((company) => (
                 <CommandItem

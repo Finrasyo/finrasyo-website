@@ -81,7 +81,7 @@ export default function MultiCompanySelector({
   return (
     <div className="space-y-4">
       <div className="relative">
-        <Command className="rounded-lg border shadow-md">
+        <Command className="rounded-lg border shadow-md overflow-visible">
           <div className="flex items-center border-b px-3">
             <Search className="mr-2 h-4 w-4 shrink-0 opacity-50" />
             <CommandInput 
@@ -91,7 +91,7 @@ export default function MultiCompanySelector({
               className="flex-1 w-full"
             />
           </div>
-          <CommandList>
+          <CommandList className="max-h-[300px] overflow-auto">
             <CommandEmpty>Sonuç bulunamadı...</CommandEmpty>
             <CommandGroup heading="Şirketler">
               {filteredCompanies.map(company => (
