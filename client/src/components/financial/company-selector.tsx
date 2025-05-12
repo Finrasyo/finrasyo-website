@@ -20,11 +20,12 @@ import { Badge } from "@/components/ui/badge";
 
 interface CompanySelectorProps {
   onSelect: (company: { code: string; name: string; sector: string }) => void;
+  initialValue?: string;
 }
 
-export default function CompanySelector({ onSelect }: CompanySelectorProps) {
+export default function CompanySelector({ onSelect, initialValue }: CompanySelectorProps) {
   const [open, setOpen] = useState(false);
-  const [value, setValue] = useState("");
+  const [value, setValue] = useState(initialValue || "");
   const [searchTerm, setSearchTerm] = useState("");
   
   // Filtreleme işlemi için bistCompanies'tan şirketleri filtrele
@@ -39,7 +40,7 @@ export default function CompanySelector({ onSelect }: CompanySelectorProps) {
           company.sector.toLowerCase().includes(search)
         );
       })
-    : bistCompanies;
+    : bistCompanies.slice(0, 50); // Hiç arama yoksa ilk 50 şirketi göster
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -51,12 +52,12 @@ export default function CompanySelector({ onSelect }: CompanySelectorProps) {
           className="w-full justify-between"
         >
           {value
-            ? bistCompanies.find((company) => company.code.toLowerCase() === value.toLowerCase())?.name
+            ? bistCompanies.find((company) => company.code === value)?.name || "Şirket seçin..."
             : "Şirket seçin..."}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-full p-0">
+      <PopoverContent className="w-full p-0" align="start">
         <Command>
           <CommandInput
             placeholder="Şirket ara..."
@@ -64,33 +65,26 @@ export default function CompanySelector({ onSelect }: CompanySelectorProps) {
             onValueChange={setSearchTerm}
           />
           <CommandEmpty>Şirket bulunamadı.</CommandEmpty>
-          <ScrollArea className="max-h-[300px]">
+          <ScrollArea className="h-[300px]">
             <CommandGroup>
               {filteredCompanies.map((company) => (
                 <CommandItem
                   key={company.code}
                   value={company.code}
                   onSelect={(currentValue) => {
-                    // Büyük/küçük harf duyarsız karşılaştırma
-                    const currentLower = currentValue.toLowerCase();
-                    const valueLower = value.toLowerCase();
-                    const newValue = currentLower === valueLower ? "" : currentValue;
-                    setValue(newValue);
+                    setValue(currentValue);
                     setOpen(false);
-                    
-                    if (newValue) {
-                      onSelect({
-                        code: company.code,
-                        name: company.name,
-                        sector: company.sector,
-                      });
-                    }
+                    onSelect({
+                      code: company.code,
+                      name: company.name,
+                      sector: company.sector,
+                    });
                   }}
                 >
                   <Check
                     className={cn(
                       "mr-2 h-4 w-4",
-                      value.toLowerCase() === company.code.toLowerCase() ? "opacity-100" : "opacity-0"
+                      value === company.code ? "opacity-100" : "opacity-0"
                     )}
                   />
                   <div className="flex flex-col">

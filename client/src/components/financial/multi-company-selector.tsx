@@ -20,7 +20,7 @@ interface MultiCompanySelectorProps {
 export default function MultiCompanySelector({
   onSelectCompanies,
   initialSelectedCompanies = [],
-  maxResults = 10
+  maxResults = 25
 }: MultiCompanySelectorProps) {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCompanies, setSelectedCompanies] = useState<Company[]>(initialSelectedCompanies);
