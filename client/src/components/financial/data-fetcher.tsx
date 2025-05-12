@@ -93,7 +93,7 @@ export default function DataFetcher({
       <CardHeader>
         <CardTitle>Finansal Verileri Çek</CardTitle>
         <CardDescription>
-          Google Finance ve Yahoo Finance kaynaklarından seçilen şirketlerin finansal verilerini çek
+          Seçilen şirketlerin finansal verilerini analiz için hazırla
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -139,8 +139,7 @@ export default function DataFetcher({
                     <h3 className="text-sm font-medium text-amber-800">Önemli Bilgi</h3>
                     <div className="mt-2 text-sm text-amber-700">
                       <p>
-                        Bu işlem, seçtiğiniz şirketlerin finansal verilerini Google Finance ve Yahoo Finance 
-                        kaynaklarından çekecektir. İşlem süresi seçilen şirket ve dönem sayısına göre değişebilir.
+                        İşlem süresi seçilen şirket ve dönem sayısına göre değişebilir.
                       </p>
                     </div>
                   </div>
