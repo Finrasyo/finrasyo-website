@@ -96,21 +96,36 @@ export function generateRatioAnalysis(financialData: any): Record<string, { valu
   const ratios: Record<string, { value: number; interpretation: string }> = {};
 
   // 1. Likidite Oranları
-  ratios["Cari Oran"] = calculateCurrentRatio(
-    data.currentAssets,
-    data.shortTermLiabilities
-  );
+  ratios["Cari Oran"] = {
+    value: financialRatios.calculateCurrentRatio(
+      data.currentAssets,
+      data.shortTermLiabilities
+    ),
+    interpretation: financialRatios.evaluateRatio("Cari Oran", 
+      financialRatios.calculateCurrentRatio(data.currentAssets, data.shortTermLiabilities)
+    )
+  };
 
-  ratios["Asit-Test Oranı"] = calculateAcidTestRatio(
-    data.currentAssets,
-    data.inventory,
-    data.shortTermLiabilities
-  );
+  ratios["Asit-Test Oranı"] = {
+    value: financialRatios.calculateAcidTestRatio(
+      data.currentAssets,
+      data.inventory,
+      data.shortTermLiabilities
+    ),
+    interpretation: financialRatios.evaluateRatio("Asit-Test Oranı", 
+      financialRatios.calculateAcidTestRatio(data.currentAssets, data.inventory, data.shortTermLiabilities)
+    )
+  };
 
-  ratios["Nakit Oran"] = calculateCashRatio(
-    data.cashAndEquivalents,
-    data.shortTermLiabilities
-  );
+  ratios["Nakit Oran"] = {
+    value: financialRatios.calculateCashRatio(
+      data.cashAndEquivalents,
+      data.shortTermLiabilities
+    ),
+    interpretation: financialRatios.evaluateRatio("Nakit Oran", 
+      financialRatios.calculateCashRatio(data.cashAndEquivalents, data.shortTermLiabilities)
+    )
+  };
 
   // 2. Finansal Yapı Oranları
   ratios["Finansal Kaldıraç Oranı"] = {
@@ -133,7 +148,9 @@ export function generateRatioAnalysis(financialData: any): Record<string, { valu
       data.equity,
       data.totalAssets
     ),
-    interpretation: "Değerlendirme yok"
+    interpretation: financialRatios.evaluateRatio("Borç Oranı", 
+      financialRatios.calculateEquityToAssetsRatio(data.equity, data.totalAssets)
+    )
   };
 
   ratios["Özkaynak-Toplam Yabancı Kaynak Oranı"] = {
@@ -142,7 +159,13 @@ export function generateRatioAnalysis(financialData: any): Record<string, { valu
       data.shortTermLiabilities,
       data.longTermLiabilities
     ),
-    interpretation: "Değerlendirme yok"
+    interpretation: financialRatios.evaluateRatio("Borç/Özsermaye Oranı", 
+      financialRatios.calculateEquityToDebtRatio(
+        data.equity, 
+        data.shortTermLiabilities, 
+        data.longTermLiabilities
+      )
+    )
   };
 
   ratios["Kısa Vadeli Yabancı Kaynak Oranı"] = {
@@ -150,7 +173,7 @@ export function generateRatioAnalysis(financialData: any): Record<string, { valu
       data.shortTermLiabilities,
       data.totalLiabilities
     ),
-    interpretation: "Değerlendirme yok"
+    interpretation: "Bu oran, toplam yabancı kaynaklar içinde kısa vadeli borçların oranını gösterir"
   };
 
   ratios["Uzun Vadeli Yabancı Kaynak Oranı"] = {
@@ -158,7 +181,7 @@ export function generateRatioAnalysis(financialData: any): Record<string, { valu
       data.longTermLiabilities,
       data.totalLiabilities
     ),
-    interpretation: "Değerlendirme yok"
+    interpretation: "Bu oran, toplam yabancı kaynaklar içinde uzun vadeli borçların oranını gösterir"
   };
 
   ratios["Duran Varlıkların Özkaynaklara Oranı"] = {
@@ -166,7 +189,7 @@ export function generateRatioAnalysis(financialData: any): Record<string, { valu
       data.fixedAssets,
       data.equity
     ),
-    interpretation: "Değerlendirme yok"
+    interpretation: "Bu oran, duran varlıkların ne kadarlık kısmının özkaynaklarla finanse edildiğini gösterir"
   };
 
   ratios["Duran Varlıkların Devamlı Sermayeye Oranı"] = {
@@ -175,7 +198,7 @@ export function generateRatioAnalysis(financialData: any): Record<string, { valu
       data.longTermLiabilities,
       data.equity
     ),
-    interpretation: "Değerlendirme yok"
+    interpretation: "Bu oran, duran varlıkların ne kadarlık kısmının uzun vadeli kaynaklarla finanse edildiğini gösterir"
   };
 
   ratios["Maddi Duran Varlıkların Özkaynaklara Oranı"] = {
@@ -183,7 +206,7 @@ export function generateRatioAnalysis(financialData: any): Record<string, { valu
       data.tangibleFixedAssets,
       data.equity
     ),
-    interpretation: "Değerlendirme yok"
+    interpretation: "Bu oran, maddi duran varlıkların ne kadarlık kısmının özkaynaklarla finanse edildiğini gösterir"
   };
 
   // 3. Karlılık Oranları
@@ -192,7 +215,9 @@ export function generateRatioAnalysis(financialData: any): Record<string, { valu
       data.grossProfit,
       data.netSales
     ),
-    interpretation: "Değerlendirme yok"
+    interpretation: financialRatios.evaluateRatio("Brüt Kar Marjı", 
+      financialRatios.calculateGrossProfitMarginRatio(data.grossProfit, data.netSales)
+    )
   };
 
   ratios["Faaliyet Kârlılığı Oranı"] = {
@@ -200,7 +225,7 @@ export function generateRatioAnalysis(financialData: any): Record<string, { valu
       data.operatingProfit,
       data.netSales
     ),
-    interpretation: "Değerlendirme yok"
+    interpretation: "Bu oran, şirketin ana faaliyetlerinden ne kadar kâr elde ettiğini gösterir"
   };
 
   ratios["Net Karlılık Oranı"] = {
@@ -228,7 +253,9 @@ export function generateRatioAnalysis(financialData: any): Record<string, { valu
       data.netProfit,
       data.totalAssets
     ),
-    interpretation: "Değerlendirme yok"
+    interpretation: financialRatios.evaluateRatio("Varlık Karlılığı", 
+      financialRatios.calculateReturnOnAssetsRatio(data.netProfit, data.totalAssets)
+    )
   };
 
   return ratios;
