@@ -238,7 +238,7 @@ export default function AnalysisWizardPage() {
           {/* Step Indicator */}
           <div className="mb-8">
             <Tabs value={currentStep} className="w-full">
-              <TabsList className="grid grid-cols-6">
+              <TabsList className="grid grid-cols-5">
                 <TabsTrigger 
                   value="company-selection" 
                   onClick={() => setCurrentStep("company-selection")}
@@ -268,18 +268,11 @@ export default function AnalysisWizardPage() {
                   4. Fiyat Hesaplama
                 </TabsTrigger>
                 <TabsTrigger 
-                  value="data-fetching" 
-                  onClick={() => setCurrentStep("data-fetching")}
-                  disabled={!isPaid}
-                >
-                  5. Veri Çekme
-                </TabsTrigger>
-                <TabsTrigger 
                   value="report-generation" 
                   onClick={() => setCurrentStep("report-generation")}
                   disabled={!processedResults}
                 >
-                  6. Rapor Oluşturma
+                  5. Rapor
                 </TabsTrigger>
               </TabsList>
               
@@ -410,7 +403,7 @@ export default function AnalysisWizardPage() {
                   <CardHeader>
                     <CardTitle>Veri Çekme</CardTitle>
                     <CardDescription>
-                      Seçtiğiniz şirketlerin finansal verilerini çekin
+                      Seçtiğiniz şirketlerin finansal verilerini otomatik olarak çekiliyor
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
@@ -431,21 +424,23 @@ export default function AnalysisWizardPage() {
                 </Card>
               </TabsContent>
               
-              {/* Oran Hesaplama ve Rapor Üretme */}
+              {/* Oran Hesaplama */}
               <TabsContent value="ratio-calculation" className="pt-6">
                 <Card>
                   <CardHeader>
                     <CardTitle>Oran Hesaplama</CardTitle>
                     <CardDescription>
-                      Finansal verileri işleyerek istediğiniz oranları hesaplayın
+                      Seçilen şirketler için finansal oranlar hesaplanıyor
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <ResultProcessor 
-                      data={fetchedData}
-                      selectedRatios={selectedRatios}
-                      onProcessed={handleResultsProcessed}
-                    />
+                    {fetchedData && (
+                      <ResultProcessor 
+                        data={fetchedData}
+                        selectedRatios={selectedRatios}
+                        onResultsProcessed={handleResultsProcessed}
+                      />
+                    )}
                     
                     <div className="flex justify-between mt-6">
                       <Button variant="outline" onClick={handleBackStep}>
@@ -462,86 +457,29 @@ export default function AnalysisWizardPage() {
                   <CardHeader>
                     <CardTitle>Rapor Oluşturma</CardTitle>
                     <CardDescription>
-                      Analizlerinizi farklı formatlarda raporlayın
+                      Oluşturulan finansal analiz sonuçlarını raporlayın
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <div className="space-y-6">
-                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                        <Button 
-                          variant="outline" 
-                          className="flex flex-col items-center py-6"
-                          onClick={() => handleReport("pdf")}
-                        >
-                          <Save className="h-8 w-8 mb-2" />
-                          <span>PDF Olarak Kaydet</span>
-                        </Button>
-                        
-                        <Button 
-                          variant="outline" 
-                          className="flex flex-col items-center py-6"
-                          onClick={() => handleReport("excel")}
-                        >
-                          <Save className="h-8 w-8 mb-2" />
-                          <span>Excel Olarak Kaydet</span>
-                        </Button>
-                        
-                        <Button 
-                          variant="outline" 
-                          className="flex flex-col items-center py-6"
-                          onClick={() => handleReport("word")}
-                        >
-                          <Save className="h-8 w-8 mb-2" />
-                          <span>Word Olarak Kaydet</span>
-                        </Button>
-                        
-                        <Button 
-                          variant="outline" 
-                          className="flex flex-col items-center py-6"
-                          onClick={() => handleReport("csv")}
-                        >
-                          <Save className="h-8 w-8 mb-2" />
-                          <span>CSV Olarak Kaydet</span>
-                        </Button>
-                      </div>
-                      
-                      <Card>
-                        <CardHeader>
-                          <CardTitle>Rapor Özeti</CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                          <div className="space-y-4">
-                            <div className="grid grid-cols-2 gap-4">
-                              <div>
-                                <h3 className="text-sm font-medium text-muted-foreground">Şirketler</h3>
-                                <p>{selectedCompanies.map(c => c.code).join(", ")}</p>
-                              </div>
-                              <div>
-                                <h3 className="text-sm font-medium text-muted-foreground">Dönemler</h3>
-                                <p>{selectedYears.join(", ")}</p>
-                              </div>
-                              <div>
-                                <h3 className="text-sm font-medium text-muted-foreground">Oranlar</h3>
-                                <p>{selectedRatios.length} adet oran</p>
-                              </div>
-                              <div>
-                                <h3 className="text-sm font-medium text-muted-foreground">Toplam Kredi</h3>
-                                <p>{credits} kredi ({price.toFixed(2)} ₺)</p>
-                              </div>
-                            </div>
-                          </div>
-                        </CardContent>
-                      </Card>
-                      
-                      <div className="flex justify-between">
-                        <Button variant="outline" onClick={handleBackStep}>
-                          <ArrowLeft className="mr-2 h-4 w-4" /> Geri
-                        </Button>
-                        <Button onClick={() => navigate("/reports")}>
-                          <Download className="mr-2 h-4 w-4" />
-                          Tüm Raporlarım
-                        </Button>
-                      </div>
+                    {processedResults && (
+                      <ReportGenerator 
+                        results={processedResults}
+                        companies={selectedCompanies}
+                        years={selectedYears}
+                        onGenerateReport={handleReport}
+                      />
+                    )}
+                    
+                    <div className="flex justify-between mt-6">
+                      <Button variant="outline" onClick={handleBackStep}>
+                        <ArrowLeft className="mr-2 h-4 w-4" /> Geri
+                      </Button>
+                      <Button 
+                        variant="default"
+                        onClick={() => navigate("/reports")}
+                      >
+                        Raporlarım <ArrowRight className="ml-2 h-4 w-4" />
+                      </Button>
                     </div>
                   </CardContent>
                 </Card>

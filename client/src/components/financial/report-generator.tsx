@@ -17,40 +17,35 @@ import {
 } from "@/components/ui/select";
 import { Loader2, FileText, Download, File } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { useFinancialData } from "@/hooks/use-financial-data";
 
 interface ReportGeneratorProps {
-  companyId: number;
-  financialDataId: number;
-  onGenerated?: (reportUrl: string) => void;
-  children?: React.ReactNode;
+  results: any;
+  companies: Array<{code: string, name: string, sector: string}>;
+  years: number[];
+  onGenerateReport: (format: string) => Promise<void>;
 }
 
 export default function ReportGenerator({
-  companyId,
-  financialDataId,
-  onGenerated,
-  children
+  results,
+  companies,
+  years,
+  onGenerateReport
 }: ReportGeneratorProps) {
   const [reportType, setReportType] = useState<string>("pdf");
   const [isGenerating, setIsGenerating] = useState(false);
   const { toast } = useToast();
-  const { generateReport } = useFinancialData();
   
   const handleGenerateReport = async () => {
     try {
       setIsGenerating(true);
       
-      const response = await generateReport(companyId, financialDataId, reportType);
+      await onGenerateReport(reportType);
       
       toast({
         title: "Rapor Hazır",
         description: `Raporunuz ${reportType.toUpperCase()} formatında başarıyla oluşturuldu.`,
       });
       
-      if (onGenerated && response.url) {
-        onGenerated(response.url);
-      }
     } catch (error: any) {
       console.error("Rapor oluşturma hatası:", error);
       toast({
@@ -87,9 +82,16 @@ export default function ReportGenerator({
         </CardDescription>
       </CardHeader>
       <CardContent>
-        {children}
-        
-        <div className="mt-4 space-y-4">
+        <div className="space-y-4">
+          <div className="rounded-lg bg-neutral-50 p-4 border border-neutral-200">
+            <h3 className="text-sm font-medium text-neutral-800 mb-2">Analiz Özeti</h3>
+            <div className="space-y-1 text-sm">
+              <p><span className="font-medium">Şirketler:</span> {companies.map(c => c.name).join(', ')}</p>
+              <p><span className="font-medium">Dönemler:</span> {years.map(y => y.toString()).join(', ')}</p>
+              <p><span className="font-medium">Oran sayısı:</span> {Object.keys(results).length} adet</p>
+            </div>
+          </div>
+          
           <div className="space-y-2">
             <label htmlFor="report-type" className="text-sm font-medium">
               Rapor Formatı

@@ -8,13 +8,13 @@ import { getAllRatios } from "@/lib/financial-ratios";
 interface ResultProcessorProps {
   data: any;
   selectedRatios: string[];
-  onProcessed: (processedData: any) => void;
+  onResultsProcessed: (processedData: any) => void;
 }
 
 export default function ResultProcessor({
   data,
   selectedRatios,
-  onProcessed
+  onResultsProcessed
 }: ResultProcessorProps) {
   const [isProcessing, setIsProcessing] = useState(false);
   const [results, setResults] = useState<any>(null);
@@ -81,7 +81,7 @@ export default function ResultProcessor({
       
       // Sonuçları kaydet ve bildir
       setResults(processedResults);
-      onProcessed(processedResults);
+      onResultsProcessed(processedResults);
       
       toast({
         title: "İşlem Tamamlandı",
@@ -192,7 +192,7 @@ export default function ResultProcessor({
             </div>
             
             <div className="flex justify-between">
-              <Button variant="outline" onClick={() => onProcessed(results)}>
+              <Button variant="outline" onClick={() => onResultsProcessed(results)}>
                 <FileText className="mr-2 h-4 w-4" />
                 Raporu Görüntüle
               </Button>
