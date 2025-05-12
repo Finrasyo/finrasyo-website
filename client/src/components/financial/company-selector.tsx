@@ -1,135 +1,113 @@
-import { useState, useEffect } from "react";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
+import { useState } from "react";
+import { Check, ChevronsUpDown } from "lucide-react";
+import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { Search, Check } from "lucide-react";
-import { bistCompanies, searchCompanies } from "@/data/bist-companies";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+} from "@/components/ui/command";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { bistCompanies } from "@/data/bist-companies";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Badge } from "@/components/ui/badge";
 
 interface CompanySelectorProps {
   onSelect: (company: { code: string; name: string; sector: string }) => void;
-  initialValue?: string; // company code
 }
 
-export default function CompanySelector({ onSelect, initialValue }: CompanySelectorProps) {
+export default function CompanySelector({ onSelect }: CompanySelectorProps) {
+  const [open, setOpen] = useState(false);
+  const [value, setValue] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedCompany, setSelectedCompany] = useState<{ code: string; name: string; sector: string } | null>(null);
-  const [filteredCompanies, setFilteredCompanies] = useState<typeof bistCompanies>([]);
-  const [showSuggestions, setShowSuggestions] = useState(false);
   
-  // initialValue değiştiğinde seçili şirketi ayarla
-  useEffect(() => {
-    if (initialValue) {
-      const company = bistCompanies.find(c => c.code === initialValue);
-      if (company) {
-        setSelectedCompany(company);
-      }
-    }
-  }, [initialValue]);
-  
-  // Arama yapıldığında şirketleri filtrele
-  useEffect(() => {
-    if (searchTerm.trim().length === 0) {
-      // Arama terimi yoksa tüm şirketleri göster (ilk 15)
-      setFilteredCompanies(bistCompanies.slice(0, 15));
-      setShowSuggestions(true);
-      return;
-    }
-    
-    const results = searchCompanies(searchTerm).slice(0, 15);
-    setFilteredCompanies(results);
-    setShowSuggestions(true);
-  }, [searchTerm]);
-  
-  // Bileşen ilk yüklendiğinde şirketleri göster
-  useEffect(() => {
-    setFilteredCompanies(bistCompanies.slice(0, 15));
-    setShowSuggestions(true);
-  }, []);
-  
-  const handleSelectCompany = (company: typeof bistCompanies[0]) => {
-    setSelectedCompany(company);
-    setSearchTerm("");
-    setShowSuggestions(false);
-    onSelect(company);
-  };
-  
-  const handleInputFocus = () => {
-    setShowSuggestions(true);
-  };
-  
-  const handleInputBlur = () => {
-    // Input'tan çıkıldığında hemen gizleme, 200ms gecikmeli gizle
-    // Böylece kullanıcı bir öneri seçebilir
-    setTimeout(() => {
-      setShowSuggestions(false);
-    }, 200);
-  };
-  
+  // Filtreleme işlemi için bistCompanies'tan şirketleri filtrele
+  const filteredCompanies = bistCompanies.filter((company) => {
+    // Arama terimini lowercase yap
+    const search = searchTerm.toLowerCase();
+    // Şirket bilgilerini lowercase yaparak karşılaştır
+    return (
+      company.code.toLowerCase().includes(search) ||
+      company.name.toLowerCase().includes(search) ||
+      company.sector.toLowerCase().includes(search)
+    );
+  });
+
   return (
-    <div className="space-y-4">
-      {selectedCompany ? (
-        <div className="p-3 border rounded-md">
-          <div className="flex justify-between items-center">
-            <div>
-              <div className="font-medium text-lg">{selectedCompany.name}</div>
-              <div className="flex items-center gap-2 mt-1">
-                <Badge variant="outline">{selectedCompany.code}</Badge>
-                <span className="text-sm text-muted-foreground">{selectedCompany.sector}</span>
-              </div>
-            </div>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => {
-                setSelectedCompany(null);
-                setSearchTerm("");
-              }}
-            >
-              Değiştir
-            </Button>
-          </div>
-        </div>
-      ) : (
-        <div className="relative">
-          <div className="flex items-center shadow-sm border rounded-md">
-            <Search className="absolute left-3 h-4 w-4 text-gray-400" />
-            <Input
-              type="text"
-              placeholder="Şirket adı veya kodu ara (en az 2 karakter)..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10 w-full"
-              onFocus={handleInputFocus}
-              onBlur={handleInputBlur}
-            />
-          </div>
-          
-          {/* Öneriler Listesi */}
-          {showSuggestions && filteredCompanies.length > 0 && (
-            <div className="absolute z-10 mt-1 w-full bg-white border border-gray-200 rounded-md shadow-lg">
-              <ScrollArea className="max-h-[300px]">
-                <div className="py-1">
-                  {filteredCompanies.map(company => (
-                    <div
-                      key={company.code}
-                      className="flex items-center justify-between px-4 py-2 hover:bg-gray-100 cursor-pointer"
-                      onClick={() => handleSelectCompany(company)}
-                    >
-                      <div className="flex flex-col">
-                        <span className="font-medium">{company.name}</span>
-                        <span className="text-sm text-gray-500">{company.code}</span>
-                      </div>
-                      <Badge variant="outline">{company.sector}</Badge>
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger asChild>
+        <Button
+          variant="outline"
+          role="combobox"
+          aria-expanded={open}
+          className="w-full justify-between"
+        >
+          {value
+            ? bistCompanies.find((company) => company.code.toLowerCase() === value.toLowerCase())?.name
+            : "Şirket seçin..."}
+          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent className="w-full p-0">
+        <Command>
+          <CommandInput
+            placeholder="Şirket ara..."
+            value={searchTerm}
+            onValueChange={setSearchTerm}
+          />
+          <CommandEmpty>Şirket bulunamadı.</CommandEmpty>
+          <ScrollArea className="max-h-[300px]">
+            <CommandGroup>
+              {filteredCompanies.map((company) => (
+                <CommandItem
+                  key={company.code}
+                  value={company.code}
+                  onSelect={(currentValue) => {
+                    // Büyük/küçük harf duyarsız karşılaştırma
+                    const currentLower = currentValue.toLowerCase();
+                    const valueLower = value.toLowerCase();
+                    const newValue = currentLower === valueLower ? "" : currentValue;
+                    setValue(newValue);
+                    setOpen(false);
+                    
+                    if (newValue) {
+                      onSelect({
+                        code: company.code,
+                        name: company.name,
+                        sector: company.sector,
+                      });
+                    }
+                  }}
+                >
+                  <Check
+                    className={cn(
+                      "mr-2 h-4 w-4",
+                      value.toLowerCase() === company.code.toLowerCase() ? "opacity-100" : "opacity-0"
+                    )}
+                  />
+                  <div className="flex flex-col">
+                    <span>{company.name}</span>
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm text-muted-foreground">
+                        {company.code}
+                      </span>
+                      <Badge variant="outline" className="text-xs">
+                        {company.sector}
+                      </Badge>
                     </div>
-                  ))}
-                </div>
-              </ScrollArea>
-            </div>
-          )}
-        </div>
-      )}
-    </div>
+                  </div>
+                </CommandItem>
+              ))}
+            </CommandGroup>
+          </ScrollArea>
+        </Command>
+      </PopoverContent>
+    </Popover>
   );
 }

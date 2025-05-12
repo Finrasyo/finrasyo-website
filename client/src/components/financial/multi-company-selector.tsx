@@ -1,18 +1,9 @@
 import { useState, useEffect } from "react";
-import { 
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Search, X, Check } from "lucide-react";
-import { bistCompanies, searchCompanies } from "@/data/bist-companies";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import { Search, X } from "lucide-react";
+import { bistCompanies } from "@/data/bist-companies";
 
 interface Company {
   code: string;
@@ -33,22 +24,17 @@ export default function MultiCompanySelector({
 }: MultiCompanySelectorProps) {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCompanies, setSelectedCompanies] = useState<Company[]>(initialSelectedCompanies);
-  const [filteredCompanies, setFilteredCompanies] = useState<Company[]>([]);
-  const [showSuggestions, setShowSuggestions] = useState(false);
   
   // Arama yapıldığında şirketleri filtrele
-  useEffect(() => {
-    if (searchTerm.trim().length === 0) {
-      // Arama terimi yoksa tüm şirketleri göster (maksimum sayıda)
-      setFilteredCompanies(bistCompanies.slice(0, maxResults));
-      setShowSuggestions(true);
-      return;
-    }
-    
-    const results = searchCompanies(searchTerm).slice(0, maxResults);
-    setFilteredCompanies(results);
-    setShowSuggestions(true);
-  }, [searchTerm, maxResults]);
+  const searchTermLower = searchTerm.toLowerCase();
+  
+  const filteredCompanies = bistCompanies
+    .filter(company => 
+      company.code.toLowerCase().includes(searchTermLower) || 
+      company.name.toLowerCase().includes(searchTermLower) ||
+      company.sector.toLowerCase().includes(searchTermLower)
+    )
+    .slice(0, maxResults);
   
   // Başlangıç seçili şirketleri
   useEffect(() => {
@@ -71,7 +57,6 @@ export default function MultiCompanySelector({
     
     setSelectedCompanies([...selectedCompanies, company]);
     setSearchTerm("");
-    setShowSuggestions(false);
   };
   
   // Şirket seçimini kaldır
@@ -83,69 +68,47 @@ export default function MultiCompanySelector({
   const handleClearAll = () => {
     setSelectedCompanies([]);
   };
-
-  // Bileşen ilk yüklendiğinde şirketleri göster
-  useEffect(() => {
-    setFilteredCompanies(bistCompanies.slice(0, maxResults));
-    setShowSuggestions(true);
-  }, [maxResults]);
-  
-  const handleInputFocus = () => {
-    setShowSuggestions(true);
-  };
-  
-  const handleInputBlur = () => {
-    // Input'tan çıkıldığında hemen gizleme, 200ms gecikmeli gizle
-    // Böylece kullanıcı bir öneri seçebilir
-    setTimeout(() => {
-      setShowSuggestions(false);
-    }, 200);
-  };
   
   return (
     <div className="space-y-4">
       <div className="relative">
-        <div className="flex items-center shadow-sm border rounded-md">
-          <Search className="absolute left-3 h-4 w-4 text-gray-400" />
-          <Input
-            type="text"
-            placeholder="Şirket adı veya kodu ara (en az 2 karakter)..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="pl-10 w-full"
-            onFocus={handleInputFocus}
-            onBlur={handleInputBlur}
-          />
-        </div>
-        
-        {/* Öneriler Listesi */}
-        {showSuggestions && filteredCompanies.length > 0 && (
-          <div className="absolute z-10 mt-1 w-full bg-white border border-gray-200 rounded-md shadow-lg">
-            <ScrollArea className="max-h-[300px]">
-              <div className="py-1">
-                {filteredCompanies.map(company => (
-                  <div
-                    key={company.code}
-                    className="flex items-center justify-between px-4 py-2 hover:bg-gray-100 cursor-pointer"
-                    onClick={() => handleSelectCompany(company)}
-                  >
-                    <div className="flex flex-col">
-                      <span className="font-medium">{company.name}</span>
-                      <span className="text-sm text-gray-500">{company.code}</span>
-                    </div>
-                    <Badge variant="outline">{company.sector}</Badge>
-                  </div>
-                ))}
-              </div>
-            </ScrollArea>
+        <Command className="rounded-lg border shadow-md">
+          <div className="flex items-center border-b px-3">
+            <Search className="mr-2 h-4 w-4 shrink-0 opacity-50" />
+            <CommandInput 
+              placeholder="Şirket adı veya kodu ara..."
+              value={searchTerm}
+              onValueChange={setSearchTerm}
+              className="flex-1 w-full"
+            />
           </div>
-        )}
+          <CommandList className="max-h-[300px]">
+            <CommandEmpty>Sonuç bulunamadı...</CommandEmpty>
+            <CommandGroup heading="Şirketler">
+              {filteredCompanies.map(company => (
+                <CommandItem
+                  key={company.code}
+                  onSelect={() => handleSelectCompany(company)}
+                  className="flex justify-between"
+                >
+                  <div>
+                    <span className="font-medium">{company.code}</span>
+                    <span className="ml-2 text-neutral-500">{company.name}</span>
+                  </div>
+                  <span className="text-xs text-neutral-400">{company.sector}</span>
+                </CommandItem>
+              ))}
+            </CommandGroup>
+          </CommandList>
+        </Command>
       </div>
       
       {selectedCompanies.length > 0 && (
         <div>
           <div className="flex items-center justify-between mb-2">
-            <Label>Seçilen Şirketler ({selectedCompanies.length})</Label>
+            <h3 className="text-sm font-medium text-neutral-500">
+              Seçilen Şirketler ({selectedCompanies.length})
+            </h3>
             <Button 
               variant="ghost" 
               size="sm" 
