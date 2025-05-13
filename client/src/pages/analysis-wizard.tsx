@@ -151,9 +151,12 @@ export default function AnalysisWizard() {
       
       // Şimdi finansal veri oluştur
       const today = new Date().getFullYear(); // Geçerli yıl
+      // selectedYears[0] string olduğu için parseInt ile sayıya çevirelim
+      const selectedYear = selectedYears.length > 0 ? parseInt(selectedYears[0]) : today;
+      
       const financialDataResponse = await apiRequest("POST", "/api/financial-data", {
         companyId: company.id,
-        year: selectedYears[0] || today,
+        year: selectedYear, // Sayı olarak gönder
         // Gerekli finansal veri alanları - test değerleri
         cashAndEquivalents: 1000000,
         accountsReceivable: 500000,
@@ -189,7 +192,7 @@ export default function AnalysisWizard() {
         companyId: company.id,
         financialDataId: financialData.id,
         format: format,
-        name: `${company.name} - ${selectedYears[0]} Finansal Analiz Raporu`,
+        name: `${company.name} - ${selectedYear} Finansal Analiz Raporu`,
         type: 'financial',
         status: 'completed',
         numCompanies: selectedCompanies.length,
