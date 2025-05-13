@@ -17,6 +17,7 @@ type FinancialDataContextType = {
       numPeriods?: number;
       numRatios?: number;
       price?: number;
+      reportName?: string;
     }
   ) => Promise<any>;
 };
@@ -62,12 +63,16 @@ export function FinancialDataProvider({ children }: { children: ReactNode }) {
         numPeriods?: number;
         numRatios?: number;
         price?: number;
+        reportName?: string;
       };
     }) => {
       const res = await apiRequest("POST", "/api/reports", {
         companyId,
         financialDataId,
         format: type,
+        name: `Finansal Oran Raporu`, // Gerekli name (isim) alanını ekledik
+        type: 'financial', // Gerekli type (tür) alanını ekledik
+        status: 'processing',
         options: {
           numCompanies: options?.numCompanies || 1,
           numPeriods: options?.numPeriods || 1,

@@ -242,7 +242,8 @@ export default function AnalysisWizardPage() {
           numCompanies: selectedCompanies.length,
           numPeriods: selectedYears.length,
           numRatios: selectedRatios.length,
-          price: price
+          price: price,
+          reportName: `${company.name} - ${selectedYears[0]} Finansal Analiz Raporu`
         }
       );
       
