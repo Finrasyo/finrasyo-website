@@ -126,14 +126,40 @@ export default function ReportsPage() {
 
   const handleViewReport = async (report: Report) => {
     try {
-      const res = await apiRequest("GET", `/api/reports/${report.id}/${report.type}`);
+      // Önce rapor verilerini yükle
+      console.log("Rapor görüntüleme başlatılıyor:", report);
+      
+      const res = await apiRequest("GET", `/api/reports/${report.id}`);
+      if (!res.ok) {
+        throw new Error(`Rapor verileri yüklenemedi: ${res.status} ${res.statusText}`);
+      }
+      
       const data = await res.json();
-      setSelectedReport(data);
+      console.log("Rapor verileri alındı:", data);
+      
+      if (!data || !data.company || !data.financialData) {
+        throw new Error("Rapor verileri eksik veya hatalı");
+      }
+      
+      // Şirket ve finansal verilerin eksiksiz olduğundan emin ol
+      const reportData = {
+        company: {
+          name: data.company.name || "Bilinmeyen Şirket",
+          code: data.company.code || null,
+          sector: data.company.sector || null,
+          id: data.company.id
+        },
+        financialData: data.financialData,
+        report: data.report || report
+      };
+      
+      setSelectedReport(reportData);
       setShowPreview(true);
     } catch (error) {
+      console.error("Rapor görüntüleme hatası:", error);
       toast({
         title: "Hata",
-        description: "Rapor yüklenirken bir hata oluştu.",
+        description: error instanceof Error ? error.message : "Rapor yüklenirken bir hata oluştu.",
         variant: "destructive"
       });
     }
