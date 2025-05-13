@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Report, Company } from "@shared/schema";
+import type { UseQueryOptions } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 import Navbar from "@/components/layout/navbar";
 import Footer from "@/components/layout/footer";
@@ -58,26 +59,37 @@ export default function ReportsPage() {
   const { toast } = useToast();
   const [searchQuery, setSearchQuery] = useState("");
   const [showPreview, setShowPreview] = useState(false);
-  const [selectedReport, setSelectedReport] = useState<any>(null);
+  const [selectedReport, setSelectedReport] = useState<{
+    company: { name: string; code: string | null; sector: string | null; id?: number };
+    financialData: any;
+    report?: Report;
+  } | null>(null);
   const [downloadFormat, setDownloadFormat] = useState<string>("pdf");
   
   const { 
     data: reports = [], 
     isLoading, 
     error 
-  } = useQuery<any[]>({
+  } = useQuery({
     queryKey: ["/api/reports"],
-    onError: () => {
+    staleTime: 5 * 60 * 1000, // 5 dakika
+  });
+  
+  // Hata durumunu ele al
+  useEffect(() => {
+    if (error) {
+      console.error("Raporlar yüklenirken hata:", error);
       toast({
         title: "Hata",
         description: "Raporlar yüklenirken bir hata oluştu.",
         variant: "destructive"
       });
     }
-  });
+  }, [error, toast]);
 
   const getCompanyMap = async (reports: Report[]) => {
-    const companyIds = [...new Set(reports.map(report => report.companyId))];
+    // Benzersiz şirket ID'lerini al
+    const companyIds = Array.from(new Set(reports.map(report => report.companyId)));
     
     // Fetch each company
     const companies: Record<number, Company> = {};
@@ -100,14 +112,17 @@ export default function ReportsPage() {
     isLoading: isLoadingCompanies 
   } = useQuery<Record<number, Company>>({
     queryKey: ["company-map"],
-    queryFn: () => getCompanyMap(reports),
-    enabled: reports.length > 0
+    queryFn: () => getCompanyMap(reports as Report[]),
+    enabled: Array.isArray(reports) && reports.length > 0
   });
 
-  const filteredReports = reports.filter(report => {
-    const companyName = companyMap[report.companyId]?.name || "";
-    return companyName.toLowerCase().includes(searchQuery.toLowerCase());
-  });
+  // Type-safe filtreleme
+  const filteredReports = Array.isArray(reports) 
+    ? reports.filter(report => {
+        const companyName = companyMap[report.companyId]?.name || "";
+        return companyName.toLowerCase().includes(searchQuery.toLowerCase());
+      })
+    : [];
 
   const handleViewReport = async (report: Report) => {
     try {
@@ -330,8 +345,8 @@ export default function ReportsPage() {
             <div className="mt-4">
               <div className="mb-4">
                 <h3 className="font-medium text-neutral-800">
-                  {companyMap[selectedReport.company?.id]?.name || selectedReport.company?.name || "Şirket"} - 
-                  {selectedReport.financialData?.year || ""} Yılı Finansal Analizi
+                  {selectedReport?.company?.name || "Şirket"} - 
+                  {selectedReport?.financialData?.year || ""} Yılı Finansal Analizi
                 </h3>
                 <p className="text-sm text-neutral-500">
                   Oluşturulma Tarihi: {formatDate(selectedReport.report?.createdAt || new Date())}
