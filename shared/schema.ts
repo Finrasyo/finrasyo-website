@@ -77,9 +77,10 @@ export const insertFinancialDataSchema = createInsertSchema(financialData).pick(
 export const reports = pgTable("reports", {
   id: serial("id").primaryKey(),
   name: text("name").notNull(),
-  type: text("type").notNull(),
+  type: text("type").notNull().default("financial"),
   format: text("format").notNull().default("pdf"), // 'pdf', 'word', 'excel', 'csv'
-  companyName: text("company_name").notNull(),
+  url: text("url"),  // Rapor dosyasının URL'i
+  status: text("status").notNull().default("processing"), // 'processing', 'completed', 'failed'
   userId: integer("user_id").notNull(),
   companyId: integer("company_id").notNull(),
   financialDataId: integer("financial_data_id").notNull(),

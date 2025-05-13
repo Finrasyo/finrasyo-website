@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Check, ChevronsUpDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -27,7 +27,6 @@ export default function CompanySelector({ onSelect, initialValue }: CompanySelec
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(initialValue || "");
   const [searchTerm, setSearchTerm] = useState("");
-  const popoverRef = useRef<HTMLDivElement>(null);
   
   // Eğer initialValue varsa, başlangıçta onu set et
   useEffect(() => {
@@ -68,7 +67,6 @@ export default function CompanySelector({ onSelect, initialValue }: CompanySelec
       <PopoverContent 
         className="w-full p-0" 
         align="start"
-        ref={popoverRef}
         style={{ maxWidth: "500px", width: "100%" }}
       >
         <Command className="w-full">

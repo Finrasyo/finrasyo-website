@@ -63,7 +63,8 @@ export async function generateReport(req: Request, res: Response) {
       companyId: company.id,
       financialDataId: financialData.id,
       format: format.toLowerCase(),
-      url: reportPath,
+      url: reportPath,  // URL değeri olarak reportPath'i kullan
+      name: `${company.name} Finansal Rapor`,
       createdAt: new Date(),
       status: "completed"
     });
