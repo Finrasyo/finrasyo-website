@@ -11,7 +11,18 @@ import { ratioCategories } from "client/src/lib/financial-ratios";
 // Rapor oluşturma API endpoint'i
 export async function generateReport(req: Request, res: Response) {
   try {
-    const { companyId, financialDataId, format, options } = req.body;
+    const { companyId, financialDataId, format, options, metadata } = req.body;
+    
+    // Seçilen oranları al
+    let selectedRatios: string[] = [];
+    if (metadata) {
+      try {
+        const metadataObj = typeof metadata === 'string' ? JSON.parse(metadata) : metadata;
+        selectedRatios = metadataObj.ratio_ids || [];
+      } catch (e) {
+        console.error("Metadata parse hatası:", e);
+      }
+    }
     
     if (!req.isAuthenticated()) {
       return res.status(401).json({ error: "Yetkilendirme hatası" });
@@ -36,21 +47,27 @@ export async function generateReport(req: Request, res: Response) {
       return res.status(404).json({ error: "Finansal veri bulunamadı" });
     }
     
+    // Finansal veri objesine seçilen oranları ekle
+    const financialDataWithOptions = {
+      ...financialData,
+      selectedRatios 
+    };
+    
     let reportPath = '';
     
     // Format'a göre rapor oluştur
     switch (format.toLowerCase()) {
       case 'pdf':
-        reportPath = await generatePdfReport(company, financialData);
+        reportPath = await generatePdfReport(company, financialDataWithOptions);
         break;
       case 'excel':
-        reportPath = await generateExcelReport(company, financialData);
+        reportPath = await generateExcelReport(company, financialDataWithOptions);
         break;
       case 'csv':
-        reportPath = await generateCsvReport(company, financialData);
+        reportPath = await generateCsvReport(company, financialDataWithOptions);
         break;
       case 'word':
-        reportPath = await generateWordReport(company, financialData);
+        reportPath = await generateWordReport(company, financialDataWithOptions);
         break;
       default:
         return res.status(400).json({ error: "Geçersiz rapor formatı" });
@@ -170,17 +187,37 @@ async function generatePdfReport(company: Company, financialData: any): Promise<
   
   // Likidite oranları tablosu
   doc.setFontSize(12);
-  doc.text('Likidite Oranları', 14, 60);
+  doc.text('Finansal Oranlar', 14, 60);
+  
+  // Seçilen oranları belirle
+  const selectedRatioIds = financialData.selectedRatios || [];
+  
+  // Tablo içeriğini oluştur
+  const tableBody = [];
+  
+  // Sadece seçilen oranları ekle
+  if (selectedRatioIds.includes('currentRatio') && financialData.currentRatio !== undefined) {
+    tableBody.push(['Cari Oran', financialData.currentRatio.toFixed(2), getRatioEvaluation('currentRatio', financialData.currentRatio)]);
+  }
+  
+  if (selectedRatioIds.includes('quickRatio') && financialData.acidTestRatio !== undefined) {
+    tableBody.push(['Asit-Test Oranı', financialData.acidTestRatio.toFixed(2), getRatioEvaluation('quickRatio', financialData.acidTestRatio)]);
+  }
+  
+  if (selectedRatioIds.includes('cashRatio') && financialData.cashRatio !== undefined) {
+    tableBody.push(['Nakit Oranı', financialData.cashRatio.toFixed(2), getRatioEvaluation('cashRatio', financialData.cashRatio)]);
+  }
+  
+  // Eğer hiç oran seçilmemişse veya hesaplanamıyorsa bilgi mesajı ekle
+  if (tableBody.length === 0) {
+    tableBody.push(['Seçili oran bulunamadı', 'N/A', 'Lütfen analiz için en az bir oran seçin']);
+  }
   
   // AutoTable kullanarak tablo oluştur
   autoTable(doc, {
     startY: 65,
     head: [['Oran Adı', 'Değer', 'Değerlendirme']],
-    body: [
-      ['Cari Oran', financialData.currentRatio.toFixed(2), getRatioEvaluation('currentRatio', financialData.currentRatio)],
-      ['Asit-Test Oranı', financialData.acidTestRatio.toFixed(2), getRatioEvaluation('quickRatio', financialData.acidTestRatio)],
-      ['Nakit Oranı', financialData.cashRatio?.toFixed(2) || 'N/A', getRatioEvaluation('cashRatio', financialData.cashRatio)],
-    ],
+    body: tableBody,
     theme: 'striped',
     headStyles: { fillColor: [66, 139, 202] }
   });
@@ -241,30 +278,46 @@ async function generateExcelReport(company: Company, financialData: any): Promis
     { header: 'Değerlendirme', key: 'evaluation', width: 40 }
   ];
   
-  // Oran kategorilerini ekle
-  let rowIndex = 2;
+  // Seçilen oranları belirle
+  const selectedRatioIds = financialData.selectedRatios || [];
   
-  // Likidite oranları
-  ratiosSheet.addRow({ 
-    category: 'Likidite', 
-    name: 'Cari Oran', 
-    value: financialData.currentRatio.toFixed(2), 
-    evaluation: getRatioEvaluation('currentRatio', financialData.currentRatio) 
-  });
+  // Likidite oranları - Sadece seçilen oranları ekle
+  if (selectedRatioIds.includes('currentRatio') && financialData.currentRatio !== undefined) {
+    ratiosSheet.addRow({ 
+      category: 'Likidite', 
+      name: 'Cari Oran', 
+      value: financialData.currentRatio.toFixed(2), 
+      evaluation: getRatioEvaluation('currentRatio', financialData.currentRatio) 
+    });
+  }
   
-  ratiosSheet.addRow({ 
-    category: 'Likidite', 
-    name: 'Asit-Test Oranı', 
-    value: financialData.acidTestRatio.toFixed(2), 
-    evaluation: getRatioEvaluation('quickRatio', financialData.acidTestRatio) 
-  });
+  if (selectedRatioIds.includes('quickRatio') && financialData.acidTestRatio !== undefined) {
+    ratiosSheet.addRow({ 
+      category: 'Likidite', 
+      name: 'Asit-Test Oranı', 
+      value: financialData.acidTestRatio.toFixed(2), 
+      evaluation: getRatioEvaluation('quickRatio', financialData.acidTestRatio) 
+    });
+  }
   
-  ratiosSheet.addRow({ 
-    category: 'Likidite', 
-    name: 'Nakit Oranı', 
-    value: financialData.cashRatio?.toFixed(2) || 'N/A', 
-    evaluation: getRatioEvaluation('cashRatio', financialData.cashRatio) 
-  });
+  if (selectedRatioIds.includes('cashRatio') && financialData.cashRatio !== undefined) {
+    ratiosSheet.addRow({ 
+      category: 'Likidite', 
+      name: 'Nakit Oranı', 
+      value: financialData.cashRatio.toFixed(2), 
+      evaluation: getRatioEvaluation('cashRatio', financialData.cashRatio) 
+    });
+  }
+  
+  // Hiç satır eklenemediyse bilgi satırı ekle
+  if (ratiosSheet.rowCount <= 1) {
+    ratiosSheet.addRow({
+      category: 'Bilgi',
+      name: 'Seçili oran bulunamadı',
+      value: 'N/A',
+      evaluation: 'Lütfen analiz için en az bir oran seçin'
+    });
+  }
   
   // Excel dosyasını kaydet
   await workbook.xlsx.writeFile(filePath);
@@ -285,7 +338,10 @@ async function generateCsvReport(company: Company, financialData: any): Promise<
     fs.mkdirSync(reportDir, { recursive: true });
   }
   
-  // CSV başlık ve değerleri
+  // Seçilen oranları belirle
+  const selectedRatioIds = financialData.selectedRatios || [];
+  
+  // CSV başlık ve temel bilgiler
   const csvRows = [
     ['Rapor Tipi', 'FinRasyo Finansal Analiz Raporu'],
     ['Şirket', company.name],
@@ -293,11 +349,31 @@ async function generateCsvReport(company: Company, financialData: any): Promise<
     ['Sektör', company.sector || 'Belirtilmemiş'],
     ['Rapor Tarihi', new Date().toLocaleDateString('tr-TR')],
     [''],
-    ['Oran Kategorisi', 'Oran Adı', 'Değer', 'Değerlendirme'],
-    ['Likidite', 'Cari Oran', financialData.currentRatio.toFixed(2), getRatioEvaluation('currentRatio', financialData.currentRatio)],
-    ['Likidite', 'Asit-Test Oranı', financialData.acidTestRatio.toFixed(2), getRatioEvaluation('quickRatio', financialData.acidTestRatio)],
-    ['Likidite', 'Nakit Oranı', financialData.cashRatio?.toFixed(2) || 'N/A', getRatioEvaluation('cashRatio', financialData.cashRatio)]
+    ['Oran Kategorisi', 'Oran Adı', 'Değer', 'Değerlendirme']
   ];
+  
+  // Likidite oranları - Sadece seçilen oranları ekle
+  let ratioAdded = false;
+  
+  if (selectedRatioIds.includes('currentRatio') && financialData.currentRatio !== undefined) {
+    csvRows.push(['Likidite', 'Cari Oran', financialData.currentRatio.toFixed(2), getRatioEvaluation('currentRatio', financialData.currentRatio)]);
+    ratioAdded = true;
+  }
+  
+  if (selectedRatioIds.includes('quickRatio') && financialData.acidTestRatio !== undefined) {
+    csvRows.push(['Likidite', 'Asit-Test Oranı', financialData.acidTestRatio.toFixed(2), getRatioEvaluation('quickRatio', financialData.acidTestRatio)]);
+    ratioAdded = true;
+  }
+  
+  if (selectedRatioIds.includes('cashRatio') && financialData.cashRatio !== undefined) {
+    csvRows.push(['Likidite', 'Nakit Oranı', financialData.cashRatio.toFixed(2), getRatioEvaluation('cashRatio', financialData.cashRatio)]);
+    ratioAdded = true;
+  }
+  
+  // Hiç oran eklenmediyse bilgi satırı ekle
+  if (!ratioAdded) {
+    csvRows.push(['Bilgi', 'Seçili oran bulunamadı', 'N/A', 'Lütfen analiz için en az bir oran seçin']);
+  }
   
   // CSV formatına dönüştür
   const csvContent = csvRows.map(row => row.map(cell => `"${cell}"`).join(',')).join('\n');
@@ -309,16 +385,67 @@ async function generateCsvReport(company: Company, financialData: any): Promise<
   return `/reports/${fileName}`;
 }
 
-// Word rapor oluştur (HTML formatında kaydedilir, Word'de açılabilir)
+// Word rapor oluştur
 async function generateWordReport(company: Company, financialData: any): Promise<string> {
-  // HTML/Word için geçici dosya yolu oluştur
-  const fileName = `report_${company.id}_${Date.now()}.html`;
+  // Word için geçici dosya yolu oluştur - docx uzantısı yerine html olarak kaydediyoruz (Word'de açılabilir)
+  const fileName = `report_${company.id}_${Date.now()}.docx`;
   const reportDir = path.join(process.cwd(), 'public', 'reports');
   const filePath = path.join(reportDir, fileName);
   
   // Klasör yoksa oluştur
   if (!fs.existsSync(reportDir)) {
     fs.mkdirSync(reportDir, { recursive: true });
+  }
+  
+  // Seçilen oranları belirle
+  const selectedRatioIds = financialData.selectedRatios || [];
+  
+  // Tablo satırlarını hazırla
+  let tableRows = '';
+  let ratioAdded = false;
+  
+  if (selectedRatioIds.includes('currentRatio') && financialData.currentRatio !== undefined) {
+    tableRows += `
+      <tr>
+        <td>Cari Oran</td>
+        <td>${financialData.currentRatio.toFixed(2)}</td>
+        <td>${getRatioEvaluation('currentRatio', financialData.currentRatio)}</td>
+      </tr>
+    `;
+    ratioAdded = true;
+  }
+  
+  if (selectedRatioIds.includes('quickRatio') && financialData.acidTestRatio !== undefined) {
+    tableRows += `
+      <tr>
+        <td>Asit-Test Oranı</td>
+        <td>${financialData.acidTestRatio.toFixed(2)}</td>
+        <td>${getRatioEvaluation('quickRatio', financialData.acidTestRatio)}</td>
+      </tr>
+    `;
+    ratioAdded = true;
+  }
+  
+  if (selectedRatioIds.includes('cashRatio') && financialData.cashRatio !== undefined) {
+    tableRows += `
+      <tr>
+        <td>Nakit Oranı</td>
+        <td>${financialData.cashRatio.toFixed(2)}</td>
+        <td>${getRatioEvaluation('cashRatio', financialData.cashRatio)}</td>
+      </tr>
+    `;
+    ratioAdded = true;
+  }
+  
+  // Eğer hiç oran seçilmemişse bilgi satırı ekle
+  if (!ratioAdded) {
+    tableRows = `
+      <tr>
+        <td>Seçili oran bulunamadı</td>
+        <td>N/A</td>
+        <td>Lütfen analiz için en az bir oran seçin</td>
+      </tr>
+    `;
   }
   
   // MS Word açılabilir HTML oluştur
@@ -351,28 +478,14 @@ async function generateWordReport(company: Company, financialData: any): Promise
         <p><strong>Rapor Tarihi:</strong> ${new Date().toLocaleDateString('tr-TR')}</p>
       </div>
       
-      <h2>Likidite Oranları</h2>
+      <h2>Finansal Oranlar</h2>
       <table>
         <tr>
           <th>Oran Adı</th>
           <th>Değer</th>
           <th>Değerlendirme</th>
         </tr>
-        <tr>
-          <td>Cari Oran</td>
-          <td>${financialData.currentRatio.toFixed(2)}</td>
-          <td>${getRatioEvaluation('currentRatio', financialData.currentRatio)}</td>
-        </tr>
-        <tr>
-          <td>Asit-Test Oranı</td>
-          <td>${financialData.acidTestRatio.toFixed(2)}</td>
-          <td>${getRatioEvaluation('quickRatio', financialData.acidTestRatio)}</td>
-        </tr>
-        <tr>
-          <td>Nakit Oranı</td>
-          <td>${financialData.cashRatio?.toFixed(2) || 'N/A'}</td>
-          <td>${getRatioEvaluation('cashRatio', financialData.cashRatio)}</td>
-        </tr>
+        ${tableRows}
       </table>
       
       <div class="footer">
