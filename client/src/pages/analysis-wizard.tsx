@@ -7,6 +7,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useLocation } from "wouter";
 import { apiRequest } from "@/lib/queryClient";
 import { useFinancialData } from "@/hooks/use-financial-data";
+import MultiCompanySelectorWithAutocomplete from "@/components/financial/multi-company-selector-with-autocomplete";
 import { bistCompanies } from "@/data/bist-companies";
 
 // Mevcut finansal oranların listesi
@@ -57,8 +58,8 @@ export default function AnalysisWizard() {
   }, [selectedCompanies, selectedYears, selectedRatios]);
 
   // Şirket seçimi
-  const handleCompanySelection = (selected: any[]) => {
-    setSelectedCompanies(selected);
+  const handleCompanySelection = (companies: any[]) => {
+    setSelectedCompanies(companies);
   };
 
   // Dönem (yıl) seçimi değiştiğinde
@@ -334,46 +335,10 @@ export default function AnalysisWizard() {
             <div className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="company">Şirket Ara</Label>
-                {/* Basitleştirilmiş şirket seçimi - tam seçici component olmadan */}
-                <select 
-                  className="w-full p-2 border rounded"
-                  onChange={(e) => {
-                    const companyIndex = parseInt(e.target.value);
-                    if (!isNaN(companyIndex) && companyIndex >= 0) {
-                      setSelectedCompanies([bistCompanies[companyIndex]]);
-                    } else {
-                      setSelectedCompanies([]);
-                    }
-                  }}
-                >
-                  <option value="-1">Şirket seçin</option>
-                  {bistCompanies.map((company, index) => (
-                    <option key={company.code} value={index}>
-                      {company.name} ({company.code})
-                    </option>
-                  ))}
-                </select>
-                
-                {selectedCompanies.length > 0 && (
-                  <div className="mt-4">
-                    <h3 className="font-medium">Seçilen Şirketler:</h3>
-                    <ul className="list-disc list-inside mt-2">
-                      {selectedCompanies.map(company => (
-                        <li key={company.code} className="flex items-center justify-between">
-                          <span>{company.name} ({company.code})</span>
-                          <Button 
-                            variant="outline" 
-                            size="sm"
-                            onClick={() => setSelectedCompanies([])}
-                            className="ml-2"
-                          >
-                            Kaldır
-                          </Button>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
+                <MultiCompanySelectorWithAutocomplete 
+                  onSelectCompanies={handleCompanySelection}
+                  initialSelectedCompanies={selectedCompanies}
+                />
               </div>
             </div>
           )}

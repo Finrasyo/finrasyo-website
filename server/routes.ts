@@ -331,9 +331,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       } = req.body;
       
       // Girdi doğrulama
-      if (!companyId || !financialDataId) {
+      if (!companyId || !financialDataId || !name) {
         console.error("Rapor isteği eksik parametrelerle geldi:", req.body);
-        return res.status(400).json({ message: "companyId ve financialDataId gereklidir" });
+        return res.status(400).json({ message: "companyId, financialDataId ve name alanları gereklidir" });
       }
       
       // Fiyat parametrelerini al veya varsayılan değerleri kullan
