@@ -181,20 +181,25 @@ export default function ReportsPage() {
       const dateStr = new Date().toISOString().split('T')[0];
       const sanitizedCompanyName = selectedReport.company.name.replace(/[^a-z0-9]/gi, '_').toLowerCase();
       
-      // Seçilen oranları al (eğer raporda ratio_ids bilgisi varsa)
+      // Seçilen oranları al
       let selectedRatios: string[] = [];
-      if (selectedReport.report && selectedReport.report.metadata) {
+      if (selectedReport.report) {
         try {
-          const metadata = typeof selectedReport.report.metadata === 'string' 
-            ? JSON.parse(selectedReport.report.metadata) 
-            : selectedReport.report.metadata;
-            
-          if (metadata.ratio_ids && Array.isArray(metadata.ratio_ids)) {
-            selectedRatios = metadata.ratio_ids;
-            console.log("Seçilen oranlar:", selectedRatios);
+          // TypeScript uyumsuzluğunu gidermek için any kullan
+          const reportAny = selectedReport.report as any;
+          
+          if (reportAny.metadata) {
+            const metadata = typeof reportAny.metadata === 'string' 
+              ? JSON.parse(reportAny.metadata) 
+              : reportAny.metadata;
+              
+            if (metadata && metadata.ratio_ids && Array.isArray(metadata.ratio_ids)) {
+              selectedRatios = metadata.ratio_ids;
+              console.log("Seçilen oranlar:", selectedRatios);
+            }
           }
         } catch (e) {
-          console.warn("Rapor metadata'sı parse edilemedi:", e);
+          console.warn("Rapor metadata'sı işlenirken hata:", e);
         }
       }
       
