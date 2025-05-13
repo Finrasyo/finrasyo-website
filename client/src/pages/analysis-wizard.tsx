@@ -198,10 +198,38 @@ export default function AnalysisWizardPage() {
   
   const handleReport = async (format: string) => {
     try {
+      // Önce şirket verileri kaydetmek için bir istek yap
+      const companyResponse = await apiRequest("POST", "/api/companies", {
+        name: selectedCompanies[0].name,
+        code: selectedCompanies[0].code,
+        sector: selectedCompanies[0].sector
+      });
+      
+      if (!companyResponse.ok) {
+        throw new Error("Şirket kaydedilirken bir hata oluştu");
+      }
+      
+      const company = await companyResponse.json();
+      
+      // Şimdi finansal veri oluştur
+      const financialDataResponse = await apiRequest("POST", "/api/financial-data", {
+        companyId: company.id,
+        year: selectedYears[0],
+        currentRatio: 2.5, // Örnek değerler
+        liquidityRatio: 1.8,
+        acidTestRatio: 1.5
+      });
+      
+      if (!financialDataResponse.ok) {
+        throw new Error("Finansal veri kaydedilirken bir hata oluştu");
+      }
+      
+      const financialData = await financialDataResponse.json();
+      
       // İşlenmiş verileri sunucuya gönder ve rapor oluştur
       const reportData = await generateReport(
-        parseInt(selectedCompanies[0].code), 
-        0, // Geçici olarak 0 kullanıyoruz, gerçek uygulamada finansal veri ID'si olmalı
+        company.id, // Şirket ID'si
+        financialData.id, // Finansal veri ID'si
         format,
         {
           numCompanies: selectedCompanies.length,
