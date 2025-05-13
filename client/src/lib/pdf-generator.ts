@@ -2,15 +2,60 @@
  * PDF Rapor Oluşturma ve İndirme İşlemleri
  */
 
-import pdfMake from 'pdfmake/build/pdfmake';
-import pdfFonts from 'pdfmake/build/vfs_fonts';
-import { TDocumentDefinitions, Content, StyleDictionary, TableCell } from 'pdfmake/interfaces';
 import { saveAs } from 'file-saver';
 import { ratioCategories } from './financial-ratios';
 import { formatFinancialValue, generateRatioAnalysis } from './financial-calculations';
 
-// PDF oluşturucu için fontları ayarla
-pdfMake.vfs = pdfFonts.pdfMake.vfs;
+// pdfMake'i dinamik olarak import et - Browser compatibility sorunları için
+let pdfMake: any;
+let pdfFonts: any;
+
+async function loadPdfLibraries() {
+  if (!pdfMake) {
+    try {
+      pdfMake = (await import('pdfmake/build/pdfmake')).default;
+      pdfFonts = (await import('pdfmake/build/vfs_fonts')).default;
+
+      // Font dosyalarını yükle
+      if (pdfFonts && pdfFonts.pdfMake && pdfFonts.pdfMake.vfs) {
+        console.log("PDF fontları başarıyla yüklendi");
+        pdfMake.vfs = pdfFonts.pdfMake.vfs;
+      } else {
+        console.error("pdfFonts yapısı beklenen şekilde değil");
+        
+        // Alternatif vfs_fonts erişimi dene
+        if (typeof pdfFonts === 'object') {
+          console.log("Alternatif vfs_fonts yapısını kontrol ediyorum...");
+          // Tüm olası yolları dene
+          const possiblePaths = [
+            pdfFonts.pdfMake?.vfs,
+            pdfFonts.vfs,
+            pdfFonts.default?.pdfMake?.vfs,
+            pdfFonts.default?.vfs
+          ];
+          
+          for (const vfs of possiblePaths) {
+            if (vfs) {
+              console.log("Alternatif vfs yapısı bulundu!");
+              pdfMake.vfs = vfs;
+              break;
+            }
+          }
+        }
+      }
+      
+      // Yedek çözüm: Varsayılan font vfs bulunmazsa basit bir vfs oluştur
+      if (!pdfMake.vfs) {
+        console.warn("Font VFS yapılandırması bulunamadı, basit bir yapı oluşturuluyor");
+        pdfMake.vfs = {}; // En azından çökmemesi için boş bir obje
+      }
+    } catch (error) {
+      console.error("PDF kütüphanelerini yüklerken hata:", error);
+      throw new Error("PDF kütüphanelerini yükleyemedi: " + error);
+    }
+  }
+  return pdfMake;
+}
 
 // Türkçe karakter desteği
 const fonts = {
@@ -23,7 +68,7 @@ const fonts = {
 };
 
 // PDF stilleri
-const styles: StyleDictionary = {
+const styles: any = {
   header: {
     fontSize: 22,
     bold: true,
@@ -73,7 +118,14 @@ export async function generatePDFReport(
       company: company.name,
       financialDataKeys: Object.keys(financialData || {})
     });
-
+    
+    // pdfMake kütüphanesini yükle
+    await loadPdfLibraries();
+    
+    if (!pdfMake) {
+      throw new Error("PDF kütüphanesi yüklenemedi!");
+    }
+    
     // Başlık
     const title = `${company.name} Finansal Analiz Raporu`;
     
@@ -186,18 +238,15 @@ export async function generatePDFReport(
       margin: [0, 10, 0, 20]
     };
     
-    // Logo yolu
-    // const logoPath = '/logo.jpg'; // Public klasöründeki logo 
-    
     // PDF içerik ağacını oluştur
-    const docDefinition: TDocumentDefinitions = {
+    const docDefinition: any = {
       info: {
         title: title,
         author: 'FinRasyo',
         subject: 'Finansal Analiz Raporu',
         keywords: 'finansal analiz, oran analizi, finrasyo',
       },
-      header: function(currentPage, pageCount) {
+      header: function(currentPage: number, pageCount: number) {
         return { 
           text: 'FinRasyo - Finansal Veri Sunum Platformu', 
           alignment: 'right',
@@ -206,7 +255,7 @@ export async function generatePDFReport(
           color: '#444'
         };
       },
-      footer: function(currentPage, pageCount) {
+      footer: function(currentPage: number, pageCount: number) {
         return { 
           text: `Sayfa ${currentPage}/${pageCount} | © ${new Date().getFullYear()} FinRasyo`, 
           alignment: 'center',
@@ -255,26 +304,32 @@ export async function generatePDFReport(
       ],
       styles: styles,
       defaultStyle: {
-        font: 'Roboto',
         fontSize: 10
       }
     };
     
-    // PDF oluştur
-    const pdfDocGenerator = pdfMake.createPdf(docDefinition);
+    console.log("PDF tanımı oluşturuldu, PDF üretiliyor...");
     
-    // PDF'i blob olarak indir
-    return new Promise<Blob>((resolve, reject) => {
-      try {
-        pdfDocGenerator.getBlob((blob) => {
-          console.log("PDF blob başarıyla oluşturuldu, boyut:", blob.size);
-          resolve(blob);
-        });
-      } catch (error) {
-        console.error("PDF blob oluşturma hatası:", error);
-        reject(error);
-      }
-    });
+    // PDF oluştur
+    try {
+      const pdfDocGenerator = pdfMake.createPdf(docDefinition);
+      
+      // PDF'i blob olarak oluştur
+      return new Promise<Blob>((resolve, reject) => {
+        try {
+          pdfDocGenerator.getBlob((blob: Blob) => {
+            console.log("PDF blob başarıyla oluşturuldu, boyut:", blob.size);
+            resolve(blob);
+          });
+        } catch (error) {
+          console.error("PDF blob oluşturma hatası:", error);
+          reject(new Error(`PDF blob oluşturulamadı: ${error}`));
+        }
+      });
+    } catch (error) {
+      console.error("PDF oluşturma hatası:", error);
+      throw new Error(`PDF oluşturulamadı: ${error}`);
+    }
   } catch (error) {
     console.error("PDF raporu oluşturma hatası:", error);
     throw new Error(`PDF raporu oluşturulamadı: ${error instanceof Error ? error.message : String(error)}`);
