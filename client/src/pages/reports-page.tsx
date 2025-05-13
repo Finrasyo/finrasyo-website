@@ -177,20 +177,43 @@ export default function ReportsPage() {
       
       console.log("Rapor oluşturma işlemi için verileri hazırlıyorum");
       
-      // Rapor indirme modülünü içe aktar
-      const { generateReport, downloadReport } = await import('../components/financial/report-downloader');
+      // PDF için tarih formatını oluştur
+      const dateStr = new Date().toISOString().split('T')[0];
+      const sanitizedCompanyName = selectedReport.company.name.replace(/[^a-z0-9]/gi, '_').toLowerCase();
       
-      // Generate and download the report
-      const result = await generateReport(
-        selectedReport.financialData,
-        selectedReport.company,
-        downloadFormat
-      );
-      
-      console.log("Rapor oluşturuldu, indiriliyor:", result);
-      
-      // Rapor indirme fonksiyonunu çağır
-      downloadReport(result.blob, result.filename);
+      try {
+        if (downloadFormat === "pdf") {
+          // Yeni PDF oluşturma modülünü içe aktar
+          const { generatePDFReport, downloadPDFReport } = await import('../lib/pdf-generator');
+          
+          // PDF raporu oluştur
+          const blob = await generatePDFReport(
+            selectedReport.company, 
+            selectedReport.financialData
+          );
+          
+          // PDF raporunu indir
+          downloadPDFReport(blob, `${sanitizedCompanyName}_rapor_${dateStr}.pdf`);
+        } else {
+          // Diğer formatlarda rapor oluşturma (excel, csv, vb.)
+          const { generateReport, downloadReport } = await import('../components/financial/report-downloader');
+          
+          // Raporu oluştur
+          const result = await generateReport(
+            selectedReport.financialData,
+            selectedReport.company,
+            downloadFormat
+          );
+          
+          console.log("Rapor oluşturuldu, indiriliyor:", result);
+          
+          // Rapor indirme fonksiyonunu çağır
+          downloadReport(result.blob, result.filename);
+        }
+      } catch (error) {
+        console.error("Rapor oluşturma veya indirme hatası:", error);
+        throw error; // Üst catch bloğuna hatayı ilet
+      }
       
       toast({
         title: "Başarılı",
