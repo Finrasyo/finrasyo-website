@@ -6,105 +6,70 @@ import { saveAs } from 'file-saver';
 import { ratioCategories } from './financial-ratios';
 import { formatFinancialValue, generateRatioAnalysis } from './financial-calculations';
 
-// pdfMake'i dinamik olarak import et - Browser compatibility sorunları için
-let pdfMake: any;
-let pdfFonts: any;
+// PdfMake değişkeni
+let pdfMake: any = null;
 
-async function loadPdfLibraries() {
-  if (!pdfMake) {
-    try {
-      pdfMake = (await import('pdfmake/build/pdfmake')).default;
-      pdfFonts = (await import('pdfmake/build/vfs_fonts')).default;
-
-      // Font dosyalarını yükle
-      if (pdfFonts && pdfFonts.pdfMake && pdfFonts.pdfMake.vfs) {
-        console.log("PDF fontları başarıyla yüklendi");
-        pdfMake.vfs = pdfFonts.pdfMake.vfs;
-      } else {
-        console.error("pdfFonts yapısı beklenen şekilde değil");
-        
-        // Alternatif vfs_fonts erişimi dene
-        if (typeof pdfFonts === 'object') {
-          console.log("Alternatif vfs_fonts yapısını kontrol ediyorum...");
-          // Tüm olası yolları dene
-          const possiblePaths = [
-            pdfFonts.pdfMake?.vfs,
-            pdfFonts.vfs,
-            pdfFonts.default?.pdfMake?.vfs,
-            pdfFonts.default?.vfs
-          ];
-          
-          for (const vfs of possiblePaths) {
-            if (vfs) {
-              console.log("Alternatif vfs yapısı bulundu!");
-              pdfMake.vfs = vfs;
-              break;
-            }
-          }
-        }
-      }
-      
-      // Yedek çözüm: Varsayılan font vfs bulunmazsa basit bir vfs oluştur
-      if (!pdfMake.vfs) {
-        console.warn("Font VFS yapılandırması bulunamadı, basit bir yapı oluşturuluyor");
-        pdfMake.vfs = {}; // En azından çökmemesi için boş bir obje
-      }
-    } catch (error) {
-      console.error("PDF kütüphanelerini yüklerken hata:", error);
-      throw new Error("PDF kütüphanelerini yükleyemedi: " + error);
-    }
-  }
-  return pdfMake;
-}
-
-// Türkçe karakter desteği
-const fonts = {
-  Roboto: {
-    normal: 'Roboto-Regular.ttf',
-    bold: 'Roboto-Medium.ttf',
-    italics: 'Roboto-Italic.ttf',
-    bolditalics: 'Roboto-MediumItalic.ttf'
-  }
-};
-
-// PDF stilleri
-const styles: any = {
+// Yazı stilleri
+const styles = {
   header: {
-    fontSize: 22,
+    fontSize: 18,
     bold: true,
-    alignment: 'center',
-    margin: [0, 0, 0, 10]
+    margin: [0, 0, 0, 10],
+    color: '#1F497D'
   },
   subheader: {
     fontSize: 16,
     bold: true,
     margin: [0, 10, 0, 5],
-    color: '#3366cc'
+    color: '#1F497D'
   },
   sectionHeader: {
     fontSize: 14,
     bold: true,
-    margin: [0, 15, 0, 5]
+    margin: [0, 10, 0, 5],
+    color: '#1F497D'
   },
   tableHeader: {
     bold: true,
-    fillColor: '#428bca',
-    color: 'white',
-    alignment: 'center'
+    fontSize: 12,
+    color: '#1F497D'
   },
   tableCell: {
-    margin: [0, 3, 0, 3]
+    fontSize: 11,
+    color: '#333333'
   },
-  valueBold: {
-    bold: true
-  },
-  footer: {
-    fontSize: 8,
-    margin: [0, 10, 0, 0],
-    color: '#666666',
-    alignment: 'center'
+  tableTitle: {
+    fontSize: 12,
+    bold: true,
+    color: '#1F497D'
   }
 };
+
+/**
+ * PdfMake kütüphanesini yükler (lazy loading)
+ */
+async function loadPdfLibraries() {
+  if (pdfMake) return pdfMake;
+  
+  try {
+    console.log("pdfMake kütüphanesi yükleniyor...");
+    
+    // pdfMake kütüphanesini dinamik olarak import et
+    const pdfMakeModule = await import('pdfmake/build/pdfmake');
+    const pdfFontsModule = await import('pdfmake/build/vfs_fonts');
+    
+    // pdfMake'i global değişkene ata
+    pdfMake = pdfMakeModule.default;
+    pdfMake.vfs = pdfFontsModule.default.pdfMake.vfs;
+    
+    console.log("pdfMake kütüphanesi başarıyla yüklendi");
+    
+    return pdfMake;
+  } catch (error) {
+    console.error("pdfMake kütüphanesi yüklenirken hata:", error);
+    throw new Error(`pdfMake kütüphanesi yüklenemedi: ${error instanceof Error ? error.message : String(error)}`);
+  }
+}
 
 /**
  * Finansal verileri kullanarak PDF raporu oluşturur
@@ -241,7 +206,7 @@ export async function generatePDFReport(
           const currentValue = ratios[ratio.id]?.value || 0;
           
           // Trend verisi oluştur
-          const trendData = generateSampleTrendData(ratio.id, currentValue);
+          const trendData = generateTrendDataForRatio(ratio.id, currentValue);
           
           // Tablo verisini hazırla
           const tableBody = [
@@ -251,8 +216,8 @@ export async function generatePDFReport(
           // Her yıl için satır ekle
           sampleYears.forEach(year => {
             tableBody.push([
-              year.toString(),
-              formatFinancialValue(trendData[year] || 0)
+              { text: year.toString(), style: 'tableCell' },
+              { text: formatFinancialValue(trendData[year] || 0), style: 'tableCell' }
             ]);
           });
           
@@ -299,7 +264,7 @@ export async function generatePDFReport(
           const currentValue = ratios[ratio.id]?.value || 0;
           
           // Trend verisi oluştur
-          const trendData = generateSampleTrendData(ratio.id, currentValue);
+          const trendData = generateTrendDataForRatio(ratio.id, currentValue);
           
           // Tablo verisini hazırla
           const tableBody = [
@@ -309,8 +274,8 @@ export async function generatePDFReport(
           // Her yıl için satır ekle
           sampleYears.forEach(year => {
             tableBody.push([
-              year.toString(),
-              formatFinancialValue(trendData[year] || 0)
+              { text: year.toString(), style: 'tableCell' },
+              { text: formatFinancialValue(trendData[year] || 0), style: 'tableCell' }
             ]);
           });
           
@@ -357,7 +322,7 @@ export async function generatePDFReport(
           const currentValue = ratios[ratio.id]?.value || 0;
           
           // Trend verisi oluştur
-          const trendData = generateSampleTrendData(ratio.id, currentValue);
+          const trendData = generateTrendDataForRatio(ratio.id, currentValue);
           
           // Tablo verisini hazırla
           const tableBody = [
@@ -367,8 +332,8 @@ export async function generatePDFReport(
           // Her yıl için satır ekle
           sampleYears.forEach(year => {
             tableBody.push([
-              year.toString(),
-              formatFinancialValue(trendData[year] || 0)
+              { text: year.toString(), style: 'tableCell' },
+              { text: formatFinancialValue(trendData[year] || 0), style: 'tableCell' }
             ]);
           });
           
@@ -426,14 +391,7 @@ export async function generatePDFReport(
         };
       },
       content: contentItems,
-      styles: {
-        ...styles,
-        tableTitle: {
-          fontSize: 12,
-          bold: true,
-          color: '#1F497D'
-        }
-      },
+      styles: styles,
       defaultStyle: {
         fontSize: 10
       }
@@ -442,25 +400,21 @@ export async function generatePDFReport(
     console.log("PDF tanımı oluşturuldu, PDF üretiliyor...");
     
     // PDF oluştur
-    try {
-      const pdfDocGenerator = pdfMake.createPdf(docDefinition);
-      
-      // PDF'i blob olarak oluştur
-      return new Promise<Blob>((resolve, reject) => {
-        try {
-          pdfDocGenerator.getBlob((blob: Blob) => {
-            console.log("PDF blob başarıyla oluşturuldu, boyut:", blob.size);
-            resolve(blob);
-          });
-        } catch (error) {
-          console.error("PDF blob oluşturma hatası:", error);
-          reject(new Error(`PDF blob oluşturulamadı: ${error}`));
-        }
-      });
-    } catch (error) {
-      console.error("PDF oluşturma hatası:", error);
-      throw new Error(`PDF oluşturulamadı: ${error}`);
-    }
+    return new Promise((resolve, reject) => {
+      try {
+        // PDF dokümanı oluştur
+        const pdfDocGenerator = pdfMake.createPdf(docDefinition);
+        
+        // PDF blob'ı oluştur ve döndür
+        pdfDocGenerator.getBlob((blob: Blob) => {
+          console.log("PDF blob oluşturuldu");
+          resolve(blob);
+        });
+      } catch (error) {
+        console.error("PDF oluşturma hatası:", error);
+        reject(new Error(`PDF oluşturulamadı: ${error instanceof Error ? error.message : String(error)}`));
+      }
+    });
   } catch (error) {
     console.error("PDF raporu oluşturma hatası:", error);
     throw new Error(`PDF raporu oluşturulamadı: ${error instanceof Error ? error.message : String(error)}`);
@@ -472,15 +426,15 @@ export async function generatePDFReport(
  */
 export function downloadPDFReport(blob: Blob, filename: string): void {
   try {
-    console.log(`Rapor indiriliyor: ${filename}`, {
+    console.log(`PDF raporu indiriliyor: ${filename}`, {
       blobSize: blob.size,
       blobType: blob.type
     });
     
     saveAs(blob, filename);
-    console.log("Rapor indirme işlemi başarılı");
+    console.log("PDF rapor indirme işlemi başarılı");
   } catch (error) {
-    console.error("Rapor indirme hatası:", error);
-    throw new Error(`Rapor indirilemedi: ${error instanceof Error ? error.message : String(error)}`);
+    console.error("PDF rapor indirme hatası:", error);
+    throw new Error(`PDF raporu indirilemedi: ${error instanceof Error ? error.message : String(error)}`);
   }
 }

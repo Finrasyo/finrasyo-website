@@ -100,7 +100,7 @@ export async function generateCSVReport(
     csvContent += `\n"YILLARA GÖRE ORAN ANALİZİ"\n\n`;
     
     // Tüm seçili oranlar için trend tabloları oluştur
-    function addRatioCategoryTrends(categoryName: string, categoryRatios: Array<{id: string, name: string}>) {
+    const addRatioCategoryTrends = (categoryName: string, categoryRatios: Array<{id: string, name: string}>) => {
       csvContent += `"${categoryName}"\n\n`;
       
       for (const ratio of categoryRatios) {
