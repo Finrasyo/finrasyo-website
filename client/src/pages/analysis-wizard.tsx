@@ -445,9 +445,108 @@ export default function AnalysisWizard() {
             </div>
           )}
           
-          {/* Adım 4: Rapor Oluşturma */}
+          {/* Adım 4: Ödeme İşlemi */}
           {step === 4 && (
             <div className="space-y-6">
+              <div className="bg-muted p-4 rounded-lg mb-6">
+                <h3 className="font-semibold mb-2">Ödeme Bilgileri</h3>
+                <div className="grid grid-cols-3 gap-4 mb-4">
+                  <div>
+                    <p className="text-sm text-muted-foreground">Şirket Sayısı</p>
+                    <p className="font-medium">{selectedCompanies.length}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-muted-foreground">Dönem Sayısı</p>
+                    <p className="font-medium">{selectedYears.length}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-muted-foreground">Oran Sayısı</p>
+                    <p className="font-medium">{selectedRatios.length}</p>
+                  </div>
+                </div>
+                <div className="flex justify-between items-center pt-2 border-t">
+                  <span className="font-semibold">Toplam Ücret</span>
+                  <span className="text-xl font-bold">{price.toFixed(2)} ₺</span>
+                </div>
+              </div>
+              
+              <div className="bg-primary/5 p-6 rounded-lg border border-primary/20">
+                <h3 className="text-lg font-semibold mb-4">Ödeme Yöntemi</h3>
+                
+                {/* Ödeme formu burada olacak - Bu örnek için simüle ediyoruz */}
+                <div className="space-y-4 mb-6">
+                  <div>
+                    <Label htmlFor="card-number">Kart Numarası</Label>
+                    <input 
+                      id="card-number" 
+                      type="text" 
+                      placeholder="1234 5678 9012 3456" 
+                      className="w-full p-2 border rounded-md mt-1"
+                      disabled={isPaymentProcessing}
+                    />
+                  </div>
+                  
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor="expiry">Son Kullanma Tarihi</Label>
+                      <input 
+                        id="expiry" 
+                        type="text" 
+                        placeholder="AA/YY" 
+                        className="w-full p-2 border rounded-md mt-1"
+                        disabled={isPaymentProcessing}
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="cvv">CVV</Label>
+                      <input 
+                        id="cvv" 
+                        type="text" 
+                        placeholder="123" 
+                        className="w-full p-2 border rounded-md mt-1"
+                        disabled={isPaymentProcessing}
+                      />
+                    </div>
+                  </div>
+                </div>
+                
+                <Button 
+                  className="w-full" 
+                  onClick={handleProceedToPayment}
+                  disabled={isPaymentProcessing}
+                >
+                  {isPaymentProcessing ? 
+                    "İşleminiz Gerçekleştiriliyor..." : 
+                    `${price.toFixed(2)} ₺ Ödemeyi Tamamla`
+                  }
+                </Button>
+                
+                <p className="text-xs text-muted-foreground text-center mt-4">
+                  Ödeme işlemi güvenli bir şekilde gerçekleştirilecektir. 
+                  Kredi kartı bilgileriniz sistemimizde saklanmaz.
+                </p>
+              </div>
+            </div>
+          )}
+          
+          {/* Adım 5: Rapor İndirme */}
+          {step === 5 && (
+            <div className="space-y-6">
+              <div className="bg-green-50 border border-green-200 p-4 rounded-lg mb-6">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center text-green-600">
+                    ✓
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-green-800">Ödeme Başarılı</h3>
+                    <p className="text-sm text-green-600">
+                      {price.toFixed(2)} ₺ tutarındaki ödemeniz başarıyla tamamlandı.
+                    </p>
+                  </div>
+                </div>
+              </div>
+              
+              <h3 className="text-lg font-semibold mb-4">Rapor Formatını Seçin</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {outputFormats.map(format => (
                   <Card key={format.id} className="overflow-hidden">
@@ -464,40 +563,23 @@ export default function AnalysisWizard() {
                       <Button 
                         className="w-full" 
                         onClick={() => {
+                          setSelectedFormat(format.id);
                           if (format.id === "pdf") handlePdfReport();
                           else if (format.id === "excel") handleExcelReport();
                           else if (format.id === "word") handleWordReport();
                           else if (format.id === "csv") handleCsvReport();
                         }}
                         disabled={isGeneratingReport}
+                        variant={selectedFormat === format.id ? "default" : "outline"}
                       >
-                        {isGeneratingReport ? "Oluşturuluyor..." : `${format.name} Raporu Oluştur`}
+                        {isGeneratingReport && selectedFormat === format.id 
+                          ? "Oluşturuluyor..." 
+                          : `${format.name} Raporu İndir`
+                        }
                       </Button>
                     </CardContent>
                   </Card>
                 ))}
-              </div>
-              
-              <div className="bg-muted p-4 rounded-lg">
-                <h3 className="font-semibold mb-2">Fiyat Hesaplama</h3>
-                <div className="grid grid-cols-3 gap-4 mb-4">
-                  <div>
-                    <p className="text-sm text-muted-foreground">Şirket Sayısı</p>
-                    <p className="font-medium">{selectedCompanies.length}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-muted-foreground">Dönem Sayısı</p>
-                    <p className="font-medium">{selectedYears.length}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-muted-foreground">Oran Sayısı</p>
-                    <p className="font-medium">{selectedRatios.length}</p>
-                  </div>
-                </div>
-                <div className="flex justify-between items-center pt-2 border-t">
-                  <span className="font-semibold">Toplam Fiyat</span>
-                  <span className="text-xl font-bold">{price.toFixed(2)} ₺</span>
-                </div>
               </div>
             </div>
           )}
@@ -505,13 +587,21 @@ export default function AnalysisWizard() {
         
         <CardFooter className="flex justify-between">
           {step > 1 && (
-            <Button variant="outline" onClick={handleBack} disabled={isGeneratingReport}>
+            <Button 
+              variant="outline" 
+              onClick={handleBack} 
+              disabled={isGeneratingReport || isPaymentProcessing}
+            >
               Geri
             </Button>
           )}
           
-          {step < 4 && (
-            <Button className="ml-auto" onClick={handleNext}>
+          {step < 5 && step !== 4 && (
+            <Button 
+              className="ml-auto" 
+              onClick={handleNext}
+              disabled={isPaymentProcessing || isGeneratingReport}
+            >
               İleri
             </Button>
           )}
