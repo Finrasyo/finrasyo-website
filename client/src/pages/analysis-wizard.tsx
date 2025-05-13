@@ -44,7 +44,10 @@ export default function AnalysisWizard() {
   const [selectedYears, setSelectedYears] = useState<string[]>([]);
   const [selectedRatios, setSelectedRatios] = useState<string[]>(financialRatios.map(r => r.id));
   const [price, setPrice] = useState(0);
+  const [isPaymentProcessing, setIsPaymentProcessing] = useState(false);
+  const [isPaymentComplete, setIsPaymentComplete] = useState(false);
   const [isGeneratingReport, setIsGeneratingReport] = useState(false);
+  const [selectedFormat, setSelectedFormat] = useState<string | null>(null);
   const { toast } = useToast();
   const [_, setLocation] = useLocation();
 
@@ -126,6 +129,41 @@ export default function AnalysisWizard() {
     setStep(prevStep => prevStep - 1);
   };
   
+  // Ödeme işlemini başlat
+  const handleProceedToPayment = async () => {
+    try {
+      setIsPaymentProcessing(true);
+      
+      // Ödeme simülasyonu - Stripe entegrasyonu burada olabilir
+      console.log("Ödeme işlemi başlatılıyor... Fiyat:", price);
+      
+      // Simüle edilmiş ödeme işlemi (normalde burada Stripe API'si kullanılır)
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
+      // Ödeme başarılı
+      setIsPaymentComplete(true);
+      setIsPaymentProcessing(false);
+      
+      toast({
+        title: "Ödeme Başarılı",
+        description: `${price.toFixed(2)} ₺ tutarındaki ödeme işlemi tamamlandı.`,
+      });
+      
+      // Ödemeden sonra bir sonraki adıma geç
+      setStep(prevStep => prevStep + 1);
+      
+    } catch (error: any) {
+      console.error("Ödeme hatası:", error);
+      setIsPaymentProcessing(false);
+      
+      toast({
+        title: "Ödeme Hatası",
+        description: error.message || "Ödeme işlemi sırasında bir hata oluştu.",
+        variant: "destructive"
+      });
+    }
+  };
+
   // Rapor oluşturma
   const handleReport = async (format: string) => {
     try {
@@ -198,7 +236,10 @@ export default function AnalysisWizard() {
         numCompanies: selectedCompanies.length,
         numPeriods: selectedYears.length,
         numRatios: selectedRatios.length,
-        price: price
+        price: price,
+        metadata: JSON.stringify({
+          ratio_ids: selectedRatios
+        })
       });
       
       if (!reportResponse.ok) {
@@ -312,7 +353,11 @@ export default function AnalysisWizard() {
         </div>
         <div className={`flex flex-col items-center ${step >= 4 ? 'text-primary' : 'text-muted-foreground'}`}>
           <div className={`w-10 h-10 rounded-full flex items-center justify-center border-2 ${step >= 4 ? 'border-primary bg-primary/10' : 'border-muted'}`}>4</div>
-          <span className="mt-2">Rapor Oluştur</span>
+          <span className="mt-2">Ödeme</span>
+        </div>
+        <div className={`flex flex-col items-center ${step >= 5 ? 'text-primary' : 'text-muted-foreground'}`}>
+          <div className={`w-10 h-10 rounded-full flex items-center justify-center border-2 ${step >= 5 ? 'border-primary bg-primary/10' : 'border-muted'}`}>5</div>
+          <span className="mt-2">Rapor İndir</span>
         </div>
       </div>
       
@@ -322,13 +367,15 @@ export default function AnalysisWizard() {
             {step === 1 && "Analiz Edilecek Şirketleri Seçin"}
             {step === 2 && "Analiz Dönemlerini Seçin"}
             {step === 3 && "Hesaplanacak Finansal Oranları Seçin"}
-            {step === 4 && "Rapor Oluştur"}
+            {step === 4 && "Ödeme İşlemi"}
+            {step === 5 && "Rapor İndir"}
           </CardTitle>
           <CardDescription>
             {step === 1 && "Finansal analiz yapmak istediğiniz şirketleri seçin. Birden fazla şirket seçebilirsiniz."}
             {step === 2 && "Analiz yapılacak dönemleri (yılları) seçin. Birden fazla dönem seçebilirsiniz."}
             {step === 3 && "Raporda yer almasını istediğiniz finansal oranları seçin."}
-            {step === 4 && "Finansal analiz raporu için çıktı formatını seçin ve raporu oluşturun."}
+            {step === 4 && "Raporunuz için hesaplanan ücreti ödeyerek analiz sürecini tamamlayın."}
+            {step === 5 && "Finansal analiz raporu için çıktı formatını seçin ve raporu indirin."}
           </CardDescription>
         </CardHeader>
         
