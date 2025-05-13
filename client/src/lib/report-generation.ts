@@ -7,13 +7,21 @@
 import { generateRatioAnalysis, compareFinancialPeriods, formatFinancialValue } from './financial-calculations';
 import { saveAs } from 'file-saver';
 import jsPDF from 'jspdf';
+// AutoTable eklentisini her zaman yüklüyoruz
 import 'jspdf-autotable';
 import * as ExcelJS from 'exceljs';
 import { ratioCategories } from './financial-ratios';
 
 // PDF dosyasına Türkçe karakter desteği ekleyen fonksiyon
 function addTurkishSupport(doc: jsPDF) {
-  doc.setLanguage("tr");
+  // Türkçe dil desteği ekleniyor
+  if (typeof doc.setLanguage === 'function') {
+    try {
+      doc.setLanguage("tr");
+    } catch (e) {
+      console.warn("PDF Türkçe dil desteği eklenirken hata:", e);
+    }
+  }
 }
 
 /**
@@ -74,16 +82,31 @@ export async function generatePDFReport(
       ['Net Kâr', formatFinancialValue(financialData.netProfit || 0)]
     ];
     
-    (doc as any).autoTable({
-      head: [summaryData[0]],
-      body: summaryData.slice(1),
-      startY: yPosition,
-      theme: 'grid',
-      styles: { fontSize: 10, cellPadding: 5 },
-      headStyles: { fillColor: [66, 139, 202] }
-    });
-    
-    yPosition = (doc as any).lastAutoTable.finalY + 15;
+    try {
+      // jspdf-autotable kullanımı
+      const tableOpts = {
+        head: [summaryData[0]],
+        body: summaryData.slice(1),
+        startY: yPosition,
+        theme: 'grid',
+        styles: { fontSize: 10, cellPadding: 5 },
+        headStyles: { fillColor: [66, 139, 202] }
+      };
+      
+      // @ts-ignore
+      if (typeof doc.autoTable === 'function') {
+        // @ts-ignore
+        doc.autoTable(tableOpts);
+        // @ts-ignore
+        yPosition = doc.lastAutoTable.finalY + 15;
+      } else {
+        console.error("autoTable fonksiyonu bulunamadı!");
+        yPosition += 20; // Fallback pozisyon arttırma
+      }
+    } catch (error) {
+      console.error("Tablo oluşturma hatası:", error);
+      yPosition += 20; // Hata durumunda pozisyonu manuel arttır
+    }
   }
   
   // Finansal oranlar
@@ -104,16 +127,31 @@ export async function generatePDFReport(
       ])
     ];
     
-    (doc as any).autoTable({
-      head: [liquidityRatios[0]],
-      body: liquidityRatios.slice(1),
-      startY: yPosition,
-      theme: 'grid',
-      styles: { fontSize: 10, cellPadding: 5 },
-      headStyles: { fillColor: [66, 139, 202] }
-    });
-    
-    yPosition = (doc as any).lastAutoTable.finalY + 10;
+    try {
+      // jspdf-autotable kullanımı
+      const tableOpts = {
+        head: [liquidityRatios[0]],
+        body: liquidityRatios.slice(1),
+        startY: yPosition,
+        theme: 'grid',
+        styles: { fontSize: 10, cellPadding: 5 },
+        headStyles: { fillColor: [66, 139, 202] }
+      };
+      
+      // @ts-ignore
+      if (typeof doc.autoTable === 'function') {
+        // @ts-ignore
+        doc.autoTable(tableOpts);
+        // @ts-ignore
+        yPosition = doc.lastAutoTable.finalY + 10;
+      } else {
+        console.error("autoTable fonksiyonu bulunamadı!");
+        yPosition += 20;
+      }
+    } catch (error) {
+      console.error("Tablo oluşturma hatası:", error);
+      yPosition += 20;
+    }
     
     // Finansal yapı oranları
     const structureRatios = [
@@ -125,16 +163,31 @@ export async function generatePDFReport(
       ])
     ];
     
-    (doc as any).autoTable({
-      head: [structureRatios[0]],
-      body: structureRatios.slice(1),
-      startY: yPosition,
-      theme: 'grid',
-      styles: { fontSize: 10, cellPadding: 5 },
-      headStyles: { fillColor: [66, 139, 202] }
-    });
-    
-    yPosition = (doc as any).lastAutoTable.finalY + 10;
+    try {
+      // jspdf-autotable kullanımı
+      const tableOpts = {
+        head: [structureRatios[0]],
+        body: structureRatios.slice(1),
+        startY: yPosition,
+        theme: 'grid',
+        styles: { fontSize: 10, cellPadding: 5 },
+        headStyles: { fillColor: [66, 139, 202] }
+      };
+      
+      // @ts-ignore
+      if (typeof doc.autoTable === 'function') {
+        // @ts-ignore
+        doc.autoTable(tableOpts);
+        // @ts-ignore
+        yPosition = doc.lastAutoTable.finalY + 10;
+      } else {
+        console.error("autoTable fonksiyonu bulunamadı!");
+        yPosition += 20;
+      }
+    } catch (error) {
+      console.error("Tablo oluşturma hatası:", error);
+      yPosition += 20;
+    }
     
     // Karlılık oranları
     const profitabilityRatios = [
