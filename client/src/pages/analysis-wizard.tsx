@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ArrowLeft, ArrowRight, Save, Download } from "lucide-react";
-import MultiCompanySelector from "@/components/financial/multi-company-selector";
+import MultiCompanySelectorWithAutocomplete from "@/components/financial/multi-company-selector-with-autocomplete";
 import YearSelector from "@/components/financial/year-selector";
 import RatioSelector from "@/components/financial/ratio-selector";
 import { PriceCalculator } from "@/components/financial/price-calculator";
@@ -286,10 +286,10 @@ export default function AnalysisWizardPage() {
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <MultiCompanySelector 
+                    <MultiCompanySelectorWithAutocomplete 
                       onSelectCompanies={handleCompanySelection}
                       initialSelectedCompanies={selectedCompanies}
-                      maxResults={10}
+                      maxCompanies={10}
                     />
                     
                     <div className="flex justify-end mt-6">

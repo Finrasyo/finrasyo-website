@@ -22,7 +22,7 @@ interface ReportGeneratorProps {
   results: any;
   companies: Array<{code: string, name: string, sector: string}>;
   years: number[];
-  onGenerateReport: (format: string) => Promise<void>;
+  onGenerateReport: (format: string) => Promise<any>;
 }
 
 export default function ReportGenerator({
@@ -33,18 +33,25 @@ export default function ReportGenerator({
 }: ReportGeneratorProps) {
   const [reportType, setReportType] = useState<string>("pdf");
   const [isGenerating, setIsGenerating] = useState(false);
+  const [reportData, setReportData] = useState<{id: number, url: string, format: string} | null>(null);
   const { toast } = useToast();
   
   const handleGenerateReport = async () => {
     try {
       setIsGenerating(true);
       
-      await onGenerateReport(reportType);
+      const data = await onGenerateReport(reportType);
+      console.log("Rapor verileri:", data);
       
-      toast({
-        title: "Rapor Hazır",
-        description: `Raporunuz ${reportType.toUpperCase()} formatında başarıyla oluşturuldu.`,
-      });
+      if (data && data.url) {
+        setReportData(data);
+        toast({
+          title: "Rapor Hazır",
+          description: `Raporunuz ${reportType.toUpperCase()} formatında başarıyla oluşturuldu.`,
+        });
+      } else {
+        throw new Error("Rapor bilgileri alınamadı.");
+      }
       
     } catch (error: any) {
       console.error("Rapor oluşturma hatası:", error);
@@ -108,6 +115,25 @@ export default function ReportGenerator({
               </SelectContent>
             </Select>
           </div>
+          
+          {/* Oluşturulan rapor gösterilir */}
+          {reportData && (
+            <div className="mt-4 p-4 bg-green-50 border border-green-200 rounded-md">
+              <h3 className="text-sm font-medium text-green-800 mb-2">Rapor Oluşturuldu!</h3>
+              <p className="text-sm text-green-700 mb-3">
+                {reportType.toUpperCase()} formatındaki raporunuz başarıyla oluşturuldu.
+              </p>
+              <Button 
+                size="sm" 
+                className="w-full"
+                variant="outline"
+                onClick={() => window.open(reportData.url, '_blank')}
+              >
+                <Download className="mr-2 h-4 w-4" />
+                Raporu İndir
+              </Button>
+            </div>
+          )}
         </div>
       </CardContent>
       <CardFooter>
