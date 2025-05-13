@@ -367,7 +367,10 @@ export default function AnalysisWizard() {
           {/* Adım 3: Oran Seçimi */}
           {step === 3 && (
             <div className="space-y-4">
-              <div className="flex items-center space-x-2 mb-4">
+              <h3 className="text-lg font-semibold mb-2">Hesaplanacak Finansal Oranları Seçin</h3>
+              <p className="text-sm text-muted-foreground mb-4">Raporda yer almasını istediğiniz finansal oranları seçin.</p>
+              
+              <div className="flex items-center space-x-2 mb-6 border-b pb-2">
                 <Checkbox 
                   id="select-all" 
                   checked={selectedRatios.length === financialRatios.length}
@@ -376,9 +379,9 @@ export default function AnalysisWizard() {
                 <Label htmlFor="select-all" className="font-bold">Tümünü Seç / Kaldır</Label>
               </div>
               
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-y-2 gap-x-4">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-y-6 gap-x-8">
                 {financialRatios.map(ratio => (
-                  <div key={ratio.id} className="flex items-start space-x-2">
+                  <div key={ratio.id} className="flex items-start space-x-3 pb-3 border-b">
                     <Checkbox 
                       id={`ratio-${ratio.id}`} 
                       checked={selectedRatios.includes(ratio.id)}
@@ -387,7 +390,7 @@ export default function AnalysisWizard() {
                     />
                     <div>
                       <Label htmlFor={`ratio-${ratio.id}`} className="font-medium">{ratio.name}</Label>
-                      <p className="text-sm text-muted-foreground">{ratio.description}</p>
+                      <p className="text-sm text-muted-foreground mt-1">{ratio.description}</p>
                     </div>
                   </div>
                 ))}
