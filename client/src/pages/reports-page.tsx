@@ -175,6 +175,11 @@ export default function ReportsPage() {
         financialData: selectedReport.financialData
       });
       
+      console.log("Rapor oluşturma işlemi için verileri hazırlıyorum");
+      
+      // Rapor indirme modülünü içe aktar
+      const { generateReport, downloadReport } = await import('../components/financial/report-downloader');
+      
       // Generate and download the report
       const result = await generateReport(
         selectedReport.financialData,
