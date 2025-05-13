@@ -66,13 +66,14 @@ export function FinancialDataProvider({ children }: { children: ReactNode }) {
         reportName?: string;
       };
     }) => {
+      const reportName = options?.reportName || `Finansal Oran Raporu`;
       const res = await apiRequest("POST", "/api/reports", {
         companyId,
         financialDataId,
         format: type,
-        name: `Finansal Oran Raporu`, // Gerekli name (isim) alanını ekledik
+        name: reportName, // Gerekli name (isim) alanını ekledik
         type: 'financial', // Gerekli type (tür) alanını ekledik
-        status: 'processing',
+        status: 'completed', // Durumu tamamlandı olarak işaretleyelim
         options: {
           numCompanies: options?.numCompanies || 1,
           numPeriods: options?.numPeriods || 1,

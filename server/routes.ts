@@ -345,19 +345,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ message: "Finansal veri bulunamadı" });
       }
       
+      // Rapor adını ya istekten al ya da varsayılan değer kullan
+      const reportName = req.body.name || `${company.name} Finansal Oran Raporu`;
+      const reportStatus = req.body.status || 'completed';
+      
       const validatedData = insertReportSchema.parse({
         userId: req.user.id,
         companyId,
         financialDataId,
-        type
+        type: req.body.type || 'financial',
+        name: reportName,
+        status: reportStatus,
+        format: req.body.format || "pdf",
       });
       
-      // Create report
+      // Create report - tüm gerekli alanları içeren doğrulanmış veriyi kullan
       const report = await storage.createReport({
         ...validatedData,
-        name: `${company.name} Finansal Oran Raporu`,
-        companyName: company.name,
-        format: req.body.format || "pdf"
+        companyName: company.name
       });
       
       // Admin değilse kredi düşülür
