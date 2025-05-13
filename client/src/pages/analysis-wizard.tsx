@@ -350,7 +350,7 @@ export default function AnalysisWizard() {
           {step === 2 && (
             <div className="space-y-4">
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                {[2023, 2022, 2021, 2020, 2019, 2018, 2017, 2016].map(year => (
+                {[2025, 2024, 2023, 2022, 2021, 2020, 2019, 2018, 2017, 2016].map(year => (
                   <div key={year} className="flex items-center space-x-2">
                     <Checkbox 
                       id={`year-${year}`} 
