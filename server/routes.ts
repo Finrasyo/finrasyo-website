@@ -503,42 +503,68 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
   
-  // Get downloadable report
-  app.get("/api/reports/:id/:format", async (req, res) => {
+  // Get report by ID with all necessary data to generate the report
+  app.get("/api/reports/:id", async (req, res) => {
     if (!req.isAuthenticated()) return res.sendStatus(401);
     
     try {
       const reportId = parseInt(req.params.id);
-      const format = req.params.format;
+      
+      console.log(`Rapor verileri isteniyor: ID=${reportId}`);
       
       const report = await storage.getReport(reportId);
+      
       if (!report) {
+        console.error(`Rapor bulunamadı: ID=${reportId}`);
         return res.status(404).json({ message: "Rapor bulunamadı" });
       }
       
-      if (report.userId !== req.user.id) {
-        return res.status(403).json({ message: "Bu rapora erişim izniniz yok" });
+      if (report.userId !== req.user.id && req.user.role !== 'admin') {
+        return res.status(403).json({ message: "Bu raporu görüntüleme izniniz yok" });
       }
       
+      // Get the financial data and company for this report
       const financialData = await storage.getFinancialData(report.financialDataId);
       if (!financialData) {
-        return res.status(404).json({ message: "Rapor verileri bulunamadı" });
+        console.error(`Finansal veri bulunamadı: ID=${report.financialDataId}`);
+        return res.status(404).json({ message: "Finansal veri bulunamadı" });
       }
       
       const company = await storage.getCompany(report.companyId);
       if (!company) {
+        console.error(`Şirket bulunamadı: ID=${report.companyId}`);
         return res.status(404).json({ message: "Şirket bulunamadı" });
       }
       
-      // Instead of generating actual files, we'll return the data that would be in the reports
-      // In a real implementation, this would generate and return files
+      console.log(`Rapor verileri başarıyla alındı: ID=${reportId}`);
+      
+      // Return all necessary data for report generation
       res.json({
         report,
-        company,
-        financialData,
-        format
+        company: {
+          id: company.id,
+          name: company.name,
+          code: company.code || company.name.substring(0, 4).toUpperCase(),
+          sector: company.sector || "Genel"
+        },
+        financialData: {
+          ...financialData,
+          year: financialData.year,
+          // Daha yararlı finansal veri analizi için varsayılan değerler ekle
+          totalAssets: financialData.totalAssets || 0,
+          currentAssets: financialData.totalCurrentAssets || 0,
+          fixedAssets: financialData.totalFixedAssets || 0,
+          shortTermLiabilities: financialData.totalCurrentLiabilities || 0,
+          longTermLiabilities: financialData.totalLongTermLiabilities || 0,
+          equity: financialData.totalEquity || 0,
+          netSales: financialData.netSales || 0,
+          grossProfit: financialData.grossProfit || 0,
+          operatingProfit: financialData.operatingProfit || 0,
+          netProfit: financialData.netProfit || 0
+        }
       });
     } catch (error: any) {
+      console.error(`Rapor verileri alınırken hata oluştu: ID=${req.params.id}`, error);
       res.status(500).json({ message: error.message });
     }
   });
