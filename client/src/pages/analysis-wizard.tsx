@@ -1,203 +1,138 @@
-import { useState, useEffect } from "react";
-import { useLocation } from "wouter";
-import { useAuth } from "@/hooks/use-auth";
-import { useToast } from "@/hooks/use-toast";
-import Navbar from "@/components/layout/navbar";
-import Footer from "@/components/layout/footer";
+import { useEffect, useState } from "react";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ArrowLeft, ArrowRight, Save, Download } from "lucide-react";
-import MultiCompanySelectorWithAutocomplete from "@/components/financial/multi-company-selector-with-autocomplete";
-import YearSelector from "@/components/financial/year-selector";
-import RatioSelector from "@/components/financial/ratio-selector";
-import { PriceCalculator } from "@/components/financial/price-calculator";
-import DataFetcher from "@/components/financial/data-fetcher";
-import ResultProcessor from "@/components/financial/result-processor";
-import ReportGenerator from "@/components/financial/report-generator";
-import { useFinancialData } from "@/hooks/use-financial-data";
+import { useToast } from "@/hooks/use-toast";
+import { useLocation } from "wouter";
 import { apiRequest } from "@/lib/queryClient";
+import { useFinancialData } from "@/hooks/use-financial-data";
+import { bistCompanies } from "@/data/bist-companies";
 
-interface Company {
-  code: string;
-  name: string;
-  sector: string;
-}
+// Mevcut finansal oranların listesi
+const financialRatios = [
+  { id: "currentRatio", name: "Cari Oran", description: "Şirketin kısa vadeli borçlarını ödeme kabiliyetini ölçer" },
+  { id: "quickRatio", name: "Asit-Test Oranı", description: "Şirketin stoklarını hariç tutarak kısa vadeli borçlarını ödeme kabiliyetini ölçer" },
+  { id: "cashRatio", name: "Nakit Oranı", description: "Şirketin sadece nakit ve nakit benzerlerini kullanarak kısa vadeli borçlarını ödeme kabiliyetini ölçer" },
+  { id: "debtToAssetRatio", name: "Borç/Varlık Oranı", description: "Şirketin varlıklarının ne kadarının borçlanma ile finanse edildiğini gösterir" },
+  { id: "debtToEquityRatio", name: "Borç/Özsermaye Oranı", description: "Şirketin borçlanma seviyesini özsermayesiyle karşılaştırır" },
+  { id: "financialLeverageRatio", name: "Finansal Kaldıraç Oranı", description: "Şirketin toplam varlıklarının özsermayesine oranını gösterir" },
+  { id: "grossProfitMargin", name: "Brüt Kar Marjı", description: "Satışların maliyeti düşüldükten sonra kalan kar marjını gösterir" },
+  { id: "operatingProfitMargin", name: "Faaliyet Kar Marjı", description: "Faaliyet giderleri düşüldükten sonra kalan kar marjını gösterir" },
+  { id: "netProfitMargin", name: "Net Kar Marjı", description: "Tüm giderler düşüldükten sonra kalan kar marjını gösterir" },
+  { id: "returnOnAssets", name: "Aktif Karlılık (ROA)", description: "Şirketin varlıklarının ne kadar karlı kullanıldığını gösterir" },
+  { id: "returnOnEquity", name: "Özsermaye Karlılığı (ROE)", description: "Şirketin özsermayesinin ne kadar karlı kullanıldığını gösterir" },
+  { id: "inventoryTurnover", name: "Stok Devir Hızı", description: "Şirketin stoklarını ne kadar hızlı sattığını gösterir" },
+  { id: "receivablesTurnover", name: "Alacak Devir Hızı", description: "Şirketin alacaklarını ne kadar hızlı tahsil ettiğini gösterir" },
+  { id: "assetTurnover", name: "Varlık Devir Hızı", description: "Şirketin varlıklarının satışlara dönüşme hızını gösterir" },
+  { id: "interestCoverageRatio", name: "Faiz Karşılama Oranı", description: "Şirketin faiz ödemelerini karşılama yeteneğini gösterir" },
+  { id: "dividendYield", name: "Temettü Verimi", description: "Hisse başına ödenen temettünün hisse fiyatına oranını gösterir" }
+];
 
-export default function AnalysisWizardPage() {
-  const { user } = useAuth();
-  const [_, navigate] = useLocation();
-  const { toast } = useToast();
-  const { generateReport } = useFinancialData();
-  
-  // Wizard states
-  const [currentStep, setCurrentStep] = useState("company-selection");
-  const [selectedCompanies, setSelectedCompanies] = useState<Company[]>([]);
-  const [selectedYears, setSelectedYears] = useState<number[]>([]);
-  const [selectedRatios, setSelectedRatios] = useState<string[]>([]);
+// Çıktı formatları
+const outputFormats = [
+  { id: "pdf", name: "PDF", icon: "📄" },
+  { id: "excel", name: "Excel", icon: "📊" },
+  { id: "word", name: "Word", icon: "📝" },
+  { id: "csv", name: "CSV", icon: "📑" }
+];
+
+export default function AnalysisWizard() {
+  const [step, setStep] = useState(1);
+  const [selectedCompanies, setSelectedCompanies] = useState<any[]>([]);
+  const [selectedYears, setSelectedYears] = useState<string[]>([]);
+  const [selectedRatios, setSelectedRatios] = useState<string[]>(financialRatios.map(r => r.id));
   const [price, setPrice] = useState(0);
-  const [credits, setCredits] = useState(0);
-  const [fetchedData, setFetchedData] = useState<any>(null);
-  const [processedResults, setProcessedResults] = useState<any>(null);
-  const [isPaid, setIsPaid] = useState(false);
-  
-  // Restore selections from localStorage if available
+  const [isGeneratingReport, setIsGeneratingReport] = useState(false);
+  const { toast } = useToast();
+  const [_, setLocation] = useLocation();
+
+  // Fiyat hesaplama
   useEffect(() => {
-    const savedCompanies = localStorage.getItem('selectedCompanies');
-    const savedYears = localStorage.getItem('selectedYears');
+    // Temel fiyatı hesapla: Şirket sayısı x Dönem sayısı x Oran sayısı x 0.25₺
+    const basePrice = selectedCompanies.length * selectedYears.length * selectedRatios.length * 0.25;
     
-    if (savedCompanies) {
-      try {
-        setSelectedCompanies(JSON.parse(savedCompanies));
-      } catch (e) {
-        console.error("Kaydedilmiş şirket verileri okunamadı:", e);
-      }
+    // Kuruş hassasiyetinde fiyatı 2 ondalık basamakla göster
+    setPrice(parseFloat(basePrice.toFixed(2)));
+  }, [selectedCompanies, selectedYears, selectedRatios]);
+
+  // Şirket seçimi
+  const handleCompanySelection = (selected: any[]) => {
+    setSelectedCompanies(selected);
+  };
+
+  // Dönem (yıl) seçimi değiştiğinde
+  const handleYearChange = (year: string) => {
+    if (selectedYears.includes(year)) {
+      setSelectedYears(selectedYears.filter(y => y !== year));
+    } else {
+      setSelectedYears([...selectedYears, year]);
     }
-    
-    if (savedYears) {
-      try {
-        setSelectedYears(JSON.parse(savedYears));
-      } catch (e) {
-        console.error("Kaydedilmiş dönem verileri okunamadı:", e);
-      }
+  };
+
+  // Finansal oran seçimi değiştiğinde
+  const handleRatioChange = (ratioId: string) => {
+    if (selectedRatios.includes(ratioId)) {
+      setSelectedRatios(selectedRatios.filter(r => r !== ratioId));
+    } else {
+      setSelectedRatios([...selectedRatios, ratioId]);
     }
-  }, []);
-  
-  const handleCompanySelection = (companies: Company[]) => {
-    setSelectedCompanies(companies);
-    localStorage.setItem('selectedCompanies', JSON.stringify(companies));
   };
-  
-  const handleYearSelection = (years: number[]) => {
-    setSelectedYears(years);
-    localStorage.setItem('selectedYears', JSON.stringify(years));
-  };
-  
-  const handleRatioSelection = (ratios: string[]) => {
-    setSelectedRatios(ratios);
-  };
-  
-  const handlePriceChange = (newPrice: number, newCredits: number) => {
-    setPrice(newPrice);
-    setCredits(newCredits);
-  };
-  
-  const handleDataFetched = (data: any) => {
-    setFetchedData(data);
-    setCurrentStep("ratio-calculation");
-  };
-  
-  const handleResultsProcessed = (results: any) => {
-    setProcessedResults(results);
-    if (!processedResults) {
-      setCurrentStep("report-generation");
+
+  // Tüm oranları seç/kaldır
+  const handleSelectAllRatios = () => {
+    if (selectedRatios.length === financialRatios.length) {
+      setSelectedRatios([]);
+    } else {
+      setSelectedRatios(financialRatios.map(r => r.id));
     }
   };
   
-  const handleBackStep = () => {
-    if (currentStep === "year-selection") {
-      setCurrentStep("company-selection");
-    } else if (currentStep === "ratio-selection") {
-      setCurrentStep("year-selection");
-    } else if (currentStep === "price-calculation") {
-      setCurrentStep("ratio-selection");
-    } else if (currentStep === "data-fetching") {
-      setCurrentStep("price-calculation");
-    } else if (currentStep === "ratio-calculation") {
-      setCurrentStep("data-fetching");
-    } else if (currentStep === "report-generation") {
-      setCurrentStep("ratio-calculation");
-    }
-  };
-  
-  const handleNextStep = () => {
-    if (currentStep === "company-selection") {
-      if (selectedCompanies.length === 0) {
-        toast({
-          title: "Şirket Seçiniz",
-          description: "Lütfen en az bir şirket seçin",
-          variant: "destructive"
-        });
-        return;
-      }
-      setCurrentStep("year-selection");
-    } else if (currentStep === "year-selection") {
-      if (selectedYears.length === 0) {
-        toast({
-          title: "Dönem Seçiniz",
-          description: "Lütfen en az bir finansal dönem seçin",
-          variant: "destructive"
-        });
-        return;
-      }
-      setCurrentStep("ratio-selection");
-    } else if (currentStep === "ratio-selection") {
-      if (selectedRatios.length === 0) {
-        toast({
-          title: "Oran Seçiniz",
-          description: "Lütfen en az bir finansal oran seçin",
-          variant: "destructive"
-        });
-        return;
-      }
-      setCurrentStep("price-calculation");
-    } else if (currentStep === "price-calculation") {
-      // Admin veya credits yeterliyse doğrudan işleme devam et
-      if (user?.role === "admin" || (user && user.credits >= credits)) {
-        setIsPaid(true);
-        setCurrentStep("data-fetching");
-      } else {
-        // Ödeme sayfasına yönlendir
-        localStorage.setItem('pendingAnalysis', JSON.stringify({
-          companies: selectedCompanies,
-          years: selectedYears,
-          ratios: selectedRatios,
-          price, 
-          credits
-        }));
-        navigate("/payment");
-      }
-    }
-  };
-  
-  const handlePayment = async () => {
-    // Ödeme işlemi
-    try {
-      if (price === 0) {
-        setIsPaid(true);
-        setCurrentStep("data-fetching");
-        return;
-      }
-      
-      const response = await apiRequest("POST", "/api/payments", {
-        amount: price,
-        credits: credits,
-        description: `${selectedCompanies.length} şirket, ${selectedYears.length} dönem, ${selectedRatios.length} oran için analiz`
-      });
-      
-      if (!response.ok) {
-        throw new Error("Ödeme işlemi başarısız oldu.");
-      }
-      
-      setIsPaid(true);
-      setCurrentStep("data-fetching");
-      
+  // İleri butonuna tıklandığında
+  const handleNext = () => {
+    if (step === 1 && selectedCompanies.length === 0) {
       toast({
-        title: "Ödeme Başarılı",
-        description: "Ödemeniz başarıyla alındı, analiz başlatılıyor.",
-      });
-    } catch (error: any) {
-      console.error("Ödeme hatası:", error);
-      toast({
-        title: "Ödeme Hatası",
-        description: error.message || "Ödeme işlemi sırasında bir hata oluştu.",
+        title: "Şirket Seçilmedi",
+        description: "Lütfen en az bir şirket seçin.",
         variant: "destructive"
       });
+      return;
     }
+    
+    if (step === 2 && selectedYears.length === 0) {
+      toast({
+        title: "Dönem Seçilmedi",
+        description: "Lütfen en az bir dönem seçin.",
+        variant: "destructive"
+      });
+      return;
+    }
+    
+    if (step === 3 && selectedRatios.length === 0) {
+      toast({
+        title: "Oran Seçilmedi",
+        description: "Lütfen en az bir finansal oran seçin.",
+        variant: "destructive"
+      });
+      return;
+    }
+    
+    setStep(prevStep => prevStep + 1);
   };
   
+  // Geri butonuna tıklandığında
+  const handleBack = () => {
+    setStep(prevStep => prevStep - 1);
+  };
+  
+  // Rapor oluşturma
   const handleReport = async (format: string) => {
     try {
+      // Şirket verilerini hazırla
+      if (selectedCompanies.length === 0) {
+        throw new Error("Lütfen en az bir şirket seçin");
+      }
+      
       // Önce şirket verileri kaydetmek için bir istek yap
       const companyResponse = await apiRequest("POST", "/api/companies", {
         name: selectedCompanies[0].name,
@@ -206,79 +141,75 @@ export default function AnalysisWizardPage() {
       });
       
       if (!companyResponse.ok) {
-        throw new Error("Şirket kaydedilirken bir hata oluştu");
+        const errorText = await companyResponse.text();
+        throw new Error(`Şirket kaydedilemedi: ${errorText}`);
       }
       
       const company = await companyResponse.json();
+      console.log("Şirket kaydedildi:", company);
       
       // Şimdi finansal veri oluştur
+      const today = new Date().getFullYear(); // Geçerli yıl
       const financialDataResponse = await apiRequest("POST", "/api/financial-data", {
         companyId: company.id,
-        year: selectedYears[0],
-        // Gerekli finansal veri alanları
-        cashAndEquivalents: 1000000, // Örnek değerler - gerekli alanlar
+        year: selectedYears[0] || today,
+        // Gerekli finansal veri alanları - test değerleri
+        cashAndEquivalents: 1000000,
         accountsReceivable: 500000,
         inventory: 750000,
         otherCurrentAssets: 250000,
         totalCurrentAssets: 2500000,
+        totalNonCurrentAssets: 5000000,
+        totalAssets: 7500000,
         shortTermDebt: 300000,
         accountsPayable: 400000,
         otherCurrentLiabilities: 300000,
         totalCurrentLiabilities: 1000000
       });
-      
+
       if (!financialDataResponse.ok) {
-        throw new Error("Finansal veri kaydedilirken bir hata oluştu");
+        const errorText = await financialDataResponse.text();
+        console.error("Finansal veri kaydetme hatası yanıtı:", errorText);
+        throw new Error(`Finansal veri kaydedilemedi: ${errorText}`);
+      }
+
+      const financialData = await financialDataResponse.json();
+      console.log("Kaydedilen finansal veri:", financialData);
+      
+      // Rapor oluştur
+      console.log("Rapor oluşturma başlatılıyor...", {
+        companyId: company.id,
+        financialDataId: financialData.id,
+        format: format
+      });
+      
+      // Rapor isteği yap
+      const reportResponse = await apiRequest("POST", "/api/reports", {
+        companyId: company.id,
+        financialDataId: financialData.id,
+        format: format,
+        name: `${company.name} - ${selectedYears[0]} Finansal Analiz Raporu`,
+        type: 'financial',
+        status: 'completed',
+        numCompanies: selectedCompanies.length,
+        numPeriods: selectedYears.length,
+        numRatios: selectedRatios.length,
+        price: price
+      });
+      
+      if (!reportResponse.ok) {
+        const errorText = await reportResponse.text();
+        console.error("Rapor oluşturma hatası yanıtı:", reportResponse.status, errorText);
+        throw new Error(`Rapor oluşturulamadı: ${reportResponse.status} - ${errorText}`);
       }
       
-      const financialData = await financialDataResponse.json();
-      
-      // İşlenmiş verileri sunucuya gönder ve rapor oluştur
-      const reportData = await generateReport(
-        company.id, // Şirket ID'si
-        financialData.id, // Finansal veri ID'si
-        format,
-        {
-          numCompanies: selectedCompanies.length,
-          numPeriods: selectedYears.length,
-          numRatios: selectedRatios.length,
-          price: price,
-          reportName: `${company.name} - ${selectedYears[0]} Finansal Analiz Raporu`
-        }
-      );
-      
+      const reportData = await reportResponse.json();
       console.log("Oluşturulan rapor:", reportData);
-      
-      // Raporlar sayfasına yönlendirmeden önce rapor verilerini döndür
       return reportData;
+      
     } catch (error: any) {
       console.error("Rapor oluşturma hatası:", error);
-      
-      // Daha detaylı hata mesajı göster
       let errorMessage = error.message || "Rapor oluşturulurken bir hata meydana geldi.";
-      
-      console.error("Rapor oluşturma hatası bilgileri:", error);
-      
-      // Eğer response varsa ve JSON formatında ise, sunucudan gelen hata mesajını göster
-      if (error.response) {
-        try {
-          const responseText = await error.response.text();
-          console.error("Sunucu hata yanıtı (text):", responseText);
-          
-          try {
-            const responseData = JSON.parse(responseText);
-            if (responseData.message) {
-              errorMessage = `Sunucu hatası: ${responseData.message}`;
-            }
-            console.error("Sunucu cevabı (JSON):", responseData);
-          } catch (parseError) {
-            console.error("Yanıt JSON formatında değil:", parseError);
-            errorMessage = `Sunucu yanıtı: ${responseText}`;
-          }
-        } catch (textError) {
-          console.error("Hata yanıtı okunamadı:", textError);
-        }
-      }
       
       toast({
         title: "Rapor Oluşturma Hatası",
@@ -289,269 +220,291 @@ export default function AnalysisWizardPage() {
     }
   };
   
+  // PDF raporu oluştur
+  const handlePdfReport = async () => {
+    try {
+      setIsGeneratingReport(true);
+      const reportData = await handleReport("pdf");
+      toast({
+        title: "Rapor Hazır",
+        description: "PDF raporu başarıyla oluşturuldu.",
+      });
+      setLocation("/reports");
+    } catch (error) {
+      console.error("PDF rapor oluşturma hatası:", error);
+    } finally {
+      setIsGeneratingReport(false);
+    }
+  };
+  
+  // Excel raporu oluştur
+  const handleExcelReport = async () => {
+    try {
+      setIsGeneratingReport(true);
+      const reportData = await handleReport("excel");
+      toast({
+        title: "Rapor Hazır",
+        description: "Excel raporu başarıyla oluşturuldu.",
+      });
+      setLocation("/reports");
+    } catch (error) {
+      console.error("Excel rapor oluşturma hatası:", error);
+    } finally {
+      setIsGeneratingReport(false);
+    }
+  };
+  
+  // Word raporu oluştur
+  const handleWordReport = async () => {
+    try {
+      setIsGeneratingReport(true);
+      const reportData = await handleReport("word");
+      toast({
+        title: "Rapor Hazır",
+        description: "Word raporu başarıyla oluşturuldu.",
+      });
+      setLocation("/reports");
+    } catch (error) {
+      console.error("Word rapor oluşturma hatası:", error);
+    } finally {
+      setIsGeneratingReport(false);
+    }
+  };
+  
+  // CSV raporu oluştur
+  const handleCsvReport = async () => {
+    try {
+      setIsGeneratingReport(true);
+      const reportData = await handleReport("csv");
+      toast({
+        title: "Rapor Hazır",
+        description: "CSV raporu başarıyla oluşturuldu.",
+      });
+      setLocation("/reports");
+    } catch (error) {
+      console.error("CSV rapor oluşturma hatası:", error);
+    } finally {
+      setIsGeneratingReport(false);
+    }
+  };
+
   return (
-    <div className="flex flex-col min-h-screen">
-      <Navbar />
+    <div className="container mx-auto py-8">
+      <h1 className="text-3xl font-bold mb-8 text-center">Finansal Analiz Sihirbazı</h1>
       
-      <main className="flex-grow">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <h1 className="text-3xl font-bold text-neutral-800 mb-6">Finansal Analiz Sihirbazı</h1>
-          
-          {/* Step Indicator */}
-          <div className="mb-8">
-            <Tabs value={currentStep} className="w-full">
-              <TabsList className="grid grid-cols-5">
-                <TabsTrigger 
-                  value="company-selection" 
-                  onClick={() => setCurrentStep("company-selection")}
-                  disabled={false}
-                >
-                  1. Şirket Seçimi
-                </TabsTrigger>
-                <TabsTrigger 
-                  value="year-selection" 
-                  onClick={() => setCurrentStep("year-selection")}
-                  disabled={selectedCompanies.length === 0}
-                >
-                  2. Dönem Seçimi
-                </TabsTrigger>
-                <TabsTrigger 
-                  value="ratio-selection" 
-                  onClick={() => setCurrentStep("ratio-selection")}
-                  disabled={selectedYears.length === 0}
-                >
-                  3. Oran Seçimi
-                </TabsTrigger>
-                <TabsTrigger 
-                  value="price-calculation" 
-                  onClick={() => setCurrentStep("price-calculation")}
-                  disabled={selectedRatios.length === 0}
-                >
-                  4. Fiyat Hesaplama
-                </TabsTrigger>
-                <TabsTrigger 
-                  value="report-generation" 
-                  onClick={() => setCurrentStep("report-generation")}
-                  disabled={!processedResults}
-                >
-                  5. Rapor
-                </TabsTrigger>
-              </TabsList>
-              
-              {/* Şirket Seçimi */}
-              <TabsContent value="company-selection" className="pt-6">
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Şirket Seçimi</CardTitle>
-                    <CardDescription>
-                      Analiz yapmak istediğiniz şirketleri seçin (birden fazla seçim yapabilirsiniz)
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <MultiCompanySelectorWithAutocomplete 
-                      onSelectCompanies={handleCompanySelection}
-                      initialSelectedCompanies={selectedCompanies}
-                      maxCompanies={10}
-                    />
-                    
-                    <div className="flex justify-end mt-6">
-                      <Button 
-                        onClick={handleNextStep}
-                        disabled={selectedCompanies.length === 0}
-                      >
-                        İleri <ArrowRight className="ml-2 h-4 w-4" />
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              </TabsContent>
-              
-              {/* Dönem Seçimi */}
-              <TabsContent value="year-selection" className="pt-6">
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Dönem Seçimi</CardTitle>
-                    <CardDescription>
-                      Analiz yapmak istediğiniz mali dönemleri seçin
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <YearSelector 
-                      onSelectYears={handleYearSelection}
-                      initialSelectedYears={selectedYears}
-                      yearCount={5}
-                    />
-                    
-                    <div className="flex justify-between mt-6">
-                      <Button variant="outline" onClick={handleBackStep}>
-                        <ArrowLeft className="mr-2 h-4 w-4" /> Geri
-                      </Button>
-                      <Button 
-                        onClick={handleNextStep}
-                        disabled={selectedYears.length === 0}
-                      >
-                        İleri <ArrowRight className="ml-2 h-4 w-4" />
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              </TabsContent>
-              
-              {/* Oran Seçimi */}
-              <TabsContent value="ratio-selection" className="pt-6">
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Oran Seçimi</CardTitle>
-                    <CardDescription>
-                      Hesaplanmasını istediğiniz finansal oranları seçin
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <RatioSelector 
-                      onSelectRatios={handleRatioSelection}
-                      initialSelectedRatios={selectedRatios}
-                    />
-                    
-                    <div className="flex justify-between mt-6">
-                      <Button variant="outline" onClick={handleBackStep}>
-                        <ArrowLeft className="mr-2 h-4 w-4" /> Geri
-                      </Button>
-                      <Button 
-                        onClick={handleNextStep}
-                        disabled={selectedRatios.length === 0}
-                      >
-                        İleri <ArrowRight className="ml-2 h-4 w-4" />
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              </TabsContent>
-              
-              {/* Fiyat Hesaplama */}
-              <TabsContent value="price-calculation" className="pt-6">
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Fiyat Hesaplama</CardTitle>
-                    <CardDescription>
-                      Seçimlerinize göre ödemeniz gereken tutarı görüntüleyin
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <PriceCalculator 
-                      onPriceChange={handlePriceChange}
-                      initialCompanies={selectedCompanies.length}
-                      initialPeriods={selectedYears.length}
-                      initialRatios={selectedRatios.length}
-                      pricePerUnit={0.25}
-                    />
-                    
-                    <div className="flex justify-between mt-6">
-                      <Button variant="outline" onClick={handleBackStep}>
-                        <ArrowLeft className="mr-2 h-4 w-4" /> Geri
-                      </Button>
-                      <Button 
-                        onClick={handleNextStep}
-                      >
-                        Öde ve Devam Et <ArrowRight className="ml-2 h-4 w-4" />
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              </TabsContent>
-              
-              {/* Veri Çekme */}
-              <TabsContent value="data-fetching" className="pt-6">
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Veri Çekme</CardTitle>
-                    <CardDescription>
-                      Seçtiğiniz şirketlerin finansal verilerini otomatik olarak çekiliyor
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <DataFetcher 
-                      companies={selectedCompanies}
-                      years={selectedYears}
-                      ratios={selectedRatios}
-                      onDataFetched={handleDataFetched}
-                      onError={(error) => console.error(error)}
-                    />
-                    
-                    <div className="flex justify-between mt-6">
-                      <Button variant="outline" onClick={handleBackStep}>
-                        <ArrowLeft className="mr-2 h-4 w-4" /> Geri
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              </TabsContent>
-              
-              {/* Oran Hesaplama */}
-              <TabsContent value="ratio-calculation" className="pt-6">
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Oran Hesaplama</CardTitle>
-                    <CardDescription>
-                      Seçilen şirketler için finansal oranlar hesaplanıyor
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    {fetchedData && (
-                      <ResultProcessor 
-                        data={fetchedData}
-                        selectedRatios={selectedRatios}
-                        onResultsProcessed={handleResultsProcessed}
-                      />
-                    )}
-                    
-                    <div className="flex justify-between mt-6">
-                      <Button variant="outline" onClick={handleBackStep}>
-                        <ArrowLeft className="mr-2 h-4 w-4" /> Geri
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              </TabsContent>
-              
-              {/* Rapor Oluşturma */}
-              <TabsContent value="report-generation" className="pt-6">
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Rapor Oluşturma</CardTitle>
-                    <CardDescription>
-                      Oluşturulan finansal analiz sonuçlarını raporlayın
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    {processedResults && (
-                      <ReportGenerator 
-                        results={processedResults}
-                        companies={selectedCompanies}
-                        years={selectedYears}
-                        onGenerateReport={handleReport}
-                      />
-                    )}
-                    
-                    <div className="flex justify-between mt-6">
-                      <Button variant="outline" onClick={handleBackStep}>
-                        <ArrowLeft className="mr-2 h-4 w-4" /> Geri
-                      </Button>
-                      <Button 
-                        variant="default"
-                        onClick={() => navigate("/reports")}
-                      >
-                        Raporlarım <ArrowRight className="ml-2 h-4 w-4" />
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              </TabsContent>
-            </Tabs>
-          </div>
+      {/* Adım göstergesi */}
+      <div className="flex justify-between mb-8 px-4">
+        <div className={`flex flex-col items-center ${step >= 1 ? 'text-primary' : 'text-muted-foreground'}`}>
+          <div className={`w-10 h-10 rounded-full flex items-center justify-center border-2 ${step >= 1 ? 'border-primary bg-primary/10' : 'border-muted'}`}>1</div>
+          <span className="mt-2">Şirket Seçimi</span>
         </div>
-      </main>
+        <div className={`flex flex-col items-center ${step >= 2 ? 'text-primary' : 'text-muted-foreground'}`}>
+          <div className={`w-10 h-10 rounded-full flex items-center justify-center border-2 ${step >= 2 ? 'border-primary bg-primary/10' : 'border-muted'}`}>2</div>
+          <span className="mt-2">Dönem Seçimi</span>
+        </div>
+        <div className={`flex flex-col items-center ${step >= 3 ? 'text-primary' : 'text-muted-foreground'}`}>
+          <div className={`w-10 h-10 rounded-full flex items-center justify-center border-2 ${step >= 3 ? 'border-primary bg-primary/10' : 'border-muted'}`}>3</div>
+          <span className="mt-2">Oran Seçimi</span>
+        </div>
+        <div className={`flex flex-col items-center ${step >= 4 ? 'text-primary' : 'text-muted-foreground'}`}>
+          <div className={`w-10 h-10 rounded-full flex items-center justify-center border-2 ${step >= 4 ? 'border-primary bg-primary/10' : 'border-muted'}`}>4</div>
+          <span className="mt-2">Rapor Oluştur</span>
+        </div>
+      </div>
       
-      <Footer />
+      <Card className="w-full mb-6">
+        <CardHeader>
+          <CardTitle>
+            {step === 1 && "Analiz Edilecek Şirketleri Seçin"}
+            {step === 2 && "Analiz Dönemlerini Seçin"}
+            {step === 3 && "Hesaplanacak Finansal Oranları Seçin"}
+            {step === 4 && "Rapor Oluştur"}
+          </CardTitle>
+          <CardDescription>
+            {step === 1 && "Finansal analiz yapmak istediğiniz şirketleri seçin. Birden fazla şirket seçebilirsiniz."}
+            {step === 2 && "Analiz yapılacak dönemleri (yılları) seçin. Birden fazla dönem seçebilirsiniz."}
+            {step === 3 && "Raporda yer almasını istediğiniz finansal oranları seçin."}
+            {step === 4 && "Finansal analiz raporu için çıktı formatını seçin ve raporu oluşturun."}
+          </CardDescription>
+        </CardHeader>
+        
+        <CardContent>
+          {/* Adım 1: Şirket Seçimi */}
+          {step === 1 && (
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="company">Şirket Ara</Label>
+                {/* Basitleştirilmiş şirket seçimi - tam seçici component olmadan */}
+                <select 
+                  className="w-full p-2 border rounded"
+                  onChange={(e) => {
+                    const companyIndex = parseInt(e.target.value);
+                    if (!isNaN(companyIndex) && companyIndex >= 0) {
+                      setSelectedCompanies([bistCompanies[companyIndex]]);
+                    } else {
+                      setSelectedCompanies([]);
+                    }
+                  }}
+                >
+                  <option value="-1">Şirket seçin</option>
+                  {bistCompanies.map((company, index) => (
+                    <option key={company.code} value={index}>
+                      {company.name} ({company.code})
+                    </option>
+                  ))}
+                </select>
+                
+                {selectedCompanies.length > 0 && (
+                  <div className="mt-4">
+                    <h3 className="font-medium">Seçilen Şirketler:</h3>
+                    <ul className="list-disc list-inside mt-2">
+                      {selectedCompanies.map(company => (
+                        <li key={company.code} className="flex items-center justify-between">
+                          <span>{company.name} ({company.code})</span>
+                          <Button 
+                            variant="outline" 
+                            size="sm"
+                            onClick={() => setSelectedCompanies([])}
+                            className="ml-2"
+                          >
+                            Kaldır
+                          </Button>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+          
+          {/* Adım 2: Dönem Seçimi */}
+          {step === 2 && (
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {[2023, 2022, 2021, 2020, 2019, 2018, 2017, 2016].map(year => (
+                  <div key={year} className="flex items-center space-x-2">
+                    <Checkbox 
+                      id={`year-${year}`} 
+                      checked={selectedYears.includes(year.toString())}
+                      onCheckedChange={() => handleYearChange(year.toString())}
+                    />
+                    <Label htmlFor={`year-${year}`}>{year}</Label>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+          
+          {/* Adım 3: Oran Seçimi */}
+          {step === 3 && (
+            <div className="space-y-4">
+              <div className="flex items-center space-x-2 mb-4">
+                <Checkbox 
+                  id="select-all" 
+                  checked={selectedRatios.length === financialRatios.length}
+                  onCheckedChange={handleSelectAllRatios}
+                />
+                <Label htmlFor="select-all" className="font-bold">Tümünü Seç / Kaldır</Label>
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-y-2 gap-x-4">
+                {financialRatios.map(ratio => (
+                  <div key={ratio.id} className="flex items-start space-x-2">
+                    <Checkbox 
+                      id={`ratio-${ratio.id}`} 
+                      checked={selectedRatios.includes(ratio.id)}
+                      onCheckedChange={() => handleRatioChange(ratio.id)}
+                      className="mt-1"
+                    />
+                    <div>
+                      <Label htmlFor={`ratio-${ratio.id}`} className="font-medium">{ratio.name}</Label>
+                      <p className="text-sm text-muted-foreground">{ratio.description}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+          
+          {/* Adım 4: Rapor Oluşturma */}
+          {step === 4 && (
+            <div className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {outputFormats.map(format => (
+                  <Card key={format.id} className="overflow-hidden">
+                    <CardHeader className="bg-muted pb-2">
+                      <CardTitle className="flex items-center">
+                        <span className="text-2xl mr-2">{format.icon}</span> 
+                        {format.name} Formatı
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="pt-4">
+                      <p className="text-muted-foreground mb-4">
+                        Finansal analiz raporunu {format.name} formatında oluştur.
+                      </p>
+                      <Button 
+                        className="w-full" 
+                        onClick={() => {
+                          if (format.id === "pdf") handlePdfReport();
+                          else if (format.id === "excel") handleExcelReport();
+                          else if (format.id === "word") handleWordReport();
+                          else if (format.id === "csv") handleCsvReport();
+                        }}
+                        disabled={isGeneratingReport}
+                      >
+                        {isGeneratingReport ? "Oluşturuluyor..." : `${format.name} Raporu Oluştur`}
+                      </Button>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+              
+              <div className="bg-muted p-4 rounded-lg">
+                <h3 className="font-semibold mb-2">Fiyat Hesaplama</h3>
+                <div className="grid grid-cols-3 gap-4 mb-4">
+                  <div>
+                    <p className="text-sm text-muted-foreground">Şirket Sayısı</p>
+                    <p className="font-medium">{selectedCompanies.length}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-muted-foreground">Dönem Sayısı</p>
+                    <p className="font-medium">{selectedYears.length}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-muted-foreground">Oran Sayısı</p>
+                    <p className="font-medium">{selectedRatios.length}</p>
+                  </div>
+                </div>
+                <div className="flex justify-between items-center pt-2 border-t">
+                  <span className="font-semibold">Toplam Fiyat</span>
+                  <span className="text-xl font-bold">{price.toFixed(2)} ₺</span>
+                </div>
+              </div>
+            </div>
+          )}
+        </CardContent>
+        
+        <CardFooter className="flex justify-between">
+          {step > 1 && (
+            <Button variant="outline" onClick={handleBack} disabled={isGeneratingReport}>
+              Geri
+            </Button>
+          )}
+          
+          {step < 4 && (
+            <Button className="ml-auto" onClick={handleNext}>
+              İleri
+            </Button>
+          )}
+          
+          {step === 1 && (
+            <Button variant="ghost" disabled className="opacity-0">
+              Placeholder
+            </Button>
+          )}
+        </CardFooter>
+      </Card>
     </div>
   );
 }
