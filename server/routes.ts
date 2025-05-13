@@ -256,7 +256,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
     if (!req.isAuthenticated()) return res.sendStatus(401);
     
     try {
+      console.log("Finansal veri ekleme isteği:", JSON.stringify(req.body));
       const data = req.body;
+      
+      // Girdi doğrulama
+      if (!data.companyId) {
+        return res.status(400).json({ message: "companyId alanı gereklidir" });
+      }
+      
       const company = await storage.getCompany(data.companyId);
       
       if (!company) {

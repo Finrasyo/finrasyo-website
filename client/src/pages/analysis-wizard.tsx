@@ -257,16 +257,26 @@ export default function AnalysisWizardPage() {
       // Daha detaylı hata mesajı göster
       let errorMessage = error.message || "Rapor oluşturulurken bir hata meydana geldi.";
       
+      console.error("Rapor oluşturma hatası bilgileri:", error);
+      
       // Eğer response varsa ve JSON formatında ise, sunucudan gelen hata mesajını göster
       if (error.response) {
         try {
-          const responseData = await error.response.json();
-          if (responseData.message) {
-            errorMessage = `Sunucu hatası: ${responseData.message}`;
+          const responseText = await error.response.text();
+          console.error("Sunucu hata yanıtı (text):", responseText);
+          
+          try {
+            const responseData = JSON.parse(responseText);
+            if (responseData.message) {
+              errorMessage = `Sunucu hatası: ${responseData.message}`;
+            }
+            console.error("Sunucu cevabı (JSON):", responseData);
+          } catch (parseError) {
+            console.error("Yanıt JSON formatında değil:", parseError);
+            errorMessage = `Sunucu yanıtı: ${responseText}`;
           }
-          console.error("Sunucu cevabı:", responseData);
-        } catch (jsonError) {
-          console.error("Hata yanıtı JSON formatında değil:", jsonError);
+        } catch (textError) {
+          console.error("Hata yanıtı okunamadı:", textError);
         }
       }
       

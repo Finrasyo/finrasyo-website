@@ -140,13 +140,27 @@ export function FinancialDataProvider({ children }: { children: ReactNode }) {
     try {
       const reportName = options?.reportName || `Finansal Analiz Raporu`;
       
-      const result = await generateReportMutation.mutateAsync({
-        companyId,
-        financialDataId,
-        type,
-        options,
-        reportName
+      // API isteğini doğrudan yapıyoruz
+      const res = await apiRequest("POST", "/api/reports", {
+        companyId: companyId,
+        financialDataId: financialDataId,
+        format: type,
+        name: reportName,
+        type: 'financial',
+        status: 'completed',
+        numCompanies: options?.numCompanies || 1,
+        numPeriods: options?.numPeriods || 1,
+        numRatios: options?.numRatios || 1,
+        price: options?.price || 0.25
       });
+      
+      if (!res.ok) {
+        const errorText = await res.text();
+        console.error("API hatası:", res.status, errorText);
+        throw new Error(`API hatası: ${res.status} - ${errorText}`);
+      }
+      
+      const result = await res.json();
       
       console.log("Rapor başarıyla oluşturuldu:", result);
       return result;
