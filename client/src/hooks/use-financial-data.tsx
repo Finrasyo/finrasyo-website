@@ -67,11 +67,13 @@ export function FinancialDataProvider({ children }: { children: ReactNode }) {
       const res = await apiRequest("POST", "/api/reports", {
         companyId,
         financialDataId,
-        type,
-        numCompanies: options?.numCompanies || 1,
-        numPeriods: options?.numPeriods || 1,
-        numRatios: options?.numRatios || 1,
-        price: options?.price || 0.25,
+        format: type,
+        options: {
+          numCompanies: options?.numCompanies || 1,
+          numPeriods: options?.numPeriods || 1,
+          numRatios: options?.numRatios || 1,
+          price: options?.price || 0.25,
+        }
       });
       return await res.json();
     },

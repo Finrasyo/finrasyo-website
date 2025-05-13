@@ -199,7 +199,7 @@ export default function AnalysisWizardPage() {
   const handleReport = async (format: string) => {
     try {
       // İşlenmiş verileri sunucuya gönder ve rapor oluştur
-      await generateReport(
+      const reportData = await generateReport(
         parseInt(selectedCompanies[0].code), 
         0, // Geçici olarak 0 kullanıyoruz, gerçek uygulamada finansal veri ID'si olmalı
         format,
@@ -211,12 +211,10 @@ export default function AnalysisWizardPage() {
         }
       );
       
-      toast({
-        title: "Rapor Oluşturuldu",
-        description: `Raporunuz ${format.toUpperCase()} formatında başarıyla oluşturuldu.`,
-      });
+      console.log("Oluşturulan rapor:", reportData);
       
-      navigate("/reports");
+      // Raporlar sayfasına yönlendirmeden önce rapor verilerini döndür
+      return reportData;
     } catch (error: any) {
       console.error("Rapor oluşturma hatası:", error);
       toast({
@@ -224,6 +222,7 @@ export default function AnalysisWizardPage() {
         description: error.message || "Rapor oluşturulurken bir hata meydana geldi.",
         variant: "destructive"
       });
+      throw error;
     }
   };
   
