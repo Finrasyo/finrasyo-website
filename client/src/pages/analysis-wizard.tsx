@@ -215,9 +215,16 @@ export default function AnalysisWizardPage() {
       const financialDataResponse = await apiRequest("POST", "/api/financial-data", {
         companyId: company.id,
         year: selectedYears[0],
-        currentRatio: 2.5, // Örnek değerler
-        liquidityRatio: 1.8,
-        acidTestRatio: 1.5
+        // Gerekli finansal veri alanları
+        cashAndEquivalents: 1000000, // Örnek değerler - gerekli alanlar
+        accountsReceivable: 500000,
+        inventory: 750000,
+        otherCurrentAssets: 250000,
+        totalCurrentAssets: 2500000,
+        shortTermDebt: 300000,
+        accountsPayable: 400000,
+        otherCurrentLiabilities: 300000,
+        totalCurrentLiabilities: 1000000
       });
       
       if (!financialDataResponse.ok) {
