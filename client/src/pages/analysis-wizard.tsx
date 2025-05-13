@@ -253,9 +253,26 @@ export default function AnalysisWizardPage() {
       return reportData;
     } catch (error: any) {
       console.error("Rapor oluşturma hatası:", error);
+      
+      // Daha detaylı hata mesajı göster
+      let errorMessage = error.message || "Rapor oluşturulurken bir hata meydana geldi.";
+      
+      // Eğer response varsa ve JSON formatında ise, sunucudan gelen hata mesajını göster
+      if (error.response) {
+        try {
+          const responseData = await error.response.json();
+          if (responseData.message) {
+            errorMessage = `Sunucu hatası: ${responseData.message}`;
+          }
+          console.error("Sunucu cevabı:", responseData);
+        } catch (jsonError) {
+          console.error("Hata yanıtı JSON formatında değil:", jsonError);
+        }
+      }
+      
       toast({
-        title: "Rapor Hatası",
-        description: error.message || "Rapor oluşturulurken bir hata meydana geldi.",
+        title: "Rapor Oluşturma Hatası",
+        description: errorMessage,
         variant: "destructive"
       });
       throw error;

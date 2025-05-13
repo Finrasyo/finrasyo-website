@@ -360,10 +360,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
       
       // Create report - tüm gerekli alanları içeren doğrulanmış veriyi kullan
-      const report = await storage.createReport({
-        ...validatedData,
-        companyName: company.name
-      });
+      const report = await storage.createReport(validatedData);
       
       // Admin değilse kredi düşülür
       if (!isAdmin) {

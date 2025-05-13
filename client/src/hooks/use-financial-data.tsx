@@ -94,10 +94,25 @@ export function FinancialDataProvider({ children }: { children: ReactNode }) {
       
       return data;
     },
-    onError: (error: Error) => {
+    onError: (error: any) => {
+      console.error("Rapor oluşturma hatası (useFinancialData):", error);
+      
+      // Daha ayrıntılı hata bilgisi göster
+      let errorMessage = error.message || "Bilinmeyen bir hata oluştu";
+      
+      // Eğer varsa sunucu hata mesajını detaylı göster
+      if (error.cause?.message) {
+        errorMessage += ` - ${error.cause.message}`;
+      }
+      
+      // Yanıttaki olası ek bilgileri kontrol et
+      if (error.response && typeof error.response === 'object') {
+        console.error("API yanıtı:", error.response);
+      }
+      
       toast({
         title: "Rapor oluşturulamadı",
-        description: error.message,
+        description: errorMessage,
         variant: "destructive",
       });
     },
