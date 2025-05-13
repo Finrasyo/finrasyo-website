@@ -54,6 +54,7 @@ export function FinancialDataProvider({ children }: { children: ReactNode }) {
       financialDataId,
       type,
       options,
+      reportName
     }: {
       companyId: number;
       financialDataId: number;
@@ -63,23 +64,20 @@ export function FinancialDataProvider({ children }: { children: ReactNode }) {
         numPeriods?: number;
         numRatios?: number;
         price?: number;
-        reportName?: string;
       };
+      reportName?: string;
     }) => {
-      const reportName = options?.reportName || `Finansal Oran Raporu`;
       const res = await apiRequest("POST", "/api/reports", {
         companyId,
         financialDataId,
         format: type,
-        name: reportName, // Gerekli name (isim) alanını ekledik
-        type: 'financial', // Gerekli type (tür) alanını ekledik
-        status: 'completed', // Durumu tamamlandı olarak işaretleyelim
-        options: {
-          numCompanies: options?.numCompanies || 1,
-          numPeriods: options?.numPeriods || 1,
-          numRatios: options?.numRatios || 1,
-          price: options?.price || 0.25,
-        }
+        name: reportName || `Finansal Analiz Raporu`,
+        type: 'financial',
+        status: 'completed',
+        numCompanies: options?.numCompanies || 1,
+        numPeriods: options?.numPeriods || 1,
+        numRatios: options?.numRatios || 1,
+        price: options?.price || 0.25
       });
       return await res.json();
     },
@@ -89,25 +87,18 @@ export function FinancialDataProvider({ children }: { children: ReactNode }) {
       
       toast({
         title: "Rapor oluşturuldu",
-        description: "Rapor başarıyla oluşturuldu.",
+        description: "Finansal rapor başarıyla oluşturuldu.",
       });
       
       return data;
     },
     onError: (error: any) => {
-      console.error("Rapor oluşturma hatası (useFinancialData):", error);
+      console.error("Rapor oluşturma hatası:", error);
       
-      // Daha ayrıntılı hata bilgisi göster
       let errorMessage = error.message || "Bilinmeyen bir hata oluştu";
       
-      // Eğer varsa sunucu hata mesajını detaylı göster
       if (error.cause?.message) {
         errorMessage += ` - ${error.cause.message}`;
-      }
-      
-      // Yanıttaki olası ek bilgileri kontrol et
-      if (error.response && typeof error.response === 'object') {
-        console.error("API yanıtı:", error.response);
       }
       
       toast({
@@ -141,14 +132,28 @@ export function FinancialDataProvider({ children }: { children: ReactNode }) {
       numPeriods?: number;
       numRatios?: number;
       price?: number;
+      reportName?: string;
     }
   ) => {
-    return await generateReportMutation.mutateAsync({
-      companyId,
-      financialDataId,
-      type,
-      options
-    });
+    console.log("Rapor oluşturma başlatılıyor...", { companyId, financialDataId, type, options });
+    
+    try {
+      const reportName = options?.reportName || `Finansal Analiz Raporu`;
+      
+      const result = await generateReportMutation.mutateAsync({
+        companyId,
+        financialDataId,
+        type,
+        options,
+        reportName
+      });
+      
+      console.log("Rapor başarıyla oluşturuldu:", result);
+      return result;
+    } catch (error) {
+      console.error("Rapor oluşturma hatası:", error);
+      throw error;
+    }
   };
 
   return (

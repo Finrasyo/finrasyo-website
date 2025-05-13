@@ -309,7 +309,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
     if (!req.isAuthenticated()) return res.sendStatus(401);
     
     try {
-      const { companyId, financialDataId, type, numCompanies, numPeriods, numRatios, price } = req.body;
+      console.log("Rapor oluşturma isteği alındı:", req.body);
+      const { 
+        companyId, 
+        financialDataId, 
+        format, 
+        name, 
+        type = 'financial', 
+        status = 'completed',
+        numCompanies, 
+        numPeriods, 
+        numRatios, 
+        price 
+      } = req.body;
+      
+      // Girdi doğrulama
+      if (!companyId || !financialDataId) {
+        console.error("Rapor isteği eksik parametrelerle geldi:", req.body);
+        return res.status(400).json({ message: "companyId ve financialDataId gereklidir" });
+      }
       
       // Fiyat parametrelerini al veya varsayılan değerleri kullan
       const companies = numCompanies || 1;
@@ -322,6 +340,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // Gereken kredi sayısı (1 TL = 1 kredi)
       const requiredCredits = Math.ceil(totalPrice);
+      
+      console.log("Rapor fiyat hesaplaması:", { companies, periods, ratios, totalPrice, requiredCredits });
       
       // Admin kullanıcılar için kredi kontrolü yapılmaz
       const isAdmin = req.user.role === "admin";
@@ -346,17 +366,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       // Rapor adını ya istekten al ya da varsayılan değer kullan
-      const reportName = req.body.name || `${company.name} Finansal Oran Raporu`;
-      const reportStatus = req.body.status || 'completed';
+      const reportName = name || `${company.name} Finansal Oran Raporu`;
+      
+      console.log("Rapor verisi hazırlandı:", { 
+        userId: req.user.id,
+        companyId,
+        financialDataId,
+        type,
+        name: reportName,
+        status,
+        format,
+      });
       
       const validatedData = insertReportSchema.parse({
         userId: req.user.id,
         companyId,
         financialDataId,
-        type: req.body.type || 'financial',
+        type,
         name: reportName,
-        status: reportStatus,
-        format: req.body.format || "pdf",
+        status,
+        format: format || "pdf",
       });
       
       // Create report - tüm gerekli alanları içeren doğrulanmış veriyi kullan
