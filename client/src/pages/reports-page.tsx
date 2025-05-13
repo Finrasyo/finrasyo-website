@@ -177,39 +177,79 @@ export default function ReportsPage() {
       
       console.log("Rapor oluşturma işlemi için verileri hazırlıyorum");
       
-      // PDF için tarih formatını oluştur
+      // Tarih formatını oluştur
       const dateStr = new Date().toISOString().split('T')[0];
       const sanitizedCompanyName = selectedReport.company.name.replace(/[^a-z0-9]/gi, '_').toLowerCase();
       
-      try {
-        if (downloadFormat === "pdf") {
-          // Yeni PDF oluşturma modülünü içe aktar
-          const { generatePDFReport, downloadPDFReport } = await import('../lib/pdf-generator');
-          
-          // PDF raporu oluştur
-          const blob = await generatePDFReport(
-            selectedReport.company, 
-            selectedReport.financialData
-          );
-          
-          // PDF raporunu indir
-          downloadPDFReport(blob, `${sanitizedCompanyName}_rapor_${dateStr}.pdf`);
-        } else {
-          // Diğer formatlarda rapor oluşturma (excel, csv, vb.)
-          const { generateReport, downloadReport } = await import('../components/financial/report-downloader');
-          
-          // Raporu oluştur
-          const result = await generateReport(
-            selectedReport.financialData,
-            selectedReport.company,
-            downloadFormat
-          );
-          
-          console.log("Rapor oluşturuldu, indiriliyor:", result);
-          
-          // Rapor indirme fonksiyonunu çağır
-          downloadReport(result.blob, result.filename);
+      // Seçilen oranları al (eğer raporda ratio_ids bilgisi varsa)
+      let selectedRatios: string[] = [];
+      if (selectedReport.report && selectedReport.report.metadata) {
+        try {
+          const metadata = typeof selectedReport.report.metadata === 'string' 
+            ? JSON.parse(selectedReport.report.metadata) 
+            : selectedReport.report.metadata;
+            
+          if (metadata.ratio_ids && Array.isArray(metadata.ratio_ids)) {
+            selectedRatios = metadata.ratio_ids;
+            console.log("Seçilen oranlar:", selectedRatios);
+          }
+        } catch (e) {
+          console.warn("Rapor metadata'sı parse edilemedi:", e);
         }
+      }
+      
+      try {
+        // Dosya formatına göre uygun modülü yükle ve raporu oluştur
+        switch (downloadFormat.toLowerCase()) {
+          case "pdf":
+            // PDF oluşturma modülünü içe aktar
+            const { generatePDFReport, downloadPDFReport } = await import('../lib/pdf-generator');
+            
+            // PDF raporu oluştur
+            const pdfBlob = await generatePDFReport(
+              selectedReport.company, 
+              selectedReport.financialData
+            );
+            
+            // PDF raporunu indir
+            downloadPDFReport(pdfBlob, `${sanitizedCompanyName}_rapor_${dateStr}.pdf`);
+            break;
+            
+          case "excel":
+          case "xlsx":
+            // Excel oluşturma modülünü içe aktar
+            const { generateExcelReport, downloadExcelReport } = await import('../lib/excel-generator');
+            
+            // Excel raporu oluştur (seçilen oranları da ilet)
+            const excelBlob = await generateExcelReport(
+              selectedReport.company, 
+              selectedReport.financialData,
+              selectedRatios
+            );
+            
+            // Excel raporunu indir
+            downloadExcelReport(excelBlob, `${sanitizedCompanyName}_rapor_${dateStr}.xlsx`);
+            break;
+            
+          default:
+            // Diğer formatlarda rapor oluşturma (csv, vb.)
+            const { generateReport, downloadReport } = await import('../components/financial/report-downloader');
+            
+            // Raporu oluştur
+            const result = await generateReport(
+              selectedReport.financialData,
+              selectedReport.company,
+              downloadFormat
+            );
+            
+            console.log("Rapor oluşturuldu, indiriliyor:", result);
+            
+            // Rapor indirme fonksiyonunu çağır
+            downloadReport(result.blob, result.filename);
+            break;
+        }
+        
+        console.log(`${downloadFormat.toUpperCase()} raporu başarıyla oluşturuldu ve indirildi`);
       } catch (error) {
         console.error("Rapor oluşturma veya indirme hatası:", error);
         throw error; // Üst catch bloğuna hatayı ilet
