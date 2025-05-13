@@ -32,7 +32,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { apiRequest } from "@/lib/queryClient";
+import { apiRequest, queryClient } from "@/lib/queryClient";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -128,6 +128,12 @@ export default function ReportsPage() {
     if (!selectedReport) return;
     
     try {
+      console.log("Rapor indirme işlemi başlatılıyor:", {
+        company: selectedReport.company,
+        format: downloadFormat,
+        financialData: selectedReport.financialData
+      });
+      
       // Generate and download the report
       const result = await generateReport(
         selectedReport.financialData,
@@ -135,6 +141,9 @@ export default function ReportsPage() {
         downloadFormat
       );
       
+      console.log("Rapor oluşturuldu, indiriliyor:", result);
+      
+      // Rapor indirme fonksiyonunu çağır
       downloadReport(result.blob, result.filename);
       
       toast({
@@ -142,9 +151,11 @@ export default function ReportsPage() {
         description: "Rapor indirildi.",
       });
     } catch (error) {
+      console.error("Rapor indirme hatası:", error);
+      
       toast({
         title: "Hata",
-        description: "Rapor indirilemedi.",
+        description: error instanceof Error ? error.message : "Rapor indirilemedi. Lütfen tekrar deneyin.",
         variant: "destructive"
       });
     }

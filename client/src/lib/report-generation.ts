@@ -481,13 +481,25 @@ export function generateCSVReport(
   return new Blob([csvContent], { type: 'text/csv;charset=utf-8' });
 }
 
+// Bu fonksiyon yerine generateReport ve downloadReport kullanılacak
+export function downloadReport(blob: Blob, filename: string): void {
+  try {
+    saveAs(blob, filename);
+  } catch (error) {
+    console.error("Dosya indirme hatası:", error);
+    throw new Error("Dosya indirme başarısız oldu: " + (error instanceof Error ? error.message : String(error)));
+  }
+}
+
 /**
- * Raporu dışa aktarır (dosya olarak indirme)
+ * Belirtilen formatta rapor oluşturur ve geri döndürür
+ * 
+ * @returns {{blob: Blob, filename: string}} - Oluşturulan raporun blobu ve dosya adı
  */
-export async function exportReport(
-  format: 'pdf' | 'excel' | 'csv',
-  company: { name: string; code: string | null; sector: string | null },
+export async function generateReport(
   financialData: any,
+  company: { name: string; code: string | null; sector: string | null },
+  format: string = 'pdf',
   options?: {
     includeRatios?: boolean;
     includeTrend?: boolean;
@@ -495,35 +507,54 @@ export async function exportReport(
     previousPeriodData?: any;
     title?: string;
   }
-): Promise<void> {
+): Promise<{blob: Blob, filename: string}> {
   let blob: Blob;
-  let fileName: string;
+  let filename: string;
   
   const today = new Date().toISOString().split('T')[0];
+  const cleanCompanyCode = company.code?.replace(/\s+/g, '_') || 'Rapor';
   
   switch (format) {
     case 'pdf':
       blob = await generatePDFReport(company, financialData, options);
-      fileName = `${company.code}_${today}_Rapor.pdf`;
+      filename = `${cleanCompanyCode}_${today}_Rapor.pdf`;
       break;
       
     case 'excel':
+    case 'xlsx':
       blob = await generateExcelReport(company, financialData, options);
-      fileName = `${company.code}_${today}_Rapor.xlsx`;
+      filename = `${cleanCompanyCode}_${today}_Rapor.xlsx`;
+      break;
+      
+    case 'word':
+    case 'docx':
+      // Burada Word raporu oluşturma fonksiyonu eklenecek
+      // Şimdilik PDF olarak döndürelim
+      blob = await generatePDFReport(company, financialData, options);
+      filename = `${cleanCompanyCode}_${today}_Rapor.docx`;
       break;
       
     case 'csv':
       blob = generateCSVReport(company, financialData);
-      fileName = `${company.code}_${today}_Rapor.csv`;
+      filename = `${cleanCompanyCode}_${today}_Rapor.csv`;
       break;
       
     default:
-      throw new Error(`Desteklenmeyen rapor formatı: ${format}`);
+      blob = await generatePDFReport(company, financialData, options);
+      filename = `${cleanCompanyCode}_${today}_Rapor.pdf`;
   }
   
-  saveAs(blob, fileName);
+  return { blob, filename };
 }
 
-// Eski kod tarafından kullanılan fonksiyonlar için uyumluluk 
-export const downloadReport = exportReport;
-export const generateReport = generatePDFReport;
+// Eski kod tarafından kullanılan fonksiyonlar için uyumluluk
+// Bu fonksiyon var olan çağırıları bozmadan yeni sistem ile çalışabilmesini sağlar
+export async function legacyExportReport(
+  format: 'pdf' | 'excel' | 'csv',
+  company: any,
+  financialData: any,
+  options?: any
+): Promise<void> {
+  const result = await generateReport(financialData, company, format, options);
+  downloadReport(result.blob, result.filename);
+}
