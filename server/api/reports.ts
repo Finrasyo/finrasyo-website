@@ -36,7 +36,6 @@ export async function generateReport(req: Request, res: Response) {
       return res.status(404).json({ error: "Finansal veri bulunamadı" });
     }
     
-    let reportUrl = '';
     let reportPath = '';
     
     // Format'a göre rapor oluştur
@@ -63,9 +62,9 @@ export async function generateReport(req: Request, res: Response) {
       companyId: company.id,
       financialDataId: financialData.id,
       format: format.toLowerCase(),
-      url: reportPath,  // URL değeri olarak reportPath'i kullan
+      url: reportPath,
       name: `${company.name} Finansal Rapor`,
-      createdAt: new Date(),
+      type: "financial",
       status: "completed"
     });
     
