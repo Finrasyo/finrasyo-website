@@ -10,7 +10,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Search, ArrowRight, BarChart3, Clock } from "lucide-react";
 import { bistCompanies } from "@/data/bist-companies";
 import { useToast } from "@/hooks/use-toast";
-import MultiCompanySelector from "@/components/financial/multi-company-selector";
+import MultiCompanySelectorWithAutocomplete from "@/components/financial/multi-company-selector-with-autocomplete";
 import YearSelector from "@/components/financial/year-selector";
 
 interface Company {
@@ -80,9 +80,10 @@ export default function AnalysisSelectionPage() {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <MultiCompanySelector 
+                <MultiCompanySelectorWithAutocomplete 
                   onSelectCompanies={handleCompanySelection}
-                  maxResults={10}
+                  initialSelectedCompanies={selectedCompanies}
+                  maxCompanies={10}
                 />
               </CardContent>
             </Card>
