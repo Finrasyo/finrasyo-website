@@ -213,7 +213,8 @@ export default function ReportsPage() {
             // PDF raporu oluştur
             const pdfBlob = await generatePDFReport(
               selectedReport.company, 
-              selectedReport.financialData
+              selectedReport.financialData,
+              selectedRatios
             );
             
             // PDF raporunu indir
