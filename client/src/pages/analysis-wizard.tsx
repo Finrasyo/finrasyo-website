@@ -8,6 +8,7 @@ import { useLocation } from "wouter";
 import { apiRequest } from "@/lib/queryClient";
 import { useFinancialData } from "@/hooks/use-financial-data";
 import MultiCompanySelectorWithAutocomplete from "@/components/financial/multi-company-selector-with-autocomplete";
+import YearSelector from "@/components/financial/year-selector";
 import { bistCompanies } from "@/data/bist-companies";
 import { ArrowRight } from "lucide-react";
 
