@@ -133,12 +133,6 @@ export const financialRatioCategories: RatioCategory[] = [
         formula: "Toplam Borçlar / Özkaynaklar"
       },
       {
-        id: "interestCoverage",
-        name: "Faiz Karşılama Oranı",
-        description: "Faiz ödemelerini karşılama gücü",
-        formula: "FVÖK / Faiz Giderleri"
-      },
-      {
         id: "equityMultiplier",
         name: "Özkaynak Çarpanı",
         description: "Varlıkların özkaynaklara oranı",
@@ -150,24 +144,6 @@ export const financialRatioCategories: RatioCategory[] = [
     id: "activity",
     name: "Faaliyet",
     ratios: [
-      {
-        id: "assetTurnover",
-        name: "Varlık Devir Hızı",
-        description: "Varlıkların ne kadar etkin kullanıldığını gösteren oran",
-        formula: "Net Satışlar / Ortalama Toplam Varlıklar"
-      },
-      {
-        id: "receivablesTurnover",
-        name: "Alacak Devir Hızı",
-        description: "Şirketin alacaklarını tahsil etme oranı",
-        formula: "Net Satışlar / Ortalama Ticari Alacaklar"
-      },
-      {
-        id: "inventoryTurnover",
-        name: "Stok Devir Hızı",
-        description: "Stokların ne kadar hızlı satıldığını gösteren oran",
-        formula: "Satılan Malın Maliyeti / Ortalama Stoklar"
-      },
       {
         id: "payablesTurnover",
         name: "Borç Devir Hızı",

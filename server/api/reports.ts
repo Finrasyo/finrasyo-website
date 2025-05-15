@@ -239,91 +239,141 @@ async function generatePdfReport(company: Company, financialData: any): Promise<
 
 // Excel rapor oluştur
 async function generateExcelReport(company: Company, financialData: any): Promise<string> {
-  // Excel için geçici dosya yolu oluştur
-  const fileName = `report_${company.id}_${Date.now()}.xlsx`;
-  const reportDir = path.join(process.cwd(), 'public', 'reports');
-  const filePath = path.join(reportDir, fileName);
-  
-  // Klasör yoksa oluştur
-  if (!fs.existsSync(reportDir)) {
-    fs.mkdirSync(reportDir, { recursive: true });
-  }
-  
-  // Yeni Excel çalışma kitabı oluştur
-  const workbook = new ExcelJS.Workbook();
-  workbook.creator = 'FinRasyo';
-  workbook.lastModifiedBy = 'FinRasyo';
-  workbook.created = new Date();
-  workbook.modified = new Date();
-  
-  // Genel bilgiler sayfası
-  const infoSheet = workbook.addWorksheet('Genel Bilgiler');
-  infoSheet.columns = [
-    { header: 'Bilgi', key: 'info', width: 30 },
-    { header: 'Değer', key: 'value', width: 50 }
-  ];
-  
-  // Şirket bilgilerini ekle
-  infoSheet.addRow({ info: 'Şirket Adı', value: company.name });
-  infoSheet.addRow({ info: 'Şirket Kodu', value: company.code });
-  infoSheet.addRow({ info: 'Sektör', value: company.sector || 'Belirtilmemiş' });
-  infoSheet.addRow({ info: 'Rapor Tarihi', value: new Date().toLocaleDateString('tr-TR') });
-  
-  // Finansal oranlar sayfası
-  const ratiosSheet = workbook.addWorksheet('Finansal Oranlar');
-  ratiosSheet.columns = [
-    { header: 'Oran Kategorisi', key: 'category', width: 20 },
-    { header: 'Oran Adı', key: 'name', width: 30 },
-    { header: 'Değer', key: 'value', width: 15 },
-    { header: 'Değerlendirme', key: 'evaluation', width: 40 }
-  ];
-  
-  // Seçilen oranları belirle
-  const selectedRatioIds = financialData.selectedRatios || [];
-  
-  // Likidite oranları - Sadece seçilen oranları ekle
-  if (selectedRatioIds.includes('currentRatio') && financialData.currentRatio !== undefined) {
-    ratiosSheet.addRow({ 
-      category: 'Likidite', 
-      name: 'Cari Oran', 
-      value: financialData.currentRatio.toFixed(2), 
-      evaluation: getRatioEvaluation('currentRatio', financialData.currentRatio) 
+  try {
+    // Excel için geçici dosya yolu oluştur
+    const fileName = `report_${company.id}_${Date.now()}.xlsx`;
+    const reportDir = path.join(process.cwd(), 'public', 'reports');
+    const filePath = path.join(reportDir, fileName);
+    
+    // Klasör yoksa oluştur
+    if (!fs.existsSync(reportDir)) {
+      fs.mkdirSync(reportDir, { recursive: true });
+    }
+    
+    // Yeni Excel çalışma kitabı oluştur
+    const workbook = new ExcelJS.Workbook();
+    workbook.creator = 'FinRasyo';
+    workbook.lastModifiedBy = 'FinRasyo';
+    workbook.created = new Date();
+    workbook.modified = new Date();
+    
+    // Genel bilgiler sayfası
+    const infoSheet = workbook.addWorksheet('Genel Bilgiler', {
+      properties: { tabColor: { argb: '9CC3E6' } }
     });
-  }
-  
-  if (selectedRatioIds.includes('quickRatio') && financialData.acidTestRatio !== undefined) {
-    ratiosSheet.addRow({ 
-      category: 'Likidite', 
-      name: 'Asit-Test Oranı', 
-      value: financialData.acidTestRatio.toFixed(2), 
-      evaluation: getRatioEvaluation('quickRatio', financialData.acidTestRatio) 
+    infoSheet.columns = [
+      { header: 'Bilgi', key: 'info', width: 30 },
+      { header: 'Değer', key: 'value', width: 50 }
+    ];
+    
+    // Şirket bilgilerini ekle
+    infoSheet.addRow({ info: 'Şirket Adı', value: company.name });
+    infoSheet.addRow({ info: 'Şirket Kodu', value: company.code });
+    infoSheet.addRow({ info: 'Sektör', value: company.sector || 'Belirtilmemiş' });
+    infoSheet.addRow({ info: 'Rapor Tarihi', value: new Date().toLocaleDateString('tr-TR') });
+    
+    // Başlık stilini ayarla
+    infoSheet.getRow(1).font = { bold: true, size: 12 };
+    infoSheet.getRow(1).fill = {
+      type: 'pattern',
+      pattern: 'solid',
+      fgColor: { argb: 'E2EFDA' }
+    };
+    
+    // Finansal oranlar sayfası
+    const ratiosSheet = workbook.addWorksheet('Finansal Oranlar', {
+      properties: { tabColor: { argb: 'A9D08E' } }
     });
+    ratiosSheet.columns = [
+      { header: 'Oran Kategorisi', key: 'category', width: 20 },
+      { header: 'Oran Adı', key: 'name', width: 30 },
+      { header: 'Değer', key: 'value', width: 15 },
+      { header: 'Değerlendirme', key: 'evaluation', width: 40 }
+    ];
+    
+    // Başlık stilini ayarla
+    ratiosSheet.getRow(1).font = { bold: true, size: 12 };
+    ratiosSheet.getRow(1).fill = {
+      type: 'pattern',
+      pattern: 'solid',
+      fgColor: { argb: 'E2EFDA' }
+    };
+    
+    // Seçilen oranları belirle
+    const selectedRatioIds = financialData.selectedRatios || [];
+    console.log('Excel raporu için seçilen oranlar:', selectedRatioIds);
+    
+    // Likidite oranları - Sadece seçilen oranları ekle
+    if (selectedRatioIds.includes('currentRatio') && financialData.currentRatio !== undefined) {
+      ratiosSheet.addRow({ 
+        category: 'Likidite', 
+        name: 'Cari Oran', 
+        value: financialData.currentRatio.toFixed(2), 
+        evaluation: getRatioEvaluation('currentRatio', financialData.currentRatio) 
+      });
+    }
+    
+    if (selectedRatioIds.includes('quickRatio') && financialData.acidTestRatio !== undefined) {
+      ratiosSheet.addRow({ 
+        category: 'Likidite', 
+        name: 'Asit-Test Oranı', 
+        value: financialData.acidTestRatio.toFixed(2), 
+        evaluation: getRatioEvaluation('quickRatio', financialData.acidTestRatio) 
+      });
+    }
+    
+    if (selectedRatioIds.includes('cashRatio') && financialData.cashRatio !== undefined) {
+      ratiosSheet.addRow({ 
+        category: 'Likidite', 
+        name: 'Nakit Oranı', 
+        value: financialData.cashRatio.toFixed(2), 
+        evaluation: getRatioEvaluation('cashRatio', financialData.cashRatio) 
+      });
+    }
+    
+    // Diğer oranları da benzer şekilde ekle (seçiliyse)
+    if (selectedRatioIds.includes('debtRatio') && financialData.debtRatio !== undefined) {
+      ratiosSheet.addRow({ 
+        category: 'Finansal Yapı', 
+        name: 'Borç Oranı', 
+        value: financialData.debtRatio.toFixed(2), 
+        evaluation: getRatioEvaluation('debtRatio', financialData.debtRatio) 
+      });
+    }
+    
+    // Hiç satır eklenemediyse bilgi satırı ekle
+    if (ratiosSheet.rowCount <= 1) {
+      ratiosSheet.addRow({
+        category: 'Bilgi',
+        name: 'Seçili oran bulunamadı',
+        value: 'N/A',
+        evaluation: 'Lütfen analiz için en az bir oran seçin'
+      });
+    }
+    
+    // Tüm hücrelere kenarlık ekle
+    for (let row = 1; row <= ratiosSheet.rowCount; row++) {
+      for (let col = 1; col <= ratiosSheet.columnCount; col++) {
+        const cell = ratiosSheet.getCell(row, col);
+        cell.border = {
+          top: { style: 'thin' },
+          left: { style: 'thin' },
+          bottom: { style: 'thin' },
+          right: { style: 'thin' }
+        };
+      }
+    }
+    
+    // Excel dosyasını kaydet
+    await workbook.xlsx.writeFile(filePath);
+    
+    // URL'i döndür
+    return `/reports/${fileName}`;
+  } catch (error) {
+    console.error('Excel raporu oluşturma hatası:', error);
+    throw new Error(`Excel raporu oluşturulamadı: ${error.message}`);
   }
-  
-  if (selectedRatioIds.includes('cashRatio') && financialData.cashRatio !== undefined) {
-    ratiosSheet.addRow({ 
-      category: 'Likidite', 
-      name: 'Nakit Oranı', 
-      value: financialData.cashRatio.toFixed(2), 
-      evaluation: getRatioEvaluation('cashRatio', financialData.cashRatio) 
-    });
-  }
-  
-  // Hiç satır eklenemediyse bilgi satırı ekle
-  if (ratiosSheet.rowCount <= 1) {
-    ratiosSheet.addRow({
-      category: 'Bilgi',
-      name: 'Seçili oran bulunamadı',
-      value: 'N/A',
-      evaluation: 'Lütfen analiz için en az bir oran seçin'
-    });
-  }
-  
-  // Excel dosyasını kaydet
-  await workbook.xlsx.writeFile(filePath);
-  
-  // URL'i döndür
-  return `/reports/${fileName}`;
+}
 }
 
 // CSV rapor oluştur

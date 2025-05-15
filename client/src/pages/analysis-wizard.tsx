@@ -9,6 +9,7 @@ import { apiRequest } from "@/lib/queryClient";
 import { useFinancialData } from "@/hooks/use-financial-data";
 import MultiCompanySelectorWithAutocomplete from "@/components/financial/multi-company-selector-with-autocomplete";
 import { bistCompanies } from "@/data/bist-companies";
+import { ArrowRight } from "lucide-react";
 
 // Mevcut finansal oranların listesi
 const financialRatios = [
@@ -23,11 +24,7 @@ const financialRatios = [
   { id: "netProfitMargin", name: "Net Kar Marjı", description: "Tüm giderler düşüldükten sonra kalan kar marjını gösterir" },
   { id: "returnOnAssets", name: "Aktif Karlılık (ROA)", description: "Şirketin varlıklarının ne kadar karlı kullanıldığını gösterir" },
   { id: "returnOnEquity", name: "Özsermaye Karlılığı (ROE)", description: "Şirketin özsermayesinin ne kadar karlı kullanıldığını gösterir" },
-  { id: "inventoryTurnover", name: "Stok Devir Hızı", description: "Şirketin stoklarını ne kadar hızlı sattığını gösterir" },
-  { id: "receivablesTurnover", name: "Alacak Devir Hızı", description: "Şirketin alacaklarını ne kadar hızlı tahsil ettiğini gösterir" },
-  { id: "assetTurnover", name: "Varlık Devir Hızı", description: "Şirketin varlıklarının satışlara dönüşme hızını gösterir" },
-  { id: "interestCoverageRatio", name: "Faiz Karşılama Oranı", description: "Şirketin faiz ödemelerini karşılama yeteneğini gösterir" },
-  { id: "dividendYield", name: "Temettü Verimi", description: "Hisse başına ödenen temettünün hisse fiyatına oranını gösterir" }
+  { id: "payablesTurnover", name: "Borç Devir Hızı", description: "Şirketin kısa vadeli borçlarını ödeme hızını gösterir" }
 ];
 
 // Çıktı formatları
@@ -448,82 +445,50 @@ export default function AnalysisWizard() {
           {/* Adım 4: Ödeme İşlemi */}
           {step === 4 && (
             <div className="space-y-6">
-              <div className="bg-muted p-4 rounded-lg mb-6">
-                <h3 className="font-semibold mb-2">Ödeme Bilgileri</h3>
-                <div className="grid grid-cols-3 gap-4 mb-4">
-                  <div>
+              <div className="bg-muted p-6 rounded-lg mb-6">
+                <h3 className="text-xl font-semibold mb-4">Ödeme Özeti</h3>
+                <div className="grid grid-cols-3 gap-4 mb-6">
+                  <div className="bg-white p-3 rounded-lg shadow-sm">
                     <p className="text-sm text-muted-foreground">Şirket Sayısı</p>
-                    <p className="font-medium">{selectedCompanies.length}</p>
+                    <p className="font-bold text-lg">{selectedCompanies.length}</p>
                   </div>
-                  <div>
+                  <div className="bg-white p-3 rounded-lg shadow-sm">
                     <p className="text-sm text-muted-foreground">Dönem Sayısı</p>
-                    <p className="font-medium">{selectedYears.length}</p>
+                    <p className="font-bold text-lg">{selectedYears.length}</p>
                   </div>
-                  <div>
+                  <div className="bg-white p-3 rounded-lg shadow-sm">
                     <p className="text-sm text-muted-foreground">Oran Sayısı</p>
-                    <p className="font-medium">{selectedRatios.length}</p>
+                    <p className="font-bold text-lg">{selectedRatios.length}</p>
                   </div>
                 </div>
-                <div className="flex justify-between items-center pt-2 border-t">
-                  <span className="font-semibold">Toplam Ücret</span>
-                  <span className="text-xl font-bold">{price.toFixed(2)} ₺</span>
-                </div>
-              </div>
-              
-              <div className="bg-primary/5 p-6 rounded-lg border border-primary/20">
-                <h3 className="text-lg font-semibold mb-4">Ödeme Yöntemi</h3>
                 
-                {/* Ödeme formu burada olacak - Bu örnek için simüle ediyoruz */}
-                <div className="space-y-4 mb-6">
-                  <div>
-                    <Label htmlFor="card-number">Kart Numarası</Label>
-                    <input 
-                      id="card-number" 
-                      type="text" 
-                      placeholder="1234 5678 9012 3456" 
-                      className="w-full p-2 border rounded-md mt-1"
-                      disabled={isPaymentProcessing}
-                    />
-                  </div>
-                  
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <Label htmlFor="expiry">Son Kullanma Tarihi</Label>
-                      <input 
-                        id="expiry" 
-                        type="text" 
-                        placeholder="AA/YY" 
-                        className="w-full p-2 border rounded-md mt-1"
-                        disabled={isPaymentProcessing}
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="cvv">CVV</Label>
-                      <input 
-                        id="cvv" 
-                        type="text" 
-                        placeholder="123" 
-                        className="w-full p-2 border rounded-md mt-1"
-                        disabled={isPaymentProcessing}
-                      />
-                    </div>
-                  </div>
+                <div className="text-center p-4 bg-primary/5 rounded-lg border border-primary/20 mb-6">
+                  <p className="text-sm text-muted-foreground">Ödenecek Tutar</p>
+                  <p className="text-3xl font-bold text-primary mt-1">{price.toFixed(2)} ₺</p>
+                  <p className="text-xs text-muted-foreground mt-2">
+                    Şirket Sayısı × Dönem Sayısı × Oran Sayısı × 0.25₺ hesaplama formülü kullanılmıştır.
+                  </p>
                 </div>
                 
                 <Button 
-                  className="w-full" 
+                  className="w-full py-6 text-lg"
                   onClick={handleProceedToPayment}
                   disabled={isPaymentProcessing}
                 >
                   {isPaymentProcessing ? 
-                    "İşleminiz Gerçekleştiriliyor..." : 
-                    `${price.toFixed(2)} ₺ Ödemeyi Tamamla`
+                    <div className="flex items-center justify-center">
+                      <div className="animate-spin mr-2 h-5 w-5 border-t-2 border-white rounded-full" />
+                      İşleminiz Gerçekleştiriliyor...
+                    </div> : 
+                    <div className="flex items-center justify-center">
+                      <span className="mr-2">Ödeme Yap</span>
+                      <ArrowRight className="h-5 w-5" />
+                    </div>
                   }
                 </Button>
                 
                 <p className="text-xs text-muted-foreground text-center mt-4">
-                  Ödeme işlemi güvenli bir şekilde gerçekleştirilecektir. 
-                  Kredi kartı bilgileriniz sistemimizde saklanmaz.
+                  "Ödeme Yap" butonuna tıkladığınızda, ödeme sistemi sayfasına yönlendirileceksiniz.
                 </p>
               </div>
             </div>
