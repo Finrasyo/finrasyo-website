@@ -297,22 +297,7 @@ export default function AnalysisWizard() {
     }
   };
   
-  // Word raporu oluştur
-  const handleWordReport = async () => {
-    try {
-      setIsGeneratingReport(true);
-      const reportData = await handleReport("word");
-      toast({
-        title: "Rapor Hazır",
-        description: "Word raporu başarıyla oluşturuldu.",
-      });
-      setLocation("/reports");
-    } catch (error) {
-      console.error("Word rapor oluşturma hatası:", error);
-    } finally {
-      setIsGeneratingReport(false);
-    }
-  };
+  // Word raporu kaldırıldı
   
   // CSV raporu oluştur
   const handleCsvReport = async () => {
@@ -530,7 +515,6 @@ export default function AnalysisWizard() {
                           setSelectedFormat(format.id);
                           if (format.id === "pdf") handlePdfReport();
                           else if (format.id === "excel") handleExcelReport();
-                          else if (format.id === "word") handleWordReport();
                           else if (format.id === "csv") handleCsvReport();
                         }}
                         disabled={isGeneratingReport}
