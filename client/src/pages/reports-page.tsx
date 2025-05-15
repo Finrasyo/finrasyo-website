@@ -454,9 +454,8 @@ export default function ReportsPage() {
               </div>
               
               <Tabs defaultValue="pdf" value={downloadFormat} onValueChange={setDownloadFormat}>
-                <TabsList className="grid grid-cols-4 mb-4">
+                <TabsList className="grid grid-cols-3 mb-4">
                   <TabsTrigger value="pdf">PDF</TabsTrigger>
-                  <TabsTrigger value="docx">Word</TabsTrigger>
                   <TabsTrigger value="xlsx">Excel</TabsTrigger>
                   <TabsTrigger value="csv">CSV</TabsTrigger>
                 </TabsList>
