@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Card, CardContent } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
 
 interface YearSelectorProps {
   onSelectYears: (years: number[]) => void;
@@ -42,126 +43,102 @@ export default function YearSelector({
     }
   };
   
-  // Tüm yılları 4 gruba böleriz
-  const yearGroups = [];
-  // 2026-2015
-  const recentYears = availableYears.filter(year => year >= 2015 && year <= currentYear);
-  // 2014-2010
-  const previousDecade = availableYears.filter(year => year >= 2010 && year < 2015);
-  // 2009-2005
-  const olderDecade = availableYears.filter(year => year >= 2005 && year < 2010);
-  // 2004-2000
-  const oldestYears = availableYears.filter(year => year >= 2000 && year < 2005);
+  // Tüm yılları gruplara böl
+  const groupedYears = [
+    { 
+      title: "Son Yıllar", 
+      years: availableYears.filter(year => year >= 2015 && year <= currentYear) 
+    },
+    { 
+      title: "2014-2010", 
+      years: availableYears.filter(year => year >= 2010 && year < 2015) 
+    },
+    { 
+      title: "2009-2005", 
+      years: availableYears.filter(year => year >= 2005 && year < 2010) 
+    },
+    { 
+      title: "2004-2000", 
+      years: availableYears.filter(year => year >= 2000 && year < 2005) 
+    }
+  ];
+  
+  // Tüm yılları seç/kaldır
+  const handleSelectAllYears = () => {
+    if (selectedYears.length === availableYears.length) {
+      setSelectedYears([]);
+    } else {
+      setSelectedYears([...availableYears]);
+    }
+  };
+  
+  // Bir gruptaki tüm yılları seç/kaldır
+  const handleSelectYearGroup = (years: number[]) => {
+    const allSelected = years.every(year => selectedYears.includes(year));
+    
+    if (allSelected) {
+      // Gruptaki tüm yılları kaldır
+      setSelectedYears(selectedYears.filter(year => !years.includes(year)));
+    } else {
+      // Gruptaki eksik yılları ekle
+      const yearsToAdd = years.filter(year => !selectedYears.includes(year));
+      setSelectedYears([...selectedYears, ...yearsToAdd]);
+    }
+  };
 
   return (
     <div className="space-y-6">
-      {/* Son yıllar (2025-2015) */}
-      <div>
-        <h3 className="text-sm font-medium mb-2">Son Yıllar</h3>
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2">
-          {recentYears.map(year => (
-            <Card key={year} className="cursor-pointer hover:bg-muted/50">
-              <CardContent 
-                className="p-2 flex items-center space-x-2"
-                onClick={() => toggleYear(year)}
-              >
-                <Checkbox 
-                  checked={selectedYears.includes(year)} 
-                  onCheckedChange={() => toggleYear(year)}
-                  id={`year-${year}`}
-                />
-                <Label
-                  htmlFor={`year-${year}`}
-                  className="cursor-pointer flex-grow text-sm"
-                >
-                  {year}
-                </Label>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+      {/* Tüm yılları seç/kaldır */}
+      <div className="flex items-center space-x-2 border-b pb-2">
+        <Checkbox 
+          id="select-all-years" 
+          checked={selectedYears.length === availableYears.length}
+          onCheckedChange={handleSelectAllYears}
+        />
+        <Label htmlFor="select-all-years" className="font-bold">Tüm Yılları Seç / Kaldır</Label>
       </div>
-
-      {/* 2014-2010 */}
-      <div>
-        <h3 className="text-sm font-medium mb-2">2014-2010</h3>
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2">
-          {previousDecade.map(year => (
-            <Card key={year} className="cursor-pointer hover:bg-muted/50">
-              <CardContent 
-                className="p-2 flex items-center space-x-2"
-                onClick={() => toggleYear(year)}
-              >
-                <Checkbox 
-                  checked={selectedYears.includes(year)} 
-                  onCheckedChange={() => toggleYear(year)}
-                  id={`year-${year}`}
-                />
-                <Label
-                  htmlFor={`year-${year}`}
-                  className="cursor-pointer flex-grow text-sm"
+      
+      {/* Yıl grupları */}
+      {groupedYears.map((group, index) => (
+        <div key={index} className="space-y-2">
+          <div className="flex items-center justify-between">
+            <h3 className="text-sm font-medium">{group.title}</h3>
+            <Button 
+              variant="ghost" 
+              size="sm"
+              onClick={() => handleSelectYearGroup(group.years)}
+              className="h-6 text-xs"
+            >
+              {group.years.every(year => selectedYears.includes(year)) 
+                ? "Tümünü Kaldır" 
+                : "Tümünü Seç"}
+            </Button>
+          </div>
+          
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2">
+            {group.years.map(year => (
+              <Card key={year} className="cursor-pointer hover:bg-muted/50">
+                <CardContent 
+                  className="p-2 flex items-center space-x-2"
+                  onClick={() => toggleYear(year)}
                 >
-                  {year}
-                </Label>
-              </CardContent>
-            </Card>
-          ))}
+                  <Checkbox 
+                    checked={selectedYears.includes(year)} 
+                    onCheckedChange={() => toggleYear(year)}
+                    id={`year-${year}`}
+                  />
+                  <Label
+                    htmlFor={`year-${year}`}
+                    className="cursor-pointer flex-grow text-sm"
+                  >
+                    {year}
+                  </Label>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
         </div>
-      </div>
-
-      {/* 2009-2005 */}
-      <div>
-        <h3 className="text-sm font-medium mb-2">2009-2005</h3>
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2">
-          {olderDecade.map(year => (
-            <Card key={year} className="cursor-pointer hover:bg-muted/50">
-              <CardContent 
-                className="p-2 flex items-center space-x-2"
-                onClick={() => toggleYear(year)}
-              >
-                <Checkbox 
-                  checked={selectedYears.includes(year)} 
-                  onCheckedChange={() => toggleYear(year)}
-                  id={`year-${year}`}
-                />
-                <Label
-                  htmlFor={`year-${year}`}
-                  className="cursor-pointer flex-grow text-sm"
-                >
-                  {year}
-                </Label>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      </div>
-
-      {/* 2004-2000 */}
-      <div>
-        <h3 className="text-sm font-medium mb-2">2004-2000</h3>
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2">
-          {oldestYears.map(year => (
-            <Card key={year} className="cursor-pointer hover:bg-muted/50">
-              <CardContent 
-                className="p-2 flex items-center space-x-2"
-                onClick={() => toggleYear(year)}
-              >
-                <Checkbox 
-                  checked={selectedYears.includes(year)} 
-                  onCheckedChange={() => toggleYear(year)}
-                  id={`year-${year}`}
-                />
-                <Label
-                  htmlFor={`year-${year}`}
-                  className="cursor-pointer flex-grow text-sm"
-                >
-                  {year}
-                </Label>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      </div>
+      ))}
       
       <div className="mt-2 text-sm text-muted-foreground">
         Seçilen dönemler: {selectedYears.length > 0 

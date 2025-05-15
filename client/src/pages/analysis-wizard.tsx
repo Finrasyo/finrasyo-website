@@ -33,7 +33,6 @@ const financialRatios = [
 const outputFormats = [
   { id: "pdf", name: "PDF", icon: "📄" },
   { id: "excel", name: "Excel", icon: "📊" },
-  { id: "word", name: "Word", icon: "📝" },
   { id: "csv", name: "CSV", icon: "📑" }
 ];
 
@@ -394,18 +393,16 @@ export default function AnalysisWizard() {
           
           {/* Adım 2: Dönem Seçimi */}
           {step === 2 && (
-            <div className="space-y-4">
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                {[2025, 2024, 2023, 2022, 2021, 2020, 2019, 2018, 2017, 2016].map(year => (
-                  <div key={year} className="flex items-center space-x-2">
-                    <Checkbox 
-                      id={`year-${year}`} 
-                      checked={selectedYears.includes(year.toString())}
-                      onCheckedChange={() => handleYearChange(year.toString())}
-                    />
-                    <Label htmlFor={`year-${year}`}>{year}</Label>
-                  </div>
-                ))}
+            <div className="space-y-6">
+              <h3 className="text-lg font-semibold mb-2">Analiz Dönemlerini Seçin</h3>
+              <p className="text-sm text-muted-foreground mb-4">Analiz yapılacak mali dönemleri seçin (2000 yılına kadar).</p>
+              
+              {/* YearSelector bileşenini kullan */}
+              <div className="max-h-[500px] overflow-y-auto pr-2">
+                <YearSelector 
+                  onSelectYears={(years) => setSelectedYears(years.map(y => y.toString()))}
+                  yearCount={26} // 2000-2025 arası
+                />
               </div>
             </div>
           )}
