@@ -104,9 +104,9 @@ export async function generatePDFReport(
     
     // Fonksiyon: Seçilen oranları kontrol et
     const isRatioSelected = (ratioId: string): boolean => {
-      // Eğer selectedRatios dizisi boşsa veya undefined ise, tüm oranları göster
-      if (!selectedRatios || selectedRatios.length === 0) return true;
-      // Değilse, sadece seçilen oranları göster
+      // Eğer selectedRatios dizisi boşsa veya undefined ise, hiçbir oranı gösterme
+      if (!selectedRatios || selectedRatios.length === 0) return false;
+      // Sadece seçilen oranları göster
       return selectedRatios.includes(ratioId);
     };
     

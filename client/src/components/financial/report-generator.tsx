@@ -111,7 +111,6 @@ export default function ReportGenerator({
                 <SelectItem value="pdf">PDF</SelectItem>
                 <SelectItem value="excel">Excel (XLSX)</SelectItem>
                 <SelectItem value="csv">CSV</SelectItem>
-                <SelectItem value="word">Word</SelectItem>
               </SelectContent>
             </Select>
           </div>
