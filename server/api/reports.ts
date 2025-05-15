@@ -369,13 +369,11 @@ async function generateExcelReport(company: Company, financialData: any): Promis
     
     // URL'i döndür
     return `/reports/${fileName}`;
-  } catch (error) {
+  } catch (error: any) {
     console.error('Excel raporu oluşturma hatası:', error);
     throw new Error(`Excel raporu oluşturulamadı: ${error.message}`);
   }
 }
-}
-
 // CSV rapor oluştur
 async function generateCsvReport(company: Company, financialData: any): Promise<string> {
   // CSV için geçici dosya yolu oluştur
@@ -437,122 +435,143 @@ async function generateCsvReport(company: Company, financialData: any): Promise<
 
 // Word rapor oluştur
 async function generateWordReport(company: Company, financialData: any): Promise<string> {
-  // Word için geçici dosya yolu oluştur - docx uzantısı yerine html olarak kaydediyoruz (Word'de açılabilir)
-  const fileName = `report_${company.id}_${Date.now()}.docx`;
-  const reportDir = path.join(process.cwd(), 'public', 'reports');
-  const filePath = path.join(reportDir, fileName);
-  
-  // Klasör yoksa oluştur
-  if (!fs.existsSync(reportDir)) {
-    fs.mkdirSync(reportDir, { recursive: true });
-  }
-  
-  // Seçilen oranları belirle
-  const selectedRatioIds = financialData.selectedRatios || [];
-  
-  // Tablo satırlarını hazırla
-  let tableRows = '';
-  let ratioAdded = false;
-  
-  if (selectedRatioIds.includes('currentRatio') && financialData.currentRatio !== undefined) {
-    tableRows += `
-      <tr>
-        <td>Cari Oran</td>
-        <td>${financialData.currentRatio.toFixed(2)}</td>
-        <td>${getRatioEvaluation('currentRatio', financialData.currentRatio)}</td>
-      </tr>
-    `;
-    ratioAdded = true;
-  }
-  
-  if (selectedRatioIds.includes('quickRatio') && financialData.acidTestRatio !== undefined) {
-    tableRows += `
-      <tr>
-        <td>Asit-Test Oranı</td>
-        <td>${financialData.acidTestRatio.toFixed(2)}</td>
-        <td>${getRatioEvaluation('quickRatio', financialData.acidTestRatio)}</td>
-      </tr>
-    `;
-    ratioAdded = true;
-  }
-  
-  if (selectedRatioIds.includes('cashRatio') && financialData.cashRatio !== undefined) {
-    tableRows += `
-      <tr>
-        <td>Nakit Oranı</td>
-        <td>${financialData.cashRatio.toFixed(2)}</td>
-        <td>${getRatioEvaluation('cashRatio', financialData.cashRatio)}</td>
-      </tr>
-    `;
-    ratioAdded = true;
-  }
-  
-  // Eğer hiç oran seçilmemişse bilgi satırı ekle
-  if (!ratioAdded) {
-    tableRows = `
-      <tr>
-        <td>Seçili oran bulunamadı</td>
-        <td>N/A</td>
-        <td>Lütfen analiz için en az bir oran seçin</td>
-      </tr>
-    `;
-  }
-  
-  // MS Word açılabilir HTML oluştur
-  const htmlContent = `
-    <!DOCTYPE html>
-    <html>
-    <head>
-      <meta charset="UTF-8">
-      <title>FinRasyo - Finansal Analiz Raporu</title>
-      <style>
-        body { font-family: 'Calibri', sans-serif; }
-        .header { text-align: center; margin-bottom: 30px; }
-        .company-info { margin-bottom: 20px; }
-        table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
-        th { background-color: #4285f4; color: white; text-align: left; padding: 8px; }
-        td { border: 1px solid #ddd; padding: 8px; }
-        tr:nth-child(even) { background-color: #f2f2f2; }
-        .footer { text-align: center; color: #666; margin-top: 50px; }
-      </style>
-    </head>
-    <body>
-      <div class="header">
-        <h1>FinRasyo - Finansal Analiz Raporu</h1>
-      </div>
-      
-      <div class="company-info">
-        <h2>Şirket Bilgileri</h2>
-        <p><strong>Şirket:</strong> ${company.name} (${company.code})</p>
-        <p><strong>Sektör:</strong> ${company.sector || 'Belirtilmemiş'}</p>
-        <p><strong>Rapor Tarihi:</strong> ${new Date().toLocaleDateString('tr-TR')}</p>
-      </div>
-      
-      <h2>Finansal Oranlar</h2>
-      <table>
+  try {
+    // Word için geçici dosya yolu oluştur - HTML olarak kaydediyoruz (Word'de açılabilir)
+    // Burada önemli nokta: .docx yerine .html uzantısı kullanılmalı, client tarafında indirirken .docx olarak değişecek
+    const fileName = `report_${company.id}_${Date.now()}.html`;
+    const reportDir = path.join(process.cwd(), 'public', 'reports');
+    const filePath = path.join(reportDir, fileName);
+    
+    // Klasör yoksa oluştur
+    if (!fs.existsSync(reportDir)) {
+      fs.mkdirSync(reportDir, { recursive: true });
+    }
+    
+    // Seçilen oranları belirle
+    const selectedRatioIds = financialData.selectedRatios || [];
+    console.log('Word raporu için seçilen oranlar:', selectedRatioIds);
+    
+    // Tablo satırlarını hazırla
+    let tableRows = '';
+    let ratioAdded = false;
+    
+    if (selectedRatioIds.includes('currentRatio') && financialData.currentRatio !== undefined) {
+      tableRows += `
         <tr>
-          <th>Oran Adı</th>
-          <th>Değer</th>
-          <th>Değerlendirme</th>
+          <td>Cari Oran</td>
+          <td>${financialData.currentRatio.toFixed(2)}</td>
+          <td>${getRatioEvaluation('currentRatio', financialData.currentRatio)}</td>
         </tr>
-        ${tableRows}
-      </table>
-      
-      <div class="footer">
-        <p>FinRasyo - Finansal Veri Sunum Platformu</p>
-        <p>Serra Yazılım © ${new Date().getFullYear()}</p>
-      </div>
-    </body>
-    </html>
-  `;
-  
-  // Dosyaya yaz
-  fs.writeFileSync(filePath, htmlContent);
-  
-  // URL'i döndür
-  return `/reports/${fileName}`;
+      `;
+      ratioAdded = true;
+    }
+    
+    if (selectedRatioIds.includes('quickRatio') && financialData.acidTestRatio !== undefined) {
+      tableRows += `
+        <tr>
+          <td>Asit-Test Oranı</td>
+          <td>${financialData.acidTestRatio.toFixed(2)}</td>
+          <td>${getRatioEvaluation('quickRatio', financialData.acidTestRatio)}</td>
+        </tr>
+      `;
+      ratioAdded = true;
+    }
+    
+    if (selectedRatioIds.includes('cashRatio') && financialData.cashRatio !== undefined) {
+      tableRows += `
+        <tr>
+          <td>Nakit Oranı</td>
+          <td>${financialData.cashRatio.toFixed(2)}</td>
+          <td>${getRatioEvaluation('cashRatio', financialData.cashRatio)}</td>
+        </tr>
+      `;
+      ratioAdded = true;
+    }
+    
+    // Diğer oranları da kontrol et
+    if (selectedRatioIds.includes('debtRatio') && financialData.debtRatio !== undefined) {
+      tableRows += `
+        <tr>
+          <td>Borç Oranı</td>
+          <td>${financialData.debtRatio.toFixed(2)}</td>
+          <td>${getRatioEvaluation('debtRatio', financialData.debtRatio)}</td>
+        </tr>
+      `;
+      ratioAdded = true;
+    }
+    
+    // Eğer hiç oran seçilmemişse bilgi satırı ekle
+    if (!ratioAdded) {
+      tableRows = `
+        <tr>
+          <td>Seçili oran bulunamadı</td>
+          <td>N/A</td>
+          <td>Lütfen analiz için en az bir oran seçin</td>
+        </tr>
+      `;
+    }
+    
+    // MS Word açılabilir HTML oluştur
+    const htmlContent = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <title>FinRasyo - Finansal Analiz Raporu</title>
+        <style>
+          body { font-family: 'Calibri', sans-serif; margin: 40px; }
+          .header { text-align: center; margin-bottom: 30px; }
+          .company-info { margin-bottom: 20px; border: 1px solid #ddd; padding: 15px; background-color: #f9f9f9; }
+          table { width: 100%; border-collapse: collapse; margin-bottom: 20px; border: 1px solid #ddd; }
+          th { background-color: #4285f4; color: white; text-align: left; padding: 10px; }
+          td { border: 1px solid #ddd; padding: 10px; }
+          tr:nth-child(even) { background-color: #f2f2f2; }
+          .footer { text-align: center; color: #666; margin-top: 50px; border-top: 1px solid #ddd; padding-top: 10px; }
+          h1 { color: #1a73e8; }
+          h2 { color: #174ea6; margin-top: 30px; }
+        </style>
+      </head>
+      <body>
+        <div class="header">
+          <h1>FinRasyo - Finansal Analiz Raporu</h1>
+        </div>
+        
+        <div class="company-info">
+          <h2>Şirket Bilgileri</h2>
+          <p><strong>Şirket:</strong> ${company.name} (${company.code})</p>
+          <p><strong>Sektör:</strong> ${company.sector || 'Belirtilmemiş'}</p>
+          <p><strong>Rapor Tarihi:</strong> ${new Date().toLocaleDateString('tr-TR')}</p>
+        </div>
+        
+        <h2>Finansal Oranlar</h2>
+        <table>
+          <tr>
+            <th>Oran Adı</th>
+            <th>Değer</th>
+            <th>Değerlendirme</th>
+          </tr>
+          ${tableRows}
+        </table>
+        
+        <div class="footer">
+          <p>FinRasyo - Finansal Veri Sunum Platformu</p>
+          <p>Serra Yazılım © ${new Date().getFullYear()}</p>
+        </div>
+      </body>
+      </html>
+    `;
+    
+    // Dosyaya yaz
+    fs.writeFileSync(filePath, htmlContent);
+    
+    // URL'i döndür
+    return `/reports/${fileName}`;
+  } catch (error) {
+    console.error('Word raporu oluşturma hatası:', error);
+    throw new Error(`Word raporu oluşturulamadı: ${error.message}`);
+  }
 }
-
 // Oran değerlendirmesi yap
 function getRatioEvaluation(ratioId: string, value: number): string {
   if (value === undefined || value === null) {

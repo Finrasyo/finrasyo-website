@@ -11,7 +11,8 @@ import MultiCompanySelectorWithAutocomplete from "@/components/financial/multi-c
 import { bistCompanies } from "@/data/bist-companies";
 import { ArrowRight } from "lucide-react";
 
-// Mevcut finansal oranların listesi
+// Mevcut finansal oranların listesi - Çıkarılan oranlar:
+// Stok Devir Hızı, Varlık Devir Hızı, Faiz Karşılama Oranı, Temettü Verimi, Alacak Devir Hızı
 const financialRatios = [
   { id: "currentRatio", name: "Cari Oran", description: "Şirketin kısa vadeli borçlarını ödeme kabiliyetini ölçer" },
   { id: "quickRatio", name: "Asit-Test Oranı", description: "Şirketin stoklarını hariç tutarak kısa vadeli borçlarını ödeme kabiliyetini ölçer" },
