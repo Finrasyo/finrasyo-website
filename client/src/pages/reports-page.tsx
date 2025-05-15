@@ -261,7 +261,7 @@ export default function ReportsPage() {
             
             const result = await generateReport(
               selectedReport.financialData,
-              company,
+              companyCsv,
               downloadFormat
             );
             
