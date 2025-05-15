@@ -567,7 +567,7 @@ async function generateWordReport(company: Company, financialData: any): Promise
     
     // URL'i döndür
     return `/reports/${fileName}`;
-  } catch (error) {
+  } catch (error: any) {
     console.error('Word raporu oluşturma hatası:', error);
     throw new Error(`Word raporu oluşturulamadı: ${error.message}`);
   }

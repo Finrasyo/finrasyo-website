@@ -473,6 +473,21 @@ export async function generateReport(
           filename: `${sanitizedCompanyName}_rapor_${dateStr}.csv`
         };
         
+      case 'word':
+      case 'docx':
+        // Bu durumda backend API'sinden gelen HTML içeriğini kullanıyoruz
+        // URL'den al ve blob haline getir
+        const response = await fetch(`/api/reports/generate?companyId=${company.id}&type=word&format=word&financialDataId=${financialData.id || 0}`);
+        if (!response.ok) {
+          throw new Error(`Word raporu oluşturulamadı: ${response.statusText}`);
+        }
+        const htmlContent = await response.text();
+        blob = new Blob([htmlContent], { type: 'application/msword' });
+        return {
+          blob,
+          filename: `${sanitizedCompanyName}_rapor_${dateStr}.docx`
+        };
+        
       default:
         throw new Error(`Desteklenmeyen rapor formatı: ${format}`);
     }
