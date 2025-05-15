@@ -210,9 +210,15 @@ export default function ReportsPage() {
             // PDF oluşturma modülünü içe aktar
             const { generatePDFReport, downloadPDFReport } = await import('../lib/pdf-generator');
             
+            // Şirket bilgisini düzelt - id alanı için varsayılan değer ata
+            const companyPdf = {
+              ...selectedReport.company,
+              id: selectedReport.company.id || 0
+            };
+            
             // PDF raporu oluştur
             const pdfBlob = await generatePDFReport(
-              selectedReport.company, 
+              companyPdf, 
               selectedReport.financialData,
               selectedRatios
             );
@@ -226,9 +232,15 @@ export default function ReportsPage() {
             // Excel oluşturma modülünü içe aktar
             const { generateExcelReport, downloadExcelReport } = await import('../lib/excel-generator');
             
+            // Şirket bilgisini düzelt - id alanı için varsayılan değer ata
+            const companyExcel = {
+              ...selectedReport.company,
+              id: selectedReport.company.id || 0
+            };
+            
             // Excel raporu oluştur (seçilen oranları da ilet)
             const excelBlob = await generateExcelReport(
-              selectedReport.company, 
+              companyExcel, 
               selectedReport.financialData,
               selectedRatios
             );
@@ -242,9 +254,14 @@ export default function ReportsPage() {
             const { generateReport, downloadReport } = await import('../components/financial/report-downloader');
             
             // Raporu oluştur
+            const companyCsv = {
+              ...selectedReport.company,
+              id: selectedReport.company.id || 0 // id için varsayılan değer ekle
+            };
+            
             const result = await generateReport(
               selectedReport.financialData,
-              selectedReport.company,
+              company,
               downloadFormat
             );
             
@@ -302,9 +319,6 @@ export default function ReportsPage() {
         return 'Excel';
       case 'csv':
         return 'CSV';
-      case 'docx':
-      case 'word':
-        return 'Word';
       default:
         return type.toUpperCase();
     }
