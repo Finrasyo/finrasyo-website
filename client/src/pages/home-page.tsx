@@ -14,7 +14,7 @@ export default function HomePage() {
   const [_, navigate] = useLocation();
   
   const goToNewAnalysis = () => {
-    navigate("/analysis-selection");
+    navigate("/analysis-wizard");
   };
   
   const goToNewCompany = () => {
