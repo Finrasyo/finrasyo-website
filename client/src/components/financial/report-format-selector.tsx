@@ -6,7 +6,7 @@ import { Table2, FileText, FileSpreadsheet, FileDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 
-export type ReportFormat = "pdf" | "word" | "excel" | "csv";
+export type ReportFormat = "pdf" | "excel" | "csv";
 
 // Rapor formatları hakkında bilgiler
 export const formatInfo = {
@@ -15,12 +15,6 @@ export const formatInfo = {
     description: "Profesyonel görünümlü, yazdırılabilir PDF raporu",
     icon: <FileText className="h-5 w-5 text-red-500" />,
     extension: ".pdf"
-  },
-  word: {
-    name: "Word Dosyası",
-    description: "Düzenlenebilir Microsoft Word belgesi",
-    icon: <FileText className="h-5 w-5 text-blue-500" />,
-    extension: ".docx"
   },
   excel: {
     name: "Excel Dosyası",

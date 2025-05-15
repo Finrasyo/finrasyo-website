@@ -465,9 +465,7 @@ export default function ReportsPage() {
                     {downloadFormat === 'pdf' && (
                       <FileText className="h-16 w-16 text-red-500" />
                     )}
-                    {downloadFormat === 'docx' && (
-                      <FileText className="h-16 w-16 text-blue-600" />
-                    )}
+
                     {downloadFormat === 'xlsx' && (
                       <FileSpreadsheet className="h-16 w-16 text-green-600" />
                     )}
@@ -479,7 +477,7 @@ export default function ReportsPage() {
                   <div className="text-center mt-2">
                     <p className="text-sm text-neutral-600">
                       {downloadFormat === 'pdf' && 'PDF formatında indirin. Tüm tarayıcılarda açılabilir.'}
-                      {downloadFormat === 'docx' && 'Word belgesi olarak indirin. Microsoft Word veya benzeri yazılımlarla düzenlenebilir.'}
+  
                       {downloadFormat === 'xlsx' && 'Excel dosyası olarak indirin. Microsoft Excel veya benzeri yazılımlarla düzenlenebilir.'}
                       {downloadFormat === 'csv' && 'CSV (Virgülle Ayrılmış Değerler) formatında indirin. Herhangi bir tablolama yazılımıyla açılabilir.'}
                     </p>
