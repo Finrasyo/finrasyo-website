@@ -83,8 +83,11 @@ export async function generateExcelReport(
     workbook.lastModifiedBy = 'FinRasyo';
     workbook.modified = new Date();
     
+    // Güvenli bir şekilde çalışma sayfası adı oluştur
+    const sheetName = company.code ? company.code.replace(/[\[\]\*\?:\/\\]/g, "_") : "Şirket";
+    
     // İlk sayfaya şirket kodunu yaz - güvenli isimle
-    const overviewSheet = workbook.addWorksheet(sanitizeSheetName(company.code || "Şirket"));
+    const overviewSheet = workbook.addWorksheet(sheetName);
     
     // Hücre A1'e şirket kodunu yaz
     overviewSheet.getCell('A1').value = company.code;

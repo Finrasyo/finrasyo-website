@@ -8,7 +8,7 @@ import ResetPasswordPage from "@/pages/reset-password";
 import CompanyPage from "@/pages/company-page";
 import CompanyNewPage from "@/pages/company-new-page";
 import AnalysisPage from "@/pages/analysis-page";
-import AnalysisSelectionPage from "@/pages/analysis-selection";
+
 import AnalysisWizardPage from "@/pages/analysis-wizard";
 import ReportsPage from "@/pages/reports-page";
 import PaymentPage from "@/pages/payment-page";
@@ -31,7 +31,7 @@ function Router() {
       <ProtectedRoute path="/company/new" component={CompanyNewPage} />
       <ProtectedRoute path="/company/:id" component={CompanyPage} />
       <ProtectedRoute path="/analysis/:id" component={AnalysisPage} />
-      <ProtectedRoute path="/analysis-selection" component={AnalysisSelectionPage} />
+
       <ProtectedRoute path="/analysis-wizard" component={AnalysisWizardPage} />
       <ProtectedRoute path="/analiz/:companyCode" component={CompanyAnalysisPage} />
       <ProtectedRoute path="/reports" component={ReportsPage} />
