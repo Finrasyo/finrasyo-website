@@ -83,8 +83,8 @@ export async function generateExcelReport(
     workbook.lastModifiedBy = 'FinRasyo';
     workbook.modified = new Date();
     
-    // İlk sayfaya şirket kodunu yaz 
-    const overviewSheet = workbook.addWorksheet(company.code || "Şirket");
+    // İlk sayfaya şirket kodunu yaz - güvenli isimle
+    const overviewSheet = workbook.addWorksheet(sanitizeSheetName(company.code || "Şirket"));
     
     // Hücre A1'e şirket kodunu yaz
     overviewSheet.getCell('A1').value = company.code;
@@ -102,9 +102,17 @@ export async function generateExcelReport(
     const ratios = generateRatioAnalysis(financialData);
     
     // Oran sayfaları oluştur
+    // Çalışma sayfası adını temizleyen fonksiyon
+    const sanitizeSheetName = (name: string): string => {
+      // Excel'de çalışma sayfası adında yasaklanan karakterler: [ ] * ? / \ :
+      // ve maksimum 31 karakter olabilir
+      return name.replace(/[\[\]\*\?\/\\:]/g, '_').substring(0, 31);
+    };
+    
     const createRatioSheet = (ratioId: string, ratioName: string) => {
-      // Bu oranı içeren yeni bir sayfa oluştur
-      const sheet = workbook.addWorksheet(ratioName);
+      // Bu oranı içeren yeni bir sayfa oluştur - güvenli isimle
+      const safeSheetName = sanitizeSheetName(ratioName);
+      const sheet = workbook.addWorksheet(safeSheetName);
       
       // Başlık hücrelerini oluştur
       sheet.getCell('A1').value = company.code;
@@ -189,8 +197,8 @@ export async function generateExcelReport(
       }
     });
     
-    // Oran Analizi sayfası ekle
-    const ratioAnalysisSheet = workbook.addWorksheet('Oran Analizi');
+    // Oran Analizi sayfası ekle - güvenli isimle
+    const ratioAnalysisSheet = workbook.addWorksheet(sanitizeSheetName('Oran Analizi'));
     ratioAnalysisSheet.getCell('A1').value = 'Oran Adı';
     ratioAnalysisSheet.getCell('B1').value = 'Değer';
     ratioAnalysisSheet.getCell('C1').value = 'Değerlendirme';
