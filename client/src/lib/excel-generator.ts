@@ -111,8 +111,16 @@ export async function generateExcelReport(
     const isRatioSelected = (ratioId: string): boolean => {
       // Eğer selectedRatios dizisi boşsa veya undefined ise, hiçbir oranı gösterme
       if (!selectedRatios || selectedRatios.length === 0) return false;
-      // Sadece seçilen oranları göster
-      return selectedRatios.includes(ratioId);
+      
+      // ID'yi standardize et
+      const normalizedId = normalizeRatioId(ratioId);
+      
+      // Debug için seçilen oranları loglayalım
+      console.log("Excel - Seçilen oranlar:", selectedRatios);
+      console.log("Excel - Kontrol edilen oran ID:", ratioId, "Normalleştirilmiş ID:", normalizedId);
+      
+      // Hem orijinal ID'yi hem de normalleştirilmiş ID'yi kontrol et
+      return selectedRatios.includes(ratioId) || selectedRatios.includes(normalizedId);
     };
     
     // Mevcut finansal veri için oranları hesapla

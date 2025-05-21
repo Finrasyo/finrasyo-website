@@ -13,12 +13,30 @@ export async function generateReport(req: Request, res: Response) {
   try {
     const { companyId, financialDataId, format, options, metadata } = req.body;
     
-    // Seçilen oranları al
+    // Oran ID'lerini standardize etme fonksiyonu
+    const normalizeRatioId = (ratioId: string): string => {
+      // ID eşleştirmeleri
+      const idMappings: Record<string, string> = {
+        'acidTestRatio': 'quickRatio',
+        'quickRatio': 'quickRatio'
+      };
+      
+      return idMappings[ratioId] || ratioId;
+    };
+    
+    // Seçilen oranları al ve standardize et
     let selectedRatios: string[] = [];
     if (metadata) {
       try {
         const metadataObj = typeof metadata === 'string' ? JSON.parse(metadata) : metadata;
-        selectedRatios = metadataObj.ratio_ids || [];
+        // Orijinal seçilen oranlar
+        const originalRatios = metadataObj.ratio_ids || [];
+        
+        // Her bir ID'yi standardize et
+        selectedRatios = originalRatios.map(id => normalizeRatioId(id));
+        
+        console.log("Orijinal seçilen oranlar:", originalRatios);
+        console.log("Standardize edilmiş oranlar:", selectedRatios);
       } catch (e) {
         console.error("Metadata parse hatası:", e);
       }

@@ -12,6 +12,17 @@ import { formatFinancialValue, generateRatioAnalysis } from './financial-calcula
 // Trend analizi için örnek yıllar (normal şartlarda veritabanından getirilen veriler kullanılır)
 const sampleYears = [2020, 2021, 2022, 2023, 2024];
 
+// Oran ID'lerini standardize etme fonksiyonu
+const normalizeRatioId = (ratioId: string): string => {
+  // ID eşleştirmeleri
+  const idMappings: Record<string, string> = {
+    'acidTestRatio': 'quickRatio',
+    'quickRatio': 'quickRatio'
+  };
+  
+  return idMappings[ratioId] || ratioId;
+};
+
 // Örnek trend verileri oluşturma fonksiyonu
 // (gerçek uygulamada bu veritabanından gelecektir)
 const generateSampleTrendData = (ratioId: string, baseValue: number): Record<number, number> => {
@@ -20,11 +31,14 @@ const generateSampleTrendData = (ratioId: string, baseValue: number): Record<num
   // Her oranın kendine özgü trendi olsun
   let volatility = 0;
   
-  switch (ratioId) {
+  // ID'yi standardize et
+  const normalizedId = normalizeRatioId(ratioId);
+  
+  switch (normalizedId) {
     case 'currentRatio': 
       volatility = 0.3; 
       break;
-    case 'acidTestRatio': 
+    case 'quickRatio': 
       volatility = 0.2; 
       break;
     case 'cashRatio': 
@@ -89,8 +103,16 @@ export async function generateCSVReport(
     const isRatioSelected = (ratioId: string): boolean => {
       // Eğer selectedRatios dizisi boşsa veya undefined ise, hiçbir oranı gösterme
       if (!selectedRatios || selectedRatios.length === 0) return false;
-      // Sadece seçilen oranları göster
-      return selectedRatios.includes(ratioId);
+      
+      // ID'yi standardize et
+      const normalizedId = normalizeRatioId(ratioId);
+      
+      // Debug için seçilen oranları loglayalım
+      console.log("CSV - Seçilen oranlar:", selectedRatios);
+      console.log("CSV - Kontrol edilen oran ID:", ratioId, "Normalleştirilmiş ID:", normalizedId);
+      
+      // Hem orijinal ID'yi hem de normalleştirilmiş ID'yi kontrol et
+      return selectedRatios.includes(ratioId) || selectedRatios.includes(normalizedId);
     };
     
     // Mevcut finansal veri için oranları hesapla
