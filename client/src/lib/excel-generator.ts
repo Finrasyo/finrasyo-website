@@ -14,17 +14,31 @@ import { formatFinancialValue, generateRatioAnalysis } from './financial-calcula
 const sampleYears = [2020, 2021, 2022, 2023, 2024];
 
 // Bu function, örnek trend verileri oluşturur (gerçek uygulamada bu veritabanından gelecektir)
+// Oran ID'lerini standardize etme fonksiyonu
+function normalizeRatioId(ratioId: string): string {
+  // ID eşleştirmeleri
+  const idMappings: Record<string, string> = {
+    'acidTestRatio': 'quickRatio',
+    'quickRatio': 'quickRatio'
+  };
+  
+  return idMappings[ratioId] || ratioId;
+}
+
 function generateSampleTrendData(ratioId: string, baseValue: number): Record<number, number> {
   const result: Record<number, number> = {};
   
   // Her oranın kendine özgü trendi olsun
   let volatility = 0;
   
-  switch (ratioId) {
+  // ID'yi standardize et
+  const normalizedId = normalizeRatioId(ratioId);
+  
+  switch (normalizedId) {
     case 'currentRatio': 
       volatility = 0.3; 
       break;
-    case 'acidTestRatio': 
+    case 'quickRatio': 
       volatility = 0.2; 
       break;
     case 'cashRatio': 

@@ -102,17 +102,31 @@ export async function generatePDFReport(
     // Trend analizi için örnek yıllar
     const sampleYears = [2020, 2021, 2022, 2023, 2024];
     
+    // Oran ID'lerini standardize etme fonksiyonu
+    const normalizeRatioId = (ratioId: string): string => {
+      // ID eşleştirmeleri
+      const idMappings: Record<string, string> = {
+        'acidTestRatio': 'quickRatio',
+        'quickRatio': 'quickRatio'
+      };
+      
+      return idMappings[ratioId] || ratioId;
+    };
+    
     // Fonksiyon: Seçilen oranları kontrol et
     const isRatioSelected = (ratioId: string): boolean => {
       // Eğer selectedRatios dizisi boşsa veya undefined ise, hiçbir oranı gösterme
       if (!selectedRatios || selectedRatios.length === 0) return false;
       
+      // ID'yi standardize et
+      const normalizedId = normalizeRatioId(ratioId);
+      
       // Debug için seçilen oranları loglayalım
       console.log("Seçilen oranlar:", selectedRatios);
-      console.log("Kontrol edilen oran ID:", ratioId);
+      console.log("Kontrol edilen oran ID:", ratioId, "Normalleştirilmiş ID:", normalizedId);
       
-      // Sadece seçilen oranları göster
-      return selectedRatios.includes(ratioId);
+      // Hem orijinal ID'yi hem de normalleştirilmiş ID'yi kontrol et
+      return selectedRatios.includes(ratioId) || selectedRatios.includes(normalizedId);
     };
     
     // Örnek trend verileri oluştur (gerçek uygulamada bu veritabanından gelecektir)
