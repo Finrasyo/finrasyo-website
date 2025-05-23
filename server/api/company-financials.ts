@@ -148,7 +148,19 @@ function generateDummyData(companyCode: string): FinancialData {
     } as FinancialData;
   }
   
-  // Varsayılan örnek veri
+  // Detaylı finansal veriler ile örnek veri
+  const totalAssets = Math.random() * 1000000000 + 500000000;
+  const currentAssets = totalAssets * (0.3 + Math.random() * 0.4); // %30-70 arası
+  const shortTermLiabilities = totalAssets * (0.1 + Math.random() * 0.2); // %10-30 arası
+  const longTermLiabilities = totalAssets * (0.1 + Math.random() * 0.3); // %10-40 arası
+  const equity = totalAssets - shortTermLiabilities - longTermLiabilities;
+  const inventory = currentAssets * (0.2 + Math.random() * 0.3); // Dönen varlıkların %20-50'si
+  const cashAndEquivalents = currentAssets * (0.1 + Math.random() * 0.2); // Dönen varlıkların %10-30'u
+  const netSales = Math.random() * 800000000 + 200000000;
+  const grossProfit = netSales * (0.2 + Math.random() * 0.3); // %20-50 brüt kar marjı
+  const operatingProfit = grossProfit * (0.3 + Math.random() * 0.5); // Brüt karın %30-80'i
+  const netProfit = operatingProfit * (0.4 + Math.random() * 0.4); // Faaliyet karının %40-80'i
+  
   return {
     stockCode: companyCode,
     companyName: `${companyCode} Şirketi`,
@@ -158,9 +170,24 @@ function generateDummyData(companyCode: string): FinancialData {
       source: "Örnek Veri" 
     },
     financialData: {
-      revenue: Math.random() * 1000000000 + 100000000,
-      operatingIncome: Math.random() * 100000000 + 10000000,
-      netIncome: Math.random() * 50000000 + 5000000,
+      // Oran hesaplaması için gerekli alanlar
+      totalAssets: totalAssets,
+      currentAssets: currentAssets,
+      fixedAssets: totalAssets - currentAssets,
+      tangibleFixedAssets: (totalAssets - currentAssets) * 0.8,
+      inventory: inventory,
+      cashAndEquivalents: cashAndEquivalents,
+      shortTermLiabilities: shortTermLiabilities,
+      longTermLiabilities: longTermLiabilities,
+      totalLiabilities: shortTermLiabilities + longTermLiabilities,
+      equity: equity,
+      netSales: netSales,
+      grossProfit: grossProfit,
+      operatingProfit: operatingProfit,
+      netProfit: netProfit,
+      revenue: netSales,
+      operatingIncome: operatingProfit,
+      netIncome: netProfit,
     },
     keyStatistics: {
       "Piyasa Değeri": Math.random() * 10000000000 + 1000000000,
