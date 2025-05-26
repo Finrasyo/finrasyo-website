@@ -277,10 +277,16 @@ export class MemStorage implements IStorage {
   async createReport(report: InsertReport): Promise<Report> {
     const id = this.currentReportId++;
     const newReport: Report = {
-      ...report,
       id,
+      name: report.name,
+      type: report.type || 'financial',
       format: report.format || 'pdf',
-      createdAt: new Date()
+      status: report.status || 'completed',
+      userId: report.userId,
+      companyId: report.companyId,
+      createdAt: new Date(),
+      url: report.url || null,
+      financialDataId: report.financialDataId
     };
     this.reports.set(id, newReport);
     return newReport;
