@@ -252,6 +252,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Company financials API endpoints
+  app.get("/api/company-financials/:companyCode", getCompanyFinancials);
+  app.get("/api/company-financials", getAllCompaniesFinancials);
+
   app.post("/api/financial-data", async (req, res) => {
     if (!req.isAuthenticated()) return res.sendStatus(401);
     
