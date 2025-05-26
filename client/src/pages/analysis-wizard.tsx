@@ -190,21 +190,45 @@ export default function AnalysisWizard() {
       // selectedYears[0] string olduğu için parseInt ile sayıya çevirelim
       const selectedYear = selectedYears.length > 0 ? parseInt(selectedYears[0]) : today;
       
+      // Önce şirketin gerçek finansal verilerini çek
+      const companyFinancialResponse = await apiRequest("GET", `/api/company-financials/${selectedCompanies[0].code}?year=${selectedYear}`);
+      
+      let realFinancialData = {};
+      if (companyFinancialResponse.ok) {
+        const companyData = await companyFinancialResponse.json();
+        console.log("Çekilen şirket verileri:", companyData);
+        
+        // Gerçek finansal verileri kullan
+        realFinancialData = companyData.financialData || {};
+      }
+      
       const financialDataResponse = await apiRequest("POST", "/api/financial-data", {
         companyId: company.id,
-        year: selectedYear, // Sayı olarak gönder
-        // Gerekli finansal veri alanları - test değerleri
-        cashAndEquivalents: 1000000,
+        year: selectedYear,
+        // Gerçek finansal verilerden oranlar için gerekli alanları al
+        currentAssets: realFinancialData.currentAssets || 2500000,
+        cashAndEquivalents: realFinancialData.cashAndEquivalents || 1000000,
+        inventory: realFinancialData.inventory || 750000,
+        shortTermLiabilities: realFinancialData.shortTermLiabilities || 1000000,
+        longTermLiabilities: realFinancialData.longTermLiabilities || 2000000,
+        totalAssets: realFinancialData.totalAssets || 7500000,
+        equity: realFinancialData.equity || 4500000,
+        netSales: realFinancialData.netSales || 8000000,
+        grossProfit: realFinancialData.grossProfit || 3200000,
+        operatingProfit: realFinancialData.operatingProfit || 1600000,
+        netProfit: realFinancialData.netProfit || 800000,
+        fixedAssets: realFinancialData.fixedAssets || 5000000,
+        tangibleFixedAssets: realFinancialData.tangibleFixedAssets || 4000000,
+        totalLiabilities: realFinancialData.totalLiabilities || 3000000,
+        // Eski alanları da koruyalım
         accountsReceivable: 500000,
-        inventory: 750000,
         otherCurrentAssets: 250000,
-        totalCurrentAssets: 2500000,
-        totalNonCurrentAssets: 5000000,
-        totalAssets: 7500000,
+        totalCurrentAssets: realFinancialData.currentAssets || 2500000,
+        totalNonCurrentAssets: realFinancialData.fixedAssets || 5000000,
         shortTermDebt: 300000,
         accountsPayable: 400000,
         otherCurrentLiabilities: 300000,
-        totalCurrentLiabilities: 1000000
+        totalCurrentLiabilities: realFinancialData.shortTermLiabilities || 1000000
       });
 
       if (!financialDataResponse.ok) {
