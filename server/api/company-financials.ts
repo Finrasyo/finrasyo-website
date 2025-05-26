@@ -148,18 +148,25 @@ function generateDummyData(companyCode: string): FinancialData {
     } as FinancialData;
   }
   
-  // Detaylı finansal veriler ile örnek veri
-  const totalAssets = Math.random() * 1000000000 + 500000000;
-  const currentAssets = totalAssets * (0.3 + Math.random() * 0.4); // %30-70 arası
-  const shortTermLiabilities = totalAssets * (0.1 + Math.random() * 0.2); // %10-30 arası
-  const longTermLiabilities = totalAssets * (0.1 + Math.random() * 0.3); // %10-40 arası
+  // Şirket koduna göre deterministik seed oluştur (her şirket için tutarlı veriler)
+  const seed = companyCode.split('').reduce((a, b) => a + b.charCodeAt(0), 0);
+  const seededRandom = (min: number, max: number) => {
+    const x = Math.sin(seed + min * 1000) * 10000;
+    return min + (x - Math.floor(x)) * (max - min);
+  };
+
+  // Detaylı finansal veriler ile tutarlı veri
+  const totalAssets = seededRandom(500000000, 1500000000);
+  const currentAssets = totalAssets * seededRandom(0.3, 0.7); // %30-70 arası
+  const shortTermLiabilities = totalAssets * seededRandom(0.1, 0.3); // %10-30 arası
+  const longTermLiabilities = totalAssets * seededRandom(0.1, 0.3); // %10-30 arası
   const equity = totalAssets - shortTermLiabilities - longTermLiabilities;
-  const inventory = currentAssets * (0.2 + Math.random() * 0.3); // Dönen varlıkların %20-50'si
-  const cashAndEquivalents = currentAssets * (0.1 + Math.random() * 0.2); // Dönen varlıkların %10-30'u
-  const netSales = Math.random() * 800000000 + 200000000;
-  const grossProfit = netSales * (0.2 + Math.random() * 0.3); // %20-50 brüt kar marjı
-  const operatingProfit = grossProfit * (0.3 + Math.random() * 0.5); // Brüt karın %30-80'i
-  const netProfit = operatingProfit * (0.4 + Math.random() * 0.4); // Faaliyet karının %40-80'i
+  const inventory = currentAssets * seededRandom(0.2, 0.5); // Dönen varlıkların %20-50'si
+  const cashAndEquivalents = currentAssets * seededRandom(0.1, 0.3); // Dönen varlıkların %10-30'u
+  const netSales = seededRandom(200000000, 1000000000);
+  const grossProfit = netSales * seededRandom(0.2, 0.5); // %20-50 brüt kar marjı
+  const operatingProfit = grossProfit * seededRandom(0.3, 0.8); // Brüt karın %30-80'i
+  const netProfit = operatingProfit * seededRandom(0.4, 0.8); // Faaliyet karının %40-80'i
   
   return {
     stockCode: companyCode,

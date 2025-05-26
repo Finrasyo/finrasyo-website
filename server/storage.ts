@@ -232,8 +232,24 @@ export class MemStorage implements IStorage {
     acidTestRatio: number;
   }): Promise<FinancialData> {
     const id = this.currentFinancialDataId++;
-    const newData: FinancialData = {
+    
+    // Doğru alan adlarını kullanarak oranları hesapla
+    const currentAssets = (data as any).currentAssets || (data as any).totalCurrentAssets || 0;
+    const shortTermLiabs = (data as any).shortTermLiabilities || (data as any).totalCurrentLiabilities || 0;
+    const inventory = (data as any).inventory || 0;
+    
+    const calculatedData = {
       ...data,
+      // Oranları otomatik hesapla
+      currentRatio: currentAssets && shortTermLiabs ? currentAssets / shortTermLiabs : 0,
+      liquidityRatio: currentAssets && inventory && shortTermLiabs ? 
+        (currentAssets - inventory) / shortTermLiabs : 0,
+      acidTestRatio: currentAssets && inventory && shortTermLiabs ? 
+        (currentAssets - inventory) / shortTermLiabs : 0,
+    };
+    
+    const newData: FinancialData = {
+      ...calculatedData,
       id,
       createdAt: new Date()
     };

@@ -193,7 +193,7 @@ export default function AnalysisWizard() {
       // Önce şirketin gerçek finansal verilerini çek
       const companyFinancialResponse = await apiRequest("GET", `/api/company-financials/${selectedCompanies[0].code}?year=${selectedYear}`);
       
-      let realFinancialData = {};
+      let realFinancialData: any = {};
       if (companyFinancialResponse.ok) {
         const companyData = await companyFinancialResponse.json();
         console.log("Çekilen şirket verileri:", companyData);
