@@ -243,17 +243,47 @@ function generateDummyData(companyCode: string): FinancialData {
  * Belirli bir şirketin finansal verilerini döndüren HTTP endpoint'i
  */
 export function getCompanyFinancials(req: Request, res: Response) {
-  const { stockCode } = req.params;
+  const { companyCode } = req.params;
+  const { year } = req.query;
   
-  if (!stockCode) {
+  console.log(`Finansal veriler isteniyor: ${companyCode}, Yıl: ${year}`);
+  
+  if (!companyCode) {
     return res.status(400).json({ error: "Hisse kodu belirtilmedi" });
   }
   
-  // Gerçek bir API veya veritabanından veri alınabilir
-  // Şimdilik örnek veri döndürelim
-  const financialData = generateDummyData(stockCode);
-  
-  res.json(financialData);
+  try {
+    // Şirket finansal verilerini oluştur
+    const financialData = generateDummyData(companyCode);
+    
+    // Eğer spesifik yıl isteniyorsa, o yıla göre veriler ayarla
+    if (year && typeof year === 'string') {
+      const requestedYear = parseInt(year);
+      const currentYear = new Date().getFullYear();
+      const yearDiff = currentYear - requestedYear;
+      
+      // Geçmiş yıllar için verileri yaklaşık %5-10 oranında azalt
+      const adjustmentFactor = Math.pow(0.95, yearDiff);
+      
+      // Finansal verileri yıla göre ayarla
+      if (financialData.financialData) {
+        Object.keys(financialData.financialData).forEach(key => {
+          if (typeof financialData.financialData[key] === 'number') {
+            financialData.financialData[key] *= adjustmentFactor;
+          }
+        });
+      }
+    }
+    
+    console.log(`${companyCode} için ${year || 'güncel'} yılı finansal veriler oluşturuldu`);
+    res.json(financialData);
+  } catch (error) {
+    console.error(`${companyCode} için finansal veri hatası:`, error);
+    res.status(500).json({ 
+      error: "Finansal veriler alınamadı",
+      details: error.message 
+    });
+  }
 }
 
 /**
