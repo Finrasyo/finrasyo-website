@@ -155,15 +155,15 @@ function generateDummyData(companyCode: string): FinancialData {
     return min + (x - Math.floor(x)) * (max - min);
   };
 
-  // Detaylı finansal veriler ile tutarlı veri
-  const totalAssets = seededRandom(500000000, 1500000000);
+  // Makul finansal değerler (milyonlarca TL cinsinden - validasyon sınırları içinde)
+  const totalAssets = seededRandom(50000000, 500000000); // 50M-500M TL
   const currentAssets = totalAssets * seededRandom(0.3, 0.7); // %30-70 arası
   const shortTermLiabilities = totalAssets * seededRandom(0.1, 0.3); // %10-30 arası
   const longTermLiabilities = totalAssets * seededRandom(0.1, 0.3); // %10-30 arası
   const equity = totalAssets - shortTermLiabilities - longTermLiabilities;
   const inventory = currentAssets * seededRandom(0.2, 0.5); // Dönen varlıkların %20-50'si
   const cashAndEquivalents = currentAssets * seededRandom(0.1, 0.3); // Dönen varlıkların %10-30'u
-  const netSales = seededRandom(200000000, 1000000000);
+  const netSales = seededRandom(20000000, 400000000); // 20M-400M TL
   const grossProfit = netSales * seededRandom(0.2, 0.5); // %20-50 brüt kar marjı
   const operatingProfit = grossProfit * seededRandom(0.3, 0.8); // Brüt karın %30-80'i
   const netProfit = operatingProfit * seededRandom(0.4, 0.8); // Faaliyet karının %40-80'i
@@ -281,7 +281,7 @@ export function getCompanyFinancials(req: Request, res: Response) {
     console.error(`${companyCode} için finansal veri hatası:`, error);
     res.status(500).json({ 
       error: "Finansal veriler alınamadı",
-      details: error.message 
+      details: error instanceof Error ? error.message : "Bilinmeyen hata"
     });
   }
 }

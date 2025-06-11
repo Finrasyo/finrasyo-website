@@ -71,6 +71,17 @@ export const insertFinancialDataSchema = createInsertSchema(financialData).pick(
   accountsPayable: true,
   otherCurrentLiabilities: true,
   totalCurrentLiabilities: true,
+}).extend({
+  // Finansal değerlerin maksimum sınırlarını artır (100 milyar TL'ye kadar)
+  cashAndEquivalents: z.number().min(0).max(100000000000),
+  accountsReceivable: z.number().min(0).max(100000000000),
+  inventory: z.number().min(0).max(100000000000),
+  otherCurrentAssets: z.number().min(0).max(100000000000),
+  totalCurrentAssets: z.number().min(0).max(100000000000),
+  shortTermDebt: z.number().min(0).max(100000000000),
+  accountsPayable: z.number().min(0).max(100000000000),
+  otherCurrentLiabilities: z.number().min(0).max(100000000000),
+  totalCurrentLiabilities: z.number().min(0).max(100000000000),
 });
 
 // Report schema
