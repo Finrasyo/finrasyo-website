@@ -78,24 +78,31 @@ export function generateRatioAnalysis(financialData: any): Record<string, { valu
     return {};
   }
 
-  // Eksik finansal veriler için varsayılan değerler
+  console.log("generateRatioAnalysis'e gelen veri:", financialData);
+
+  // API'den gelen veri yapısına göre düzenleme
+  // financialData.financialData içinden verileri al
+  const sourceData = financialData.financialData || financialData;
+  
   const data = {
-    currentAssets: financialData.currentAssets || 0,
-    inventory: financialData.inventory || 0,
-    cashAndEquivalents: financialData.cashAndEquivalents || 0,
-    shortTermLiabilities: financialData.shortTermLiabilities || 0,
-    longTermLiabilities: financialData.longTermLiabilities || 0,
-    totalAssets: financialData.totalAssets || 0,
-    equity: financialData.equity || 0, 
-    fixedAssets: financialData.fixedAssets || 0,
-    tangibleFixedAssets: financialData.tangibleFixedAssets || 0,
-    totalLiabilities: financialData.totalLiabilities || 
-      ((financialData.shortTermLiabilities || 0) + (financialData.longTermLiabilities || 0)),
-    grossProfit: financialData.grossProfit || 0,
-    operatingProfit: financialData.operatingProfit || 0,
-    netProfit: financialData.netProfit || 0,
-    netSales: financialData.netSales || 0
+    currentAssets: sourceData.currentAssets || 0,
+    inventory: sourceData.inventory || 0,
+    cashAndEquivalents: sourceData.cashAndEquivalents || 0,
+    shortTermLiabilities: sourceData.shortTermLiabilities || 0,
+    longTermLiabilities: sourceData.longTermLiabilities || 0,
+    totalAssets: sourceData.totalAssets || 0,
+    equity: sourceData.equity || 0, 
+    fixedAssets: sourceData.fixedAssets || 0,
+    tangibleFixedAssets: sourceData.tangibleFixedAssets || 0,
+    totalLiabilities: sourceData.totalLiabilities || 
+      ((sourceData.shortTermLiabilities || 0) + (sourceData.longTermLiabilities || 0)),
+    grossProfit: sourceData.grossProfit || 0,
+    operatingProfit: sourceData.operatingProfit || 0,
+    netProfit: sourceData.netProfit || 0,
+    netSales: sourceData.netSales || 0
   };
+
+  console.log("Hesaplama için kullanılan veri:", data);
 
   // Tüm oranları hesapla
   const ratios: Record<string, { value: number; interpretation: string }> = {};
