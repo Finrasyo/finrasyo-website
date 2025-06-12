@@ -291,14 +291,43 @@ export default function AnalysisWizard() {
   const handlePdfReport = async () => {
     try {
       setIsGeneratingReport(true);
-      const reportData = await handleReport("pdf");
+      
+      // Doğrudan frontend'de PDF oluştur
+      const selectedCompany = selectedCompanies[0];
+      if (!selectedCompany) {
+        throw new Error("Şirket seçilmedi");
+      }
+      
+      // Şirket finansal verilerini al
+      const response = await fetch(`/api/company-financials/${selectedCompany.code}`);
+      if (!response.ok) {
+        throw new Error("Finansal veriler alınamadı");
+      }
+      const financialData = await response.json();
+      
+      // PDF generator'ı import et ve kullan
+      const { generatePDFReport, downloadPDFReport } = await import('../lib/pdf-generator');
+      
+      const pdfBlob = await generatePDFReport(
+        selectedCompany,
+        financialData,
+        selectedRatios
+      );
+      
+      const fileName = `${selectedCompany.name.replace(/[^a-zA-Z0-9]/g, '_')}_rapor_${new Date().toISOString().split('T')[0]}.pdf`;
+      downloadPDFReport(pdfBlob, fileName);
+      
       toast({
-        title: "Rapor Hazır",
-        description: "PDF raporu başarıyla oluşturuldu.",
+        title: "PDF Rapor İndirildi",
+        description: "Finansal analiz raporu başarıyla oluşturuldu ve indirildi.",
       });
-      setLocation("/reports");
     } catch (error) {
       console.error("PDF rapor oluşturma hatası:", error);
+      toast({
+        title: "Rapor Hatası",
+        description: "PDF raporu oluşturulurken bir hata meydana geldi.",
+        variant: "destructive"
+      });
     } finally {
       setIsGeneratingReport(false);
     }
@@ -308,14 +337,43 @@ export default function AnalysisWizard() {
   const handleExcelReport = async () => {
     try {
       setIsGeneratingReport(true);
-      const reportData = await handleReport("excel");
+      
+      // Doğrudan frontend'de Excel oluştur
+      const selectedCompany = selectedCompanies[0];
+      if (!selectedCompany) {
+        throw new Error("Şirket seçilmedi");
+      }
+      
+      // Şirket finansal verilerini al
+      const response = await fetch(`/api/company-financials/${selectedCompany.code}`);
+      if (!response.ok) {
+        throw new Error("Finansal veriler alınamadı");
+      }
+      const financialData = await response.json();
+      
+      // Excel generator'ı import et ve kullan
+      const { generateExcelReport, downloadExcelReport } = await import('../lib/excel-generator');
+      
+      const excelBlob = await generateExcelReport(
+        selectedCompany,
+        financialData,
+        selectedRatios
+      );
+      
+      const fileName = `${selectedCompany.name.replace(/[^a-zA-Z0-9]/g, '_')}_rapor_${new Date().toISOString().split('T')[0]}.xlsx`;
+      downloadExcelReport(excelBlob, fileName);
+      
       toast({
-        title: "Rapor Hazır",
-        description: "Excel raporu başarıyla oluşturuldu.",
+        title: "Excel Rapor İndirildi",
+        description: "Finansal analiz raporu başarıyla oluşturuldu ve indirildi.",
       });
-      setLocation("/reports");
     } catch (error) {
       console.error("Excel rapor oluşturma hatası:", error);
+      toast({
+        title: "Rapor Hatası",
+        description: "Excel raporu oluşturulurken bir hata meydana geldi.",
+        variant: "destructive"
+      });
     } finally {
       setIsGeneratingReport(false);
     }
@@ -327,14 +385,43 @@ export default function AnalysisWizard() {
   const handleCsvReport = async () => {
     try {
       setIsGeneratingReport(true);
-      const reportData = await handleReport("csv");
+      
+      // Doğrudan frontend'de CSV oluştur
+      const selectedCompany = selectedCompanies[0];
+      if (!selectedCompany) {
+        throw new Error("Şirket seçilmedi");
+      }
+      
+      // Şirket finansal verilerini al
+      const response = await fetch(`/api/company-financials/${selectedCompany.code}`);
+      if (!response.ok) {
+        throw new Error("Finansal veriler alınamadı");
+      }
+      const financialData = await response.json();
+      
+      // CSV generator'ı import et ve kullan
+      const { generateCSVReport, downloadCSVReport } = await import('../lib/csv-generator');
+      
+      const csvBlob = await generateCSVReport(
+        selectedCompany,
+        financialData,
+        selectedRatios
+      );
+      
+      const fileName = `${selectedCompany.name.replace(/[^a-zA-Z0-9]/g, '_')}_rapor_${new Date().toISOString().split('T')[0]}.csv`;
+      downloadCSVReport(csvBlob, fileName);
+      
       toast({
-        title: "Rapor Hazır",
-        description: "CSV raporu başarıyla oluşturuldu.",
+        title: "CSV Rapor İndirildi",
+        description: "Finansal analiz raporu başarıyla oluşturuldu ve indirildi.",
       });
-      setLocation("/reports");
     } catch (error) {
       console.error("CSV rapor oluşturma hatası:", error);
+      toast({
+        title: "Rapor Hatası",
+        description: "CSV raporu oluşturulurken bir hata meydana geldi.",
+        variant: "destructive"
+      });
     } finally {
       setIsGeneratingReport(false);
     }
