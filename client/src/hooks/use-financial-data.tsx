@@ -18,6 +18,7 @@ type FinancialDataContextType = {
       numRatios?: number;
       price?: number;
       reportName?: string;
+      selectedRatios?: string[];
     }
   ) => Promise<any>;
 };
@@ -66,6 +67,7 @@ export function FinancialDataProvider({ children }: { children: ReactNode }) {
         price?: number;
       };
       reportName?: string;
+      selectedRatios?: string[];
     }) => {
       const res = await apiRequest("POST", "/api/reports", {
         companyId,
@@ -77,7 +79,8 @@ export function FinancialDataProvider({ children }: { children: ReactNode }) {
         numCompanies: options?.numCompanies || 1,
         numPeriods: options?.numPeriods || 1,
         numRatios: options?.numRatios || 1,
-        price: options?.price || 0.25
+        price: options?.price || 0.25,
+        selectedRatios: (options as any)?.selectedRatios || []
       });
       return await res.json();
     },

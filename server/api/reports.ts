@@ -11,7 +11,15 @@ import { ratioCategories } from "client/src/lib/financial-ratios";
 // Rapor oluşturma API endpoint'i
 export async function generateReport(req: Request, res: Response) {
   try {
-    const { companyId, financialDataId, format, options, metadata } = req.body;
+    const { companyId, financialDataId, format, options, metadata, selectedRatios: requestSelectedRatios } = req.body;
+    
+    console.log("Rapor oluşturma isteği:", {
+      companyId,
+      financialDataId,
+      format,
+      requestSelectedRatios,
+      metadata
+    });
     
     // Oran ID'lerini standardize etme fonksiyonu
     const normalizeRatioId = (ratioId: string): string => {
@@ -26,16 +34,24 @@ export async function generateReport(req: Request, res: Response) {
     
     // Seçilen oranları al ve standardize et
     let selectedRatios: string[] = [];
-    if (metadata) {
+    
+    // Önce doğrudan selectedRatios parametresini kontrol et
+    if (requestSelectedRatios && Array.isArray(requestSelectedRatios)) {
+      selectedRatios = requestSelectedRatios.map(id => normalizeRatioId(id));
+      console.log("Doğrudan seçilen oranlar:", requestSelectedRatios);
+      console.log("Standardize edilmiş oranlar:", selectedRatios);
+    }
+    // Sonra metadata'dan al
+    else if (metadata) {
       try {
         const metadataObj = typeof metadata === 'string' ? JSON.parse(metadata) : metadata;
         // Orijinal seçilen oranlar
         const originalRatios = metadataObj.ratio_ids || [];
         
         // Her bir ID'yi standardize et
-        selectedRatios = originalRatios.map(id => normalizeRatioId(id));
+        selectedRatios = originalRatios.map((id: string) => normalizeRatioId(id));
         
-        console.log("Orijinal seçilen oranlar:", originalRatios);
+        console.log("Metadata'dan alınan oranlar:", originalRatios);
         console.log("Standardize edilmiş oranlar:", selectedRatios);
       } catch (e) {
         console.error("Metadata parse hatası:", e);
@@ -65,9 +81,20 @@ export async function generateReport(req: Request, res: Response) {
       return res.status(404).json({ error: "Finansal veri bulunamadı" });
     }
     
-    // Finansal veri objesine seçilen oranları ekle
+    // Şirket finansal verilerini gerçek API'den al
+    const companyFinancialResponse = await fetch(`http://localhost:5000/api/company-financials/${company.code}`);
+    let realFinancialData = {};
+    
+    if (companyFinancialResponse.ok) {
+      const companyData = await companyFinancialResponse.json();
+      realFinancialData = companyData.financialData || {};
+      console.log("Gerçek finansal veriler alındı:", realFinancialData);
+    }
+    
+    // Finansal veri objesine seçilen oranları ve gerçek verileri ekle
     const financialDataWithOptions = {
       ...financialData,
+      ...realFinancialData,
       selectedRatios 
     };
     
