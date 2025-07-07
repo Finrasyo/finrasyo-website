@@ -72,16 +72,13 @@ export default function Navbar() {
                 <Link 
                   key={link.label} 
                   href={link.href}
+                  className={`${
+                    link.active 
+                      ? "border-primary text-neutral-800 border-b-2" 
+                      : "border-transparent text-neutral-600 hover:border-neutral-300 hover:text-neutral-800 border-b-2"
+                  } inline-flex items-center px-1 pt-1 text-sm font-medium`}
                 >
-                  <a 
-                    className={`${
-                      link.active 
-                        ? "border-primary text-neutral-800 border-b-2" 
-                        : "border-transparent text-neutral-600 hover:border-neutral-300 hover:text-neutral-800 border-b-2"
-                    } inline-flex items-center px-1 pt-1 text-sm font-medium`}
-                  >
-                    {link.label}
-                  </a>
+                  {link.label}
                 </Link>
               ))}
             </div>
@@ -160,16 +157,13 @@ export default function Navbar() {
                       key={link.label} 
                       href={link.href}
                       onClick={() => setIsOpen(false)}
+                      className={`${
+                        link.active 
+                          ? "bg-primary-50 text-primary-600" 
+                          : "text-neutral-600 hover:bg-neutral-50 hover:text-neutral-800"
+                      } block px-3 py-2 rounded-md text-base font-medium`}
                     >
-                      <a 
-                        className={`${
-                          link.active 
-                            ? "bg-primary-50 text-primary-600" 
-                            : "text-neutral-600 hover:bg-neutral-50 hover:text-neutral-800"
-                        } block px-3 py-2 rounded-md text-base font-medium`}
-                      >
-                        {link.label}
-                      </a>
+                      {link.label}
                     </Link>
                   ))}
                   
