@@ -30,8 +30,6 @@ export default function Navbar() {
   const [location] = useLocation();
   const [isOpen, setIsOpen] = useState(false);
 
-  if (!user) return null;
-
   const handleLogout = () => {
     logoutMutation.mutate();
   };
@@ -45,13 +43,18 @@ export default function Navbar() {
       .substring(0, 2);
   };
 
-  const navLinks = [
+  const navLinks = user ? [
     { href: "/", label: "Ana Sayfa", active: location === "/" },
     { href: "/reports", label: "Raporlar", active: location === "/reports" },
     { href: "/", label: "Şirketler", active: location.startsWith("/company") },
     { href: "/about", label: "Hakkımızda", active: location === "/about" },
     { href: "/how-it-works", label: "Nasıl Çalışır", active: location === "/how-it-works" },
     { href: "/contact", label: "İletişim", active: location === "/contact" },
+  ] : [
+    { href: "/about", label: "Hakkımızda", active: location === "/about" },
+    { href: "/how-it-works", label: "Nasıl Çalışır", active: location === "/how-it-works" },
+    { href: "/contact", label: "İletişim", active: location === "/contact" },
+    { href: "/auth", label: "Giriş Yap", active: location === "/auth" },
   ];
 
   return (
@@ -85,52 +88,62 @@ export default function Navbar() {
           </div>
           
           <div className="hidden sm:ml-6 sm:flex sm:items-center">
-            <div className="flex items-center space-x-4">
-              <span className="text-neutral-600 text-sm font-medium">
-                Bakiye: <strong>{formatCurrency(user.credits)}</strong>
-              </span>
-              
-              <Button variant="default" asChild>
-                <Link href="/credits">
-                  Bakiye Yükle
-                </Link>
-              </Button>
-              
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" className="rounded-full flex p-0 h-8 w-8">
-                    <span className="flex h-8 w-8 rounded-full bg-primary-100 text-primary-600 justify-center items-center">
-                      <span className="font-medium">{getInitials(user.username)}</span>
-                    </span>
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuLabel>Hesabım</DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem>
-                    <User className="mr-2 h-4 w-4" />
-                    <span>Profil</span>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem>
-                    <PlusCircle className="mr-2 h-4 w-4" />
-                    <span>Şirket Ekle</span>
-                  </DropdownMenuItem>
-                  {user.role === 'admin' && (
-                    <DropdownMenuItem asChild>
-                      <Link href="/admin">
-                        <UserCog className="mr-2 h-4 w-4" />
-                        <span>Admin Paneli</span>
-                      </Link>
+            {user ? (
+              <div className="flex items-center space-x-4">
+                <span className="text-neutral-600 text-sm font-medium">
+                  Bakiye: <strong>{formatCurrency(user.credits)}</strong>
+                </span>
+                
+                <Button variant="default" asChild>
+                  <Link href="/credits">
+                    Bakiye Yükle
+                  </Link>
+                </Button>
+                
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" className="rounded-full flex p-0 h-8 w-8">
+                      <span className="flex h-8 w-8 rounded-full bg-primary-100 text-primary-600 justify-center items-center">
+                        <span className="font-medium">{getInitials(user.username)}</span>
+                      </span>
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuLabel>Hesabım</DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem>
+                      <User className="mr-2 h-4 w-4" />
+                      <span>Profil</span>
                     </DropdownMenuItem>
-                  )}
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={handleLogout}>
-                    <LogOut className="mr-2 h-4 w-4" />
-                    <span>Çıkış Yap</span>
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
+                    <DropdownMenuItem>
+                      <PlusCircle className="mr-2 h-4 w-4" />
+                      <span>Şirket Ekle</span>
+                    </DropdownMenuItem>
+                    {user.role === 'admin' && (
+                      <DropdownMenuItem asChild>
+                        <Link href="/admin">
+                          <UserCog className="mr-2 h-4 w-4" />
+                          <span>Admin Paneli</span>
+                        </Link>
+                      </DropdownMenuItem>
+                    )}
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem onClick={handleLogout}>
+                      <LogOut className="mr-2 h-4 w-4" />
+                      <span>Çıkış Yap</span>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
+            ) : (
+              <div className="flex items-center space-x-4">
+                <Button variant="default" asChild>
+                  <Link href="/auth">
+                    Giriş Yap
+                  </Link>
+                </Button>
+              </div>
+            )}
           </div>
           
           <div className="-mr-2 flex items-center sm:hidden">
@@ -160,52 +173,64 @@ export default function Navbar() {
                     </Link>
                   ))}
                   
-                  <div className="pt-4 pb-3 border-t border-neutral-200">
-                    <div className="flex items-center px-4">
-                      <div className="flex-shrink-0">
-                        <span className="inline-flex h-10 w-10 rounded-full bg-primary-100 text-primary-600 justify-center items-center">
-                          <span className="font-medium">{getInitials(user.username)}</span>
-                        </span>
+                  {user ? (
+                    <div className="pt-4 pb-3 border-t border-neutral-200">
+                      <div className="flex items-center px-4">
+                        <div className="flex-shrink-0">
+                          <span className="inline-flex h-10 w-10 rounded-full bg-primary-100 text-primary-600 justify-center items-center">
+                            <span className="font-medium">{getInitials(user.username)}</span>
+                          </span>
+                        </div>
+                        <div className="ml-3">
+                          <div className="text-base font-medium text-neutral-800">{user.username}</div>
+                          <div className="text-sm font-medium text-neutral-500">{user.email}</div>
+                        </div>
                       </div>
-                      <div className="ml-3">
-                        <div className="text-base font-medium text-neutral-800">{user.username}</div>
-                        <div className="text-sm font-medium text-neutral-500">{user.email}</div>
-                      </div>
-                    </div>
-                    <div className="mt-3 px-2 space-y-1">
-                      <Link href="/profile">
-                        <a className="block px-3 py-2 rounded-md text-base font-medium text-neutral-600 hover:bg-neutral-50 hover:text-neutral-800">
-                          Profil
-                        </a>
-                      </Link>
-                      {user.role === 'admin' && (
-                        <Link href="/admin" onClick={() => setIsOpen(false)}>
+                      <div className="mt-3 px-2 space-y-1">
+                        <Link href="/profile">
                           <a className="block px-3 py-2 rounded-md text-base font-medium text-neutral-600 hover:bg-neutral-50 hover:text-neutral-800">
-                            <div className="flex items-center">
-                              <UserCog className="mr-2 h-4 w-4" />
-                              <span>Admin Paneli</span>
-                            </div>
+                            Profil
                           </a>
                         </Link>
-                      )}
-                      <div className="block px-3 py-2 rounded-md text-base font-medium text-neutral-600">
-                        Bakiye: <strong>{formatCurrency(user.credits)}</strong>
+                        {user.role === 'admin' && (
+                          <Link href="/admin" onClick={() => setIsOpen(false)}>
+                            <a className="block px-3 py-2 rounded-md text-base font-medium text-neutral-600 hover:bg-neutral-50 hover:text-neutral-800">
+                              <div className="flex items-center">
+                                <UserCog className="mr-2 h-4 w-4" />
+                                <span>Admin Paneli</span>
+                              </div>
+                            </a>
+                          </Link>
+                        )}
+                        <div className="block px-3 py-2 rounded-md text-base font-medium text-neutral-600">
+                          Bakiye: <strong>{formatCurrency(user.credits)}</strong>
+                        </div>
+                        <Button variant="default" className="w-full my-2" asChild>
+                          <Link href="/credits">
+                            Bakiye Yükle
+                          </Link>
+                        </Button>
+                        <Button 
+                          variant="ghost" 
+                          className="w-full flex items-center justify-center" 
+                          onClick={handleLogout}
+                        >
+                          <LogOut className="mr-2 h-4 w-4" />
+                          <span>Çıkış Yap</span>
+                        </Button>
                       </div>
-                      <Button variant="default" className="w-full my-2" asChild>
-                        <Link href="/credits">
-                          Bakiye Yükle
-                        </Link>
-                      </Button>
-                      <Button 
-                        variant="ghost" 
-                        className="w-full flex items-center justify-center" 
-                        onClick={handleLogout}
-                      >
-                        <LogOut className="mr-2 h-4 w-4" />
-                        <span>Çıkış Yap</span>
-                      </Button>
                     </div>
-                  </div>
+                  ) : (
+                    <div className="pt-4 pb-3 border-t border-neutral-200">
+                      <div className="px-2 space-y-1">
+                        <Button variant="default" className="w-full" asChild>
+                          <Link href="/auth" onClick={() => setIsOpen(false)}>
+                            Giriş Yap
+                          </Link>
+                        </Button>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </SheetContent>
             </Sheet>
