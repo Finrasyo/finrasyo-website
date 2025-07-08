@@ -1,4 +1,4 @@
-import { Switch, Route } from "wouter";
+import { Router, Switch, Route } from "wouter";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/not-found";
@@ -25,9 +25,10 @@ import { ThemeProvider } from "next-themes";
 import { AuthProvider } from "./hooks/use-auth";
 import { FinancialDataProvider } from "./hooks/use-financial-data";
 
-function Router() {
+function AppRouter() {
   return (
-    <Switch>
+    <Router>
+      <Switch>
       <ProtectedRoute path="/" component={HomePage} />
       <ProtectedRoute path="/company/new" component={CompanyNewPage} />
       <ProtectedRoute path="/company/:id" component={CompanyPage} />
@@ -46,8 +47,9 @@ function Router() {
       <Route path="/how-it-works" component={HowItWorksPage} />
       <Route path="/contact" component={ContactPage} />
       <Route path="/fetch-bist-companies" component={FetchBistCompaniesPage} />
-      <Route component={NotFound} />
-    </Switch>
+      <Route path="/*?" component={NotFound} />
+      </Switch>
+    </Router>
   );
 }
 
@@ -58,7 +60,7 @@ function App() {
         <AuthProvider>
           <FinancialDataProvider>
             <Toaster />
-            <Router />
+            <AppRouter />
           </FinancialDataProvider>
         </AuthProvider>
       </TooltipProvider>
