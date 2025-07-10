@@ -33,7 +33,22 @@ export default function HomePage() {
   
   return (
     <div className="flex flex-col min-h-screen">
-      <Navbar />
+      {/* Temporary Simple Navbar */}
+      <nav className="bg-white shadow-sm sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between h-16 items-center">
+            <div className="flex items-center">
+              <span className="text-primary font-bold text-xl">FinRasyo</span>
+            </div>
+            <div className="flex space-x-4">
+              <a href="/about" className="text-neutral-600 hover:text-neutral-800 px-3 py-2">Hakkımızda</a>
+              <a href="/how-it-works" className="text-neutral-600 hover:text-neutral-800 px-3 py-2">Nasıl Çalışır</a>
+              <a href="/contact" className="text-neutral-600 hover:text-neutral-800 px-3 py-2">İletişim</a>
+              <a href="/auth" className="bg-primary text-white px-4 py-2 rounded">Giriş Yap</a>
+            </div>
+          </div>
+        </div>
+      </nav>
       
       <main className="flex-grow">
         {/* Hero Section */}
