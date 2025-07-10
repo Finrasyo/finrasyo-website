@@ -104,10 +104,10 @@ export default function HomePage() {
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div className="max-w-4xl mx-auto text-center">
               <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight mb-6 bg-gradient-to-br from-primary to-primary-600 bg-clip-text text-transparent">
-                FinRasyo
+                FinRasyo v2.0
               </h1>
               <p className="text-xl sm:text-2xl text-neutral-600 mb-10">
-                Finansal Analiz Kolaylaştı
+                Finansal Analiz Kolaylaştı - UPDATED: {new Date().toLocaleTimeString()}
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
                 <Button size="lg" onClick={goToNewAnalysis}>
@@ -120,27 +120,28 @@ export default function HomePage() {
                 </Button>
               </div>
               
-              {/* EMERGENCY NAVIGATION TEST */}
-              <div className="bg-red-100 border border-red-400 rounded-lg p-4 max-w-md mx-auto">
-                <h3 className="font-bold text-red-800 mb-2">🚨 Navigation Test</h3>
-                <div className="flex flex-wrap gap-2 justify-center">
+              {/* EMERGENCY NAVIGATION TEST - CACHE BUSTER */}
+              <div className="bg-red-100 border-4 border-red-600 rounded-lg p-6 max-w-md mx-auto shadow-lg">
+                <h3 className="font-bold text-red-800 mb-4 text-lg">🚨 NAVIGATION TEST v2.0</h3>
+                <p className="text-red-700 mb-4 text-sm">Test: {new Date().toLocaleTimeString()}</p>
+                <div className="flex flex-wrap gap-3 justify-center">
                   <button 
                     onClick={() => forceNavigate('/about')}
-                    className="bg-red-500 text-white px-3 py-1 rounded text-sm hover:bg-red-600"
+                    className="bg-red-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-red-700 font-bold"
                   >
-                    Test About
+                    TEST ABOUT
                   </button>
                   <button 
                     onClick={() => forceNavigate('/contact')}
-                    className="bg-blue-500 text-white px-3 py-1 rounded text-sm hover:bg-blue-600"
+                    className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-blue-700 font-bold"
                   >
-                    Test Contact
+                    TEST CONTACT
                   </button>
                   <button 
-                    onClick={() => alert('Alert test çalışıyor!')}
-                    className="bg-green-500 text-white px-3 py-1 rounded text-sm hover:bg-green-600"
+                    onClick={() => alert('JavaScript çalışıyor! ' + new Date().toLocaleTimeString())}
+                    className="bg-green-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-green-700 font-bold"
                   >
-                    Test Alert
+                    TEST ALERT
                   </button>
                 </div>
               </div>
