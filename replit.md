@@ -107,7 +107,18 @@ The application follows a monorepo pattern with shared types and schemas:
 
 ## Changelog
 - June 23, 2025. Initial setup
+- July 10, 2025. Fixed Router structure and SSL certificate issues
+- July 10, 2025. **CRITICAL ISSUE**: Navbar navigation completely broken - neither HTML links nor JavaScript buttons work on production. Local development works fine. Issue likely related to Cloudflare proxy or deployment environment.
 
 ## User Preferences
 
 Preferred communication style: Simple, everyday language.
+
+## Known Issues
+
+**Navigation Problem (July 10, 2025)**
+- All navigation methods fail on production (www.finrasyo.com)
+- Direct URL access works perfectly
+- Neither HTML <a> tags nor JavaScript buttons trigger
+- Local development environment works normally
+- Likely solution: Redeploy to refresh proxy/CDN cache

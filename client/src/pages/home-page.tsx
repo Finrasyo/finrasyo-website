@@ -41,10 +41,10 @@ export default function HomePage() {
               <span className="text-primary font-bold text-xl">FinRasyo</span>
             </div>
             <div className="flex space-x-4">
-              <a href="/about" className="text-neutral-600 hover:text-neutral-800 px-3 py-2">Hakkımızda</a>
-              <a href="/how-it-works" className="text-neutral-600 hover:text-neutral-800 px-3 py-2">Nasıl Çalışır</a>
-              <a href="/contact" className="text-neutral-600 hover:text-neutral-800 px-3 py-2">İletişim</a>
-              <a href="/auth" className="bg-primary text-white px-4 py-2 rounded">Giriş Yap</a>
+              <button onClick={() => window.open('/about', '_self')} className="text-neutral-600 hover:text-neutral-800 px-3 py-2 bg-transparent border-0 cursor-pointer">Hakkımızda</button>
+              <button onClick={() => window.open('/how-it-works', '_self')} className="text-neutral-600 hover:text-neutral-800 px-3 py-2 bg-transparent border-0 cursor-pointer">Nasıl Çalışır</button>
+              <button onClick={() => window.open('/contact', '_self')} className="text-neutral-600 hover:text-neutral-800 px-3 py-2 bg-transparent border-0 cursor-pointer">İletişim</button>
+              <button onClick={() => window.open('/auth', '_self')} className="bg-primary text-white px-4 py-2 rounded border-0 cursor-pointer">Giriş Yap</button>
             </div>
           </div>
         </div>
