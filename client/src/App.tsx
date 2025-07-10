@@ -21,6 +21,7 @@ import CompanyAnalysisPage from "@/pages/company-analysis";
 import FetchBistCompaniesPage from "@/pages/fetch-bist-companies";
 import DebugPage from "@/pages/debug-page";
 import SimpleTest from "@/pages/simple-test";
+import EmergencyTest from "@/pages/emergency-test";
 
 import { ProtectedRoute } from "./lib/protected-route";
 import { ThemeProvider } from "next-themes";
@@ -31,7 +32,7 @@ function AppRouter() {
   return (
     <Router>
       <Switch>
-      <ProtectedRoute path="/" component={HomePage} />
+      <Route path="/" component={HomePage} />
       <ProtectedRoute path="/company/new" component={CompanyNewPage} />
       <ProtectedRoute path="/company/:id" component={CompanyPage} />
       <ProtectedRoute path="/analysis/:id" component={AnalysisPage} />
@@ -51,6 +52,7 @@ function AppRouter() {
       <Route path="/fetch-bist-companies" component={FetchBistCompaniesPage} />
       <Route path="/debug" component={DebugPage} />
       <Route path="/simple-test" component={SimpleTest} />
+      <Route path="/emergency-test" component={EmergencyTest} />
       <Route path="/*?" component={NotFound} />
       </Switch>
     </Router>
