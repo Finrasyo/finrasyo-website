@@ -59,39 +59,11 @@ export default function HomePage() {
               <span className="text-primary font-bold text-xl">FinRasyo</span>
             </div>
             <div className="flex space-x-4">
-              <div 
-                data-nav="/about" 
-                className="text-neutral-600 hover:text-neutral-800 px-3 py-2 cursor-pointer select-none nav-link"
-                style={{ userSelect: 'none', border: '1px solid red' }}
-                onClick={(e) => {
-                  console.log('Direct onClick triggered for About');
-                  e.preventDefault();
-                  window.location.href = '/about';
-                }}
-              >
-                Hakkımızda
-              </div>
-              <div 
-                data-nav="/how-it-works" 
-                className="text-neutral-600 hover:text-neutral-800 px-3 py-2 cursor-pointer select-none"
-                style={{ userSelect: 'none' }}
-              >
-                Nasıl Çalışır
-              </div>
-              <div 
-                data-nav="/contact" 
-                className="text-neutral-600 hover:text-neutral-800 px-3 py-2 cursor-pointer select-none"
-                style={{ userSelect: 'none' }}
-              >
-                İletişim
-              </div>
-              <div 
-                data-nav="/auth" 
-                className="bg-primary text-white px-4 py-2 rounded cursor-pointer select-none"
-                style={{ userSelect: 'none' }}
-              >
-                Giriş Yap
-              </div>
+              <a href="/about" className="text-neutral-600 hover:text-neutral-800 px-3 py-2">Hakkımızda</a>
+              <a href="/how-it-works" className="text-neutral-600 hover:text-neutral-800 px-3 py-2">Nasıl Çalışır</a>
+              <a href="/contact" className="text-neutral-600 hover:text-neutral-800 px-3 py-2">İletişim</a>
+              <a href="/auth" className="bg-primary text-white px-4 py-2 rounded">Giriş Yap</a>
+              <a href="/test.html" className="bg-red-500 text-white px-4 py-2 rounded ml-4">TEST</a>
             </div>
           </div>
         </div>

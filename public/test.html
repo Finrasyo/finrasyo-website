@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Static Test Page</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            padding: 20px; 
+            line-height: 1.6;
+        }
+        .test-button { 
+            padding: 15px 25px; 
+            margin: 10px; 
+            cursor: pointer; 
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        .red { background: #dc3545; color: white; }
+        .blue { background: #007bff; color: white; }
+        .green { background: #28a745; color: white; }
+        .nav-link {
+            color: #007bff;
+            text-decoration: underline;
+            cursor: pointer;
+            margin: 10px 0;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <h1>Static Navigation Test</h1>
+    <p>Bu sayfa static HTML dosyasıdır ve React'tan bağımsız çalışır.</p>
+    
+    <div>
+        <h2>Test 1: JavaScript Alert</h2>
+        <button class="test-button red" onclick="testAlert()">
+            Alert Test
+        </button>
+    </div>
+    
+    <div>
+        <h2>Test 2: Console Log</h2>
+        <button class="test-button blue" onclick="testConsole()">
+            Console Test
+        </button>
+    </div>
+    
+    <div>
+        <h2>Test 3: Navigation Test</h2>
+        <button class="test-button green" onclick="testNavigation()">
+            Navigate to About
+        </button>
+    </div>
+    
+    <div>
+        <h2>Test 4: Direct HTML Links</h2>
+        <a href="/about" class="nav-link">Direct Link to About</a>
+        <a href="/contact" class="nav-link">Direct Link to Contact</a>
+        <a href="/how-it-works" class="nav-link">Direct Link to How It Works</a>
+    </div>
+    
+    <div>
+        <h2>Current Page Info</h2>
+        <p>URL: <span id="current-url"></span></p>
+        <p>User Agent: <span id="user-agent"></span></p>
+    </div>
+
+    <script>
+        function testAlert() {
+            alert('JavaScript çalışıyor!');
+            console.log('Alert test clicked');
+        }
+        
+        function testConsole() {
+            console.log('Console test - JavaScript events çalışıyor');
+            console.log('Current time:', new Date().toLocaleString());
+        }
+        
+        function testNavigation() {
+            console.log('Navigation test başlatılıyor...');
+            window.location.href = '/about';
+        }
+        
+        // Page load info
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('current-url').textContent = window.location.href;
+            document.getElementById('user-agent').textContent = navigator.userAgent;
+            console.log('Static test page loaded successfully');
+        });
+        
+        // Global click listener
+        document.addEventListener('click', function(e) {
+            console.log('Click detected:', e.target.tagName, e.target.textContent || e.target.value);
+        });
+    </script>
+</body>
+</html>
