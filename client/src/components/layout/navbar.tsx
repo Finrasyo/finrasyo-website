@@ -1,6 +1,6 @@
 import { useAuth } from "@/hooks/use-auth";
 import { Button } from "@/components/ui/button";
-import { Link, useLocation } from "wouter";
+import { Link, useLocation, useRouter } from "wouter";
 import { 
   Menu, 
   User, 
@@ -28,6 +28,7 @@ import { useState } from "react";
 export default function Navbar() {
   const { user, logoutMutation } = useAuth();
   const [location] = useLocation();
+  const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
 
   const handleLogout = () => {
@@ -69,17 +70,21 @@ export default function Navbar() {
             </div>
             <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
               {navLinks.map((link) => (
-                <Link 
+                <span 
                   key={link.label} 
-                  href={link.href}
                   className={`${
                     link.active 
                       ? "border-primary text-neutral-800 border-b-2" 
                       : "border-transparent text-neutral-600 hover:border-neutral-300 hover:text-neutral-800 border-b-2"
                   } inline-flex items-center px-1 pt-1 text-sm font-medium cursor-pointer no-underline`}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    console.log('Link clicked:', link.href);
+                    router.navigate(link.href);
+                  }}
                 >
                   {link.label}
-                </Link>
+                </span>
               ))}
             </div>
           </div>
@@ -153,18 +158,21 @@ export default function Navbar() {
               <SheetContent side="right">
                 <div className="px-2 pt-2 pb-3 space-y-1">
                   {navLinks.map((link) => (
-                    <Link 
+                    <span 
                       key={link.label} 
-                      href={link.href}
-                      onClick={() => setIsOpen(false)}
                       className={`${
                         link.active 
                           ? "bg-primary-50 text-primary-600" 
                           : "text-neutral-600 hover:bg-neutral-50 hover:text-neutral-800"
                       } block px-3 py-2 rounded-md text-base font-medium cursor-pointer no-underline`}
+                      onClick={() => {
+                        console.log('Mobile link clicked:', link.href);
+                        setIsOpen(false);
+                        router.navigate(link.href);
+                      }}
                     >
                       {link.label}
-                    </Link>
+                    </span>
                   ))}
                   
                   {user ? (

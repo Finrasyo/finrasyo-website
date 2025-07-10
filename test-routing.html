@@ -4,9 +4,19 @@
     <title>Test Routing</title>
 </head>
 <body>
-    <h1>Test</h1>
-    <a href="/about">About</a>
-    <a href="/how-it-works">How It Works</a>
-    <a href="/contact">Contact</a>
+    <h1>Test Navigation</h1>
+    <div>
+        <a href="/">Ana Sayfa</a> |
+        <a href="/about">Hakkımızda</a> |
+        <a href="/how-it-works">Nasıl Çalışır</a> |
+        <a href="/contact">İletişim</a>
+    </div>
+    
+    <script>
+        // Test click handler
+        document.addEventListener('click', function(e) {
+            console.log('Click event:', e.target, e.target.href);
+        });
+    </script>
 </body>
 </html>
