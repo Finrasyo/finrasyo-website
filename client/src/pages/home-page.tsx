@@ -30,18 +30,23 @@ export default function HomePage() {
       });
     }
     
-    // Test event delegation for navigation
-    const handleNavClick = (e: any) => {
+    // Global click test
+    const testGlobalClick = (e: any) => {
+      console.log('Global click detected:', e.target.tagName, e.target.className);
       if (e.target.dataset.nav) {
-        e.preventDefault();
-        const href = e.target.dataset.nav;
-        console.log('Navigation triggered:', href);
-        window.location.href = href;
+        console.log('Navigation data found:', e.target.dataset.nav);
+        window.location.href = e.target.dataset.nav;
       }
     };
     
-    document.addEventListener('click', handleNavClick);
-    return () => document.removeEventListener('click', handleNavClick);
+    document.addEventListener('click', testGlobalClick);
+    
+    // Also test with timeout
+    setTimeout(() => {
+      console.log('HomePage mounted and ready');
+    }, 1000);
+    
+    return () => document.removeEventListener('click', testGlobalClick);
   }, []);
   
   return (
@@ -56,8 +61,13 @@ export default function HomePage() {
             <div className="flex space-x-4">
               <div 
                 data-nav="/about" 
-                className="text-neutral-600 hover:text-neutral-800 px-3 py-2 cursor-pointer select-none"
-                style={{ userSelect: 'none' }}
+                className="text-neutral-600 hover:text-neutral-800 px-3 py-2 cursor-pointer select-none nav-link"
+                style={{ userSelect: 'none', border: '1px solid red' }}
+                onClick={(e) => {
+                  console.log('Direct onClick triggered for About');
+                  e.preventDefault();
+                  window.location.href = '/about';
+                }}
               >
                 Hakkımızda
               </div>
