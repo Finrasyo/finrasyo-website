@@ -29,6 +29,19 @@ export default function HomePage() {
         description: `${user.username}, FinRasyo platformuna hoş geldiniz.`,
       });
     }
+    
+    // Test event delegation for navigation
+    const handleNavClick = (e: any) => {
+      if (e.target.dataset.nav) {
+        e.preventDefault();
+        const href = e.target.dataset.nav;
+        console.log('Navigation triggered:', href);
+        window.location.href = href;
+      }
+    };
+    
+    document.addEventListener('click', handleNavClick);
+    return () => document.removeEventListener('click', handleNavClick);
   }, []);
   
   return (
@@ -41,10 +54,34 @@ export default function HomePage() {
               <span className="text-primary font-bold text-xl">FinRasyo</span>
             </div>
             <div className="flex space-x-4">
-              <button onClick={() => window.open('/about', '_self')} className="text-neutral-600 hover:text-neutral-800 px-3 py-2 bg-transparent border-0 cursor-pointer">Hakkımızda</button>
-              <button onClick={() => window.open('/how-it-works', '_self')} className="text-neutral-600 hover:text-neutral-800 px-3 py-2 bg-transparent border-0 cursor-pointer">Nasıl Çalışır</button>
-              <button onClick={() => window.open('/contact', '_self')} className="text-neutral-600 hover:text-neutral-800 px-3 py-2 bg-transparent border-0 cursor-pointer">İletişim</button>
-              <button onClick={() => window.open('/auth', '_self')} className="bg-primary text-white px-4 py-2 rounded border-0 cursor-pointer">Giriş Yap</button>
+              <div 
+                data-nav="/about" 
+                className="text-neutral-600 hover:text-neutral-800 px-3 py-2 cursor-pointer select-none"
+                style={{ userSelect: 'none' }}
+              >
+                Hakkımızda
+              </div>
+              <div 
+                data-nav="/how-it-works" 
+                className="text-neutral-600 hover:text-neutral-800 px-3 py-2 cursor-pointer select-none"
+                style={{ userSelect: 'none' }}
+              >
+                Nasıl Çalışır
+              </div>
+              <div 
+                data-nav="/contact" 
+                className="text-neutral-600 hover:text-neutral-800 px-3 py-2 cursor-pointer select-none"
+                style={{ userSelect: 'none' }}
+              >
+                İletişim
+              </div>
+              <div 
+                data-nav="/auth" 
+                className="bg-primary text-white px-4 py-2 rounded cursor-pointer select-none"
+                style={{ userSelect: 'none' }}
+              >
+                Giriş Yap
+              </div>
             </div>
           </div>
         </div>
