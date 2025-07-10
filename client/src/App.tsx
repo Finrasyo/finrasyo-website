@@ -19,6 +19,7 @@ import ContactPage from "@/pages/contact-page";
 import AdminPage from "@/pages/admin-page";
 import CompanyAnalysisPage from "@/pages/company-analysis";
 import FetchBistCompaniesPage from "@/pages/fetch-bist-companies";
+import DebugPage from "@/pages/debug-page";
 
 import { ProtectedRoute } from "./lib/protected-route";
 import { ThemeProvider } from "next-themes";
@@ -47,6 +48,7 @@ function AppRouter() {
       <Route path="/how-it-works" component={HowItWorksPage} />
       <Route path="/contact" component={ContactPage} />
       <Route path="/fetch-bist-companies" component={FetchBistCompaniesPage} />
+      <Route path="/debug" component={DebugPage} />
       <Route path="/*?" component={NotFound} />
       </Switch>
     </Router>
