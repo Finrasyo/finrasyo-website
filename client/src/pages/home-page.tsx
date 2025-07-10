@@ -49,21 +49,50 @@ export default function HomePage() {
     return () => document.removeEventListener('click', testGlobalClick);
   }, []);
   
+  // Emergency navigation fix
+  const forceNavigate = (url: string) => {
+    window.location.replace(url);
+  };
+
   return (
     <div className="flex flex-col min-h-screen">
-      {/* Temporary Simple Navbar */}
+      {/* Emergency Navigation Navbar */}
       <nav className="bg-white shadow-sm sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16 items-center">
             <div className="flex items-center">
-              <span className="text-primary font-bold text-xl">FinRasyo</span>
+              <span 
+                className="text-primary font-bold text-xl cursor-pointer"
+                onClick={() => forceNavigate('/')}
+              >
+                FinRasyo
+              </span>
             </div>
             <div className="flex space-x-4">
-              <a href="/about" className="text-neutral-600 hover:text-neutral-800 px-3 py-2">Hakkımızda</a>
-              <a href="/how-it-works" className="text-neutral-600 hover:text-neutral-800 px-3 py-2">Nasıl Çalışır</a>
-              <a href="/contact" className="text-neutral-600 hover:text-neutral-800 px-3 py-2">İletişim</a>
-              <a href="/auth" className="bg-primary text-white px-4 py-2 rounded">Giriş Yap</a>
-              <a href="/test.html" className="bg-red-500 text-white px-4 py-2 rounded ml-4">TEST</a>
+              <button 
+                onClick={() => forceNavigate('/about')}
+                className="text-neutral-600 hover:text-neutral-800 px-3 py-2 border-0 bg-transparent cursor-pointer"
+              >
+                Hakkımızda
+              </button>
+              <button 
+                onClick={() => forceNavigate('/how-it-works')}
+                className="text-neutral-600 hover:text-neutral-800 px-3 py-2 border-0 bg-transparent cursor-pointer"
+              >
+                Nasıl Çalışır
+              </button>
+              <button 
+                onClick={() => forceNavigate('/contact')}
+                className="text-neutral-600 hover:text-neutral-800 px-3 py-2 border-0 bg-transparent cursor-pointer"
+              >
+                İletişim
+              </button>
+              <button 
+                onClick={() => forceNavigate('/auth')}
+                className="bg-primary text-white px-4 py-2 rounded border-0 cursor-pointer"
+              >
+                Giriş Yap
+              </button>
             </div>
           </div>
         </div>
@@ -80,7 +109,7 @@ export default function HomePage() {
               <p className="text-xl sm:text-2xl text-neutral-600 mb-10">
                 Finansal Analiz Kolaylaştı
               </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
                 <Button size="lg" onClick={goToNewAnalysis}>
                   <BarChart3 className="mr-2 h-5 w-5" />
                   Hemen Analiz Yap
@@ -89,6 +118,31 @@ export default function HomePage() {
                   <FileUp className="mr-2 h-5 w-5" />
                   Şirket Ekle
                 </Button>
+              </div>
+              
+              {/* EMERGENCY NAVIGATION TEST */}
+              <div className="bg-red-100 border border-red-400 rounded-lg p-4 max-w-md mx-auto">
+                <h3 className="font-bold text-red-800 mb-2">🚨 Navigation Test</h3>
+                <div className="flex flex-wrap gap-2 justify-center">
+                  <button 
+                    onClick={() => forceNavigate('/about')}
+                    className="bg-red-500 text-white px-3 py-1 rounded text-sm hover:bg-red-600"
+                  >
+                    Test About
+                  </button>
+                  <button 
+                    onClick={() => forceNavigate('/contact')}
+                    className="bg-blue-500 text-white px-3 py-1 rounded text-sm hover:bg-blue-600"
+                  >
+                    Test Contact
+                  </button>
+                  <button 
+                    onClick={() => alert('Alert test çalışıyor!')}
+                    className="bg-green-500 text-white px-3 py-1 rounded text-sm hover:bg-green-600"
+                  >
+                    Test Alert
+                  </button>
+                </div>
               </div>
             </div>
           </div>

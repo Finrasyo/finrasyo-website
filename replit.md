@@ -116,9 +116,13 @@ Preferred communication style: Simple, everyday language.
 
 ## Known Issues
 
-**Navigation Problem (July 10, 2025)**
-- All navigation methods fail on production (www.finrasyo.com)
-- Direct URL access works perfectly
-- Neither HTML <a> tags nor JavaScript buttons trigger
-- Local development environment works normally
-- Likely solution: Redeploy to refresh proxy/CDN cache
+**CRITICAL Navigation Problem (July 10, 2025)**
+- ALL navigation methods completely broken on production
+- Direct URL access works, but NO clicking works
+- HTML <a> tags fail
+- JavaScript buttons fail  
+- React Link components fail
+- Even static HTML files fail
+- Problem persists after redeploy
+- Issue appears to be deep infrastructure/proxy level
+- **Current solution attempt**: Using window.location.replace() for forced navigation
