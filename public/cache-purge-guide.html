@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cache Temizleme Rehberi - FinRasyo</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+            line-height: 1.6;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #ff6b35;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .step {
+            background: #fff3e0;
+            border-left: 5px solid #ff9800;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        .step h3 {
+            color: #e65100;
+            margin-top: 0;
+            margin-bottom: 15px;
+        }
+        .step-number {
+            background: #ff9800;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        .menu-path {
+            background: #f5f5f5;
+            border: 1px solid #ddd;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: monospace;
+            font-size: 14px;
+            margin: 10px 0;
+        }
+        .important {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+        }
+        .success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+            color: #155724;
+        }
+        .alternative {
+            background: #e3f2fd;
+            border: 1px solid #90caf9;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+        }
+        .screenshot {
+            background: #f8f9fa;
+            border: 2px dashed #dee2e6;
+            padding: 20px;
+            text-align: center;
+            margin: 15px 0;
+            border-radius: 5px;
+            color: #6c757d;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧹 Cache Temizleme Rehberi</h1>
+        
+        <div class="important">
+            <strong>🎯 Amaç:</strong> Page Rule aktif olduktan sonra cache temizleyerek değişikliklerin hemen etkili olmasını sağlamak.
+        </div>
+
+        <div class="step">
+            <h3><span class="step-number">1</span>Caching Menüsünü Bulma</h3>
+            <p>Cloudflare Dashboard'da sol menüden <strong>Caching</strong> sekmesini arayın</p>
+            <div class="menu-path">
+Sol menü → Caching
+            </div>
+            <div class="screenshot">
+                [ Caching menüsü genellikle Speed'in altında yer alır ]
+            </div>
+        </div>
+
+        <div class="step">
+            <h3><span class="step-number">2</span>Configuration Alt Menüsü</h3>
+            <p>Caching'e tıkladıktan sonra <strong>Configuration</strong> alt menüsünü seçin</p>
+            <div class="menu-path">
+Caching → Configuration
+            </div>
+            <p>Bu sayfada cache ayarları ve temizleme seçenekleri bulunur</p>
+        </div>
+
+        <div class="step">
+            <h3><span class="step-number">3</span>Purge Everything Butonu</h3>
+            <p>Sayfada <strong>Purge Everything</strong> butonunu bulun</p>
+            <div class="important">
+                <strong>Konum:</strong> Genellikle sayfanın üst kısmında, mavi veya turuncu renkte bir buton
+            </div>
+            <div class="screenshot">
+                [ Purge Everything - Tüm cache'i temizler ]
+            </div>
+        </div>
+
+        <div class="step">
+            <h3><span class="step-number">4</span>Cache Temizleme</h3>
+            <p>Purge Everything butonuna tıklayın ve onaylayın</p>
+            <div class="success">
+                ✅ "Cache purged successfully" mesajı görünecek
+            </div>
+            <p>İşlem 30 saniye sürer</p>
+        </div>
+
+        <div class="alternative">
+            <h3>🔄 Alternatif Yöntemler</h3>
+            <p>Purge Everything butonunu bulamazsanız:</p>
+            <ol>
+                <li><strong>Quick Actions:</strong> Dashboard'da Quick Actions bölümünde</li>
+                <li><strong>Overview:</strong> Ana sayfada sağ üst köşede</li>
+                <li><strong>Custom Purge:</strong> Purge Custom Files seçeneği</li>
+                <li><strong>Development Mode:</strong> Geçici olarak açabilirsiniz</li>
+            </ol>
+        </div>
+
+        <div class="step">
+            <h3><span class="step-number">5</span>Development Mode Alternatifi</h3>
+            <p>Cache temizleme butonunu bulamazsanız:</p>
+            <div class="menu-path">
+Overview → Development Mode → ON
+            </div>
+            <p>Bu 3 saat boyunca tüm cache'i bypass eder</p>
+        </div>
+
+        <div class="important">
+            <h3>⏱️ Bekleme Süresi</h3>
+            <p>Cache temizledikten sonra:</p>
+            <ul>
+                <li>5 dakika bekleyin (global propagation)</li>
+                <li>Sayfayı yenileyin (Ctrl+F5)</li>
+                <li>Navigation linklerini test edin</li>
+            </ul>
+        </div>
+
+        <div class="success">
+            <h3>🎉 Başarı Beklentisi</h3>
+            <p>Cache temizlendikten sonra:</p>
+            <ul>
+                <li>✅ Page Rule etkili olacak</li>
+                <li>✅ JavaScript navigation çalışacak</li>
+                <li>✅ Site normal hızda olacak</li>
+            </ul>
+        </div>
+
+        <div class="step">
+            <h3><span class="step-number">6</span>Son Kontrol</h3>
+            <p>5 dakika sonra aşağıdaki linkleri test edin:</p>
+            <ul>
+                <li>Ana sayfa linklerini tıklayın</li>
+                <li>Navbar menülerini test edin</li>
+                <li>JavaScript butonlarını kontrol edin</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

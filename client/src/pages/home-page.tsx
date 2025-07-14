@@ -154,10 +154,10 @@ export default function HomePage() {
                 <div className="mt-4 text-center">
                   <div className="flex flex-wrap gap-2 justify-center">
                     <a 
-                      href="/page-rule-additional-settings.html"
+                      href="/cache-purge-guide.html"
                       className="text-red-600 hover:text-red-800 text-sm font-medium"
                     >
-                      ⚙️ Ek Ayarlar
+                      🧹 Cache Temizleme
                     </a>
                     <a 
                       href="/meta-refresh-test.html"
