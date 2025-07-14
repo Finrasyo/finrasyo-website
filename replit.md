@@ -116,13 +116,12 @@ Preferred communication style: Simple, everyday language.
 
 ## Known Issues
 
-**CRITICAL Navigation Problem (July 10, 2025)**
-- ALL navigation methods completely broken on production
-- Direct URL access works, but NO clicking works
-- HTML <a> tags fail
-- JavaScript buttons fail  
+**CRITICAL Navigation Problem (July 14, 2025)**
+- Cloudflare proxy blocking JavaScript click events on production
+- Direct URL access works perfectly
+- JavaScript buttons completely fail
 - React Link components fail
-- Even static HTML files fail
-- Problem persists after redeploy
-- Issue appears to be deep infrastructure/proxy level
-- **Current solution attempt**: Using window.location.replace() for forced navigation
+- **ROOT CAUSE**: Cloudflare proxy configuration blocking JavaScript navigation
+- **SOLUTION IMPLEMENTED**: Replaced all JavaScript navigation with HTML <a> tags
+- **WORKAROUND**: Created emergency navigation page at /emergency-nav.html
+- **STATUS**: Testing HTML-based navigation system

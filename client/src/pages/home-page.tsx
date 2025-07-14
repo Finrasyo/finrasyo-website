@@ -69,30 +69,30 @@ export default function HomePage() {
               </span>
             </div>
             <div className="flex space-x-4">
-              <button 
-                onClick={() => forceNavigate('/about')}
-                className="text-neutral-600 hover:text-neutral-800 px-3 py-2 border-0 bg-transparent cursor-pointer"
+              <a 
+                href="/about"
+                className="text-neutral-600 hover:text-neutral-800 px-3 py-2 no-underline"
               >
                 Hakkımızda
-              </button>
-              <button 
-                onClick={() => forceNavigate('/how-it-works')}
-                className="text-neutral-600 hover:text-neutral-800 px-3 py-2 border-0 bg-transparent cursor-pointer"
+              </a>
+              <a 
+                href="/how-it-works"
+                className="text-neutral-600 hover:text-neutral-800 px-3 py-2 no-underline"
               >
                 Nasıl Çalışır
-              </button>
-              <button 
-                onClick={() => forceNavigate('/contact')}
-                className="text-neutral-600 hover:text-neutral-800 px-3 py-2 border-0 bg-transparent cursor-pointer"
+              </a>
+              <a 
+                href="/contact"
+                className="text-neutral-600 hover:text-neutral-800 px-3 py-2 no-underline"
               >
                 İletişim
-              </button>
-              <button 
-                onClick={() => forceNavigate('/auth')}
-                className="bg-primary text-white px-4 py-2 rounded border-0 cursor-pointer"
+              </a>
+              <a 
+                href="/auth"
+                className="bg-primary text-white px-4 py-2 rounded no-underline hover:bg-primary-dark"
               >
                 Giriş Yap
-              </button>
+              </a>
             </div>
           </div>
         </div>
@@ -104,10 +104,13 @@ export default function HomePage() {
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div className="max-w-4xl mx-auto text-center">
               <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight mb-6 bg-gradient-to-br from-primary to-primary-600 bg-clip-text text-transparent">
-                FinRasyo v2.0
+                FinRasyo v3.0
               </h1>
-              <p className="text-xl sm:text-2xl text-neutral-600 mb-10">
-                Finansal Analiz Kolaylaştı - UPDATED: {new Date().toLocaleTimeString()}
+              <p className="text-xl sm:text-2xl text-neutral-600 mb-6">
+                Finansal Analiz Kolaylaştı
+              </p>
+              <p className="text-sm text-red-600 mb-8 font-semibold">
+                Cloudflare Navigation Fix Applied - {new Date().toLocaleTimeString()}
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
                 <Button size="lg" onClick={goToNewAnalysis}>
@@ -120,29 +123,35 @@ export default function HomePage() {
                 </Button>
               </div>
               
-              {/* EMERGENCY NAVIGATION TEST - CACHE BUSTER */}
+              {/* EMERGENCY NAVIGATION - CLOUDFLARE WORKAROUND */}
               <div className="bg-red-100 border-4 border-red-600 rounded-lg p-6 max-w-md mx-auto shadow-lg">
-                <h3 className="font-bold text-red-800 mb-4 text-lg">🚨 NAVIGATION TEST v2.0</h3>
-                <p className="text-red-700 mb-4 text-sm">Test: {new Date().toLocaleTimeString()}</p>
+                <h3 className="font-bold text-red-800 mb-4 text-lg">🚨 NAVIGATION EMERGENCY</h3>
+                <p className="text-red-700 mb-4 text-sm">Cloudflare proxy blocking clicks</p>
                 <div className="flex flex-wrap gap-3 justify-center">
-                  <button 
-                    onClick={() => forceNavigate('/about')}
-                    className="bg-red-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-red-700 font-bold"
+                  <a 
+                    href="/about"
+                    className="bg-red-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-red-700 font-bold inline-block"
                   >
-                    TEST ABOUT
-                  </button>
-                  <button 
-                    onClick={() => forceNavigate('/contact')}
-                    className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-blue-700 font-bold"
+                    📄 Hakkımızda
+                  </a>
+                  <a 
+                    href="/how-it-works"
+                    className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-blue-700 font-bold inline-block"
                   >
-                    TEST CONTACT
-                  </button>
-                  <button 
-                    onClick={() => alert('JavaScript çalışıyor! ' + new Date().toLocaleTimeString())}
-                    className="bg-green-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-green-700 font-bold"
+                    ⚙️ Nasıl Çalışır
+                  </a>
+                  <a 
+                    href="/contact"
+                    className="bg-green-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-green-700 font-bold inline-block"
                   >
-                    TEST ALERT
-                  </button>
+                    📧 İletişim
+                  </a>
+                  <a 
+                    href="/emergency-nav.html"
+                    className="bg-purple-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-purple-700 font-bold inline-block"
+                  >
+                    🚨 Emergency Nav
+                  </a>
                 </div>
               </div>
             </div>
