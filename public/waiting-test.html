@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>5 Dakika Bekleme - Navigation Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+            line-height: 1.6;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #4caf50;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .timer {
+            background: #e8f5e8;
+            border: 3px solid #4caf50;
+            padding: 30px;
+            border-radius: 10px;
+            text-align: center;
+            margin: 30px 0;
+            font-size: 24px;
+            font-weight: bold;
+            color: #2e7d32;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4caf50, #66bb6a);
+            width: 0%;
+            transition: width 1s ease;
+        }
+        .test-buttons {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            padding: 20px;
+            border-radius: 5px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        .button {
+            background: #4caf50;
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px;
+            display: inline-block;
+            text-decoration: none;
+            transition: background 0.3s;
+        }
+        .button:hover {
+            background: #45a049;
+        }
+        .button:disabled {
+            background: #cccccc;
+            cursor: not-allowed;
+        }
+        .status {
+            background: #e3f2fd;
+            border: 1px solid #90caf9;
+            padding: 20px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            padding: 20px;
+            border-radius: 5px;
+            margin: 20px 0;
+            color: #155724;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>⏳ 5 Dakika Bekleme - Navigation Test</h1>
+        
+        <div class="timer">
+            <div id="countdown">5:00</div>
+        </div>
+        
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressBar"></div>
+        </div>
+        
+        <div class="status">
+            <h3>🔄 Şu Anda Gerçekleşen İşlemler:</h3>
+            <ul id="statusList">
+                <li>✅ Page Rule aktif (Cache Level: Bypass)</li>
+                <li>✅ Cache temizlendi (Purge Everything)</li>
+                <li>🔄 Global propagation başlatıldı...</li>
+                <li>⏳ Cloudflare serverları güncelleniyor...</li>
+            </ul>
+        </div>
+
+        <div class="test-buttons">
+            <h3>🧪 Test Butonları (5 dakika sonra aktif)</h3>
+            <p>Süre dolunca bu butonlar aktif olacak:</p>
+            <button class="button" id="testHome" disabled onclick="testNavigation('/')">🏠 Ana Sayfa Test</button>
+            <button class="button" id="testAbout" disabled onclick="testNavigation('/about')">📄 Hakkımızda Test</button>
+            <button class="button" id="testContact" disabled onclick="testNavigation('/contact')">📧 İletişim Test</button>
+            <button class="button" id="testWorks" disabled onclick="testNavigation('/how-it-works')">⚙️ Nasıl Çalışır Test</button>
+        </div>
+
+        <div class="success" id="successMessage" style="display:none;">
+            <h3>🎉 Test Zamanı!</h3>
+            <p>5 dakika doldu. Artık navigation testini yapabilirsiniz:</p>
+            <ul>
+                <li>✅ Yukarıdaki test butonlarını kullanın</li>
+                <li>✅ Ana sayfadaki linkleri tıklayın</li>
+                <li>✅ Navbar menülerini test edin</li>
+                <li>✅ JavaScript butonlarını kontrol edin</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        let timeLeft = 300; // 5 dakika = 300 saniye
+        let startTime = Date.now();
+        
+        function updateCountdown() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            document.getElementById('countdown').textContent = 
+                `${minutes}:${seconds.toString().padStart(2, '0')}`;
+            
+            // Progress bar güncelle
+            const progress = ((300 - timeLeft) / 300) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+            
+            // Status güncellemeleri
+            if (timeLeft === 240) { // 4 dakika kaldı
+                updateStatus('🔄 Cloudflare edge serverları güncelleniyor...');
+            } else if (timeLeft === 180) { // 3 dakika kaldı
+                updateStatus('🔄 Global DNS propagation devam ediyor...');
+            } else if (timeLeft === 120) { // 2 dakika kaldı
+                updateStatus('🔄 Cache bypass kuralları uygulanıyor...');
+            } else if (timeLeft === 60) { // 1 dakika kaldı
+                updateStatus('🔄 Son güncellemeler yapılıyor...');
+            }
+            
+            if (timeLeft <= 0) {
+                // Süre doldu
+                document.getElementById('countdown').textContent = 'TEST ZAMANI!';
+                document.getElementById('countdown').style.color = '#4caf50';
+                document.getElementById('progressBar').style.width = '100%';
+                
+                // Test butonlarını aktif et
+                const buttons = document.querySelectorAll('.button');
+                buttons.forEach(btn => {
+                    btn.disabled = false;
+                    btn.style.background = '#4caf50';
+                });
+                
+                // Başarı mesajını göster
+                document.getElementById('successMessage').style.display = 'block';
+                
+                updateStatus('✅ Navigation testi için hazır!');
+                return;
+            }
+            
+            timeLeft--;
+            setTimeout(updateCountdown, 1000);
+        }
+        
+        function updateStatus(message) {
+            const statusList = document.getElementById('statusList');
+            const li = document.createElement('li');
+            li.textContent = message;
+            statusList.appendChild(li);
+        }
+        
+        function testNavigation(url) {
+            // Test için yeni sekmede aç
+            window.open(url, '_blank');
+            
+            // Ana sayfada test
+            setTimeout(() => {
+                window.location.href = url;
+            }, 1000);
+        }
+        
+        // Countdown başlat
+        updateCountdown();
+    </script>
+</body>
+</html>
