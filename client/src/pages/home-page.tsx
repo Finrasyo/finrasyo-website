@@ -127,40 +127,51 @@ export default function HomePage() {
                 </Button>
               </div>
               
-              {/* PURE HTML NAVIGATION - NO JAVASCRIPT */}
-              <div className="bg-blue-100 border-4 border-blue-600 rounded-lg p-6 max-w-md mx-auto shadow-lg">
-                <h3 className="font-bold text-blue-800 mb-4 text-lg">🔥 PURE HTML NAVIGATION</h3>
-                <p className="text-blue-700 mb-4 text-sm">Pure HTML forms - no JavaScript</p>
-                <div className="flex flex-wrap gap-3 justify-center">
-                  <form method="GET" action="/about" className="inline-block">
-                    <input 
-                      type="submit" 
-                      value="📄 Hakkımızda"
-                      className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-blue-700 font-bold cursor-pointer border-none"
-                    />
-                  </form>
-                  <form method="GET" action="/how-it-works" className="inline-block">
-                    <input 
-                      type="submit" 
-                      value="⚙️ Nasıl Çalışır"
-                      className="bg-green-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-green-700 font-bold cursor-pointer border-none"
-                    />
-                  </form>
-                  <form method="GET" action="/contact" className="inline-block">
-                    <input 
-                      type="submit" 
-                      value="📧 İletişim"
-                      className="bg-orange-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-orange-700 font-bold cursor-pointer border-none"
-                    />
-                  </form>
+              {/* CRITICAL NAVIGATION FIX */}
+              <div className="bg-red-100 border-4 border-red-600 rounded-lg p-6 max-w-2xl mx-auto shadow-lg">
+                <h3 className="font-bold text-red-800 mb-4 text-lg">🚨 NAVIGATION CRISIS</h3>
+                <p className="text-red-700 mb-4 text-sm">Cloudflare blocking ALL navigation methods</p>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <h4 className="font-bold text-red-800 mb-2">HTML Forms:</h4>
+                    <form method="GET" action="/about" className="inline-block">
+                      <input 
+                        type="submit" 
+                        value="📄 Hakkımızda"
+                        className="bg-red-600 text-white px-3 py-1 rounded text-sm hover:bg-red-700 font-bold cursor-pointer border-none"
+                      />
+                    </form>
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-red-800 mb-2">Direct Links:</h4>
+                    <div className="space-y-1 text-sm">
+                      <div><a href="/about" className="text-red-600 hover:text-red-800">www.finrasyo.com/about</a></div>
+                      <div><a href="/contact" className="text-red-600 hover:text-red-800">www.finrasyo.com/contact</a></div>
+                      <div><a href="/how-it-works" className="text-red-600 hover:text-red-800">www.finrasyo.com/how-it-works</a></div>
+                    </div>
+                  </div>
                 </div>
                 <div className="mt-4 text-center">
-                  <a 
-                    href="/pure-nav.html"
-                    className="text-blue-600 hover:text-blue-800 text-sm font-medium"
-                  >
-                    🔍 Pure Nav Test Page
-                  </a>
+                  <div className="flex flex-wrap gap-2 justify-center">
+                    <a 
+                      href="/pure-nav.html"
+                      className="text-red-600 hover:text-red-800 text-sm font-medium"
+                    >
+                      🔍 Pure Nav Test
+                    </a>
+                    <a 
+                      href="/meta-refresh-test.html"
+                      className="text-red-600 hover:text-red-800 text-sm font-medium"
+                    >
+                      🚀 Meta Refresh Test
+                    </a>
+                    <a 
+                      href="/iframe-nav-test.html"
+                      className="text-red-600 hover:text-red-800 text-sm font-medium"
+                    >
+                      🖼️ Iframe Test
+                    </a>
+                  </div>
                 </div>
               </div>
             </div>

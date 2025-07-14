@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meta Refresh Test - FinRasyo</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .nav-links {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        .nav-links a {
+            display: block;
+            padding: 15px 20px;
+            background: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            text-align: center;
+            font-weight: bold;
+        }
+        .countdown {
+            font-size: 24px;
+            font-weight: bold;
+            color: #007bff;
+            text-align: center;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 Meta Refresh Navigation Test</h1>
+        
+        <div class="nav-links">
+            <a href="javascript:void(0)" onclick="redirectTo('/')">🏠 Ana Sayfa</a>
+            <a href="javascript:void(0)" onclick="redirectTo('/about')">📄 Hakkımızda</a>
+            <a href="javascript:void(0)" onclick="redirectTo('/how-it-works')">⚙️ Nasıl Çalışır</a>
+            <a href="javascript:void(0)" onclick="redirectTo('/contact')">📧 İletişim</a>
+        </div>
+        
+        <div id="countdown" class="countdown" style="display: none;"></div>
+    </div>
+
+    <script>
+        function redirectTo(url) {
+            const countdownEl = document.getElementById('countdown');
+            countdownEl.style.display = 'block';
+            
+            let seconds = 3;
+            const interval = setInterval(() => {
+                countdownEl.textContent = `Yönlendiriliyor... ${seconds}`;
+                seconds--;
+                
+                if (seconds < 0) {
+                    clearInterval(interval);
+                    // Meta refresh ile yönlendirme
+                    const meta = document.createElement('meta');
+                    meta.httpEquiv = 'refresh';
+                    meta.content = '0; url=' + url;
+                    document.head.appendChild(meta);
+                }
+            }, 1000);
+        }
+    </script>
+</body>
+</html>
