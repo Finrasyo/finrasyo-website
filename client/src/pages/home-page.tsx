@@ -130,7 +130,7 @@ export default function HomePage() {
               {/* CRITICAL NAVIGATION FIX */}
               <div className="bg-red-100 border-4 border-red-600 rounded-lg p-6 max-w-2xl mx-auto shadow-lg">
                 <h3 className="font-bold text-red-800 mb-4 text-lg">🚨 NAVIGATION CRISIS</h3>
-                <p className="text-red-700 mb-4 text-sm">Bot Fight Mode OFF - Kontrol Rocket Loader</p>
+                <p className="text-red-700 mb-4 text-sm">Bot Fight Mode OFF, Rocket Loader OFF - Page Rule Gerekli</p>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <h4 className="font-bold text-red-800 mb-2">HTML Forms:</h4>
@@ -154,10 +154,10 @@ export default function HomePage() {
                 <div className="mt-4 text-center">
                   <div className="flex flex-wrap gap-2 justify-center">
                     <a 
-                      href="/rocket-loader-guide.html"
+                      href="/page-rule-guide.html"
                       className="text-red-600 hover:text-red-800 text-sm font-medium"
                     >
-                      🚀 Rocket Loader Rehberi
+                      📋 Page Rule Rehberi
                     </a>
                     <a 
                       href="/meta-refresh-test.html"
