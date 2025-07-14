@@ -68,47 +68,35 @@ export default function HomePage() {
                 FinRasyo
               </a>
             </div>
-            <div className="flex space-x-4">
-              <a 
-                href="/about"
-                className="text-neutral-600 hover:text-neutral-800 px-3 py-2 no-underline transition-colors"
-                onClick={(e) => {
-                  e.preventDefault();
-                  window.location.href = '/about';
-                }}
-              >
-                Hakkımızda
-              </a>
-              <a 
-                href="/how-it-works"
-                className="text-neutral-600 hover:text-neutral-800 px-3 py-2 no-underline transition-colors"
-                onClick={(e) => {
-                  e.preventDefault();
-                  window.location.href = '/how-it-works';
-                }}
-              >
-                Nasıl Çalışır
-              </a>
-              <a 
-                href="/contact"
-                className="text-neutral-600 hover:text-neutral-800 px-3 py-2 no-underline transition-colors"
-                onClick={(e) => {
-                  e.preventDefault();
-                  window.location.href = '/contact';
-                }}
-              >
-                İletişim
-              </a>
-              <a 
-                href="/auth"
-                className="bg-primary text-white px-4 py-2 rounded no-underline hover:bg-primary-dark transition-colors"
-                onClick={(e) => {
-                  e.preventDefault();
-                  window.location.href = '/auth';
-                }}
-              >
-                Giriş Yap
-              </a>
+            <div className="flex space-x-2">
+              <form method="GET" action="/about" className="inline-block">
+                <input 
+                  type="submit" 
+                  value="Hakkımızda"
+                  className="text-neutral-600 hover:text-neutral-800 px-3 py-2 bg-transparent border-none cursor-pointer font-medium"
+                />
+              </form>
+              <form method="GET" action="/how-it-works" className="inline-block">
+                <input 
+                  type="submit" 
+                  value="Nasıl Çalışır"
+                  className="text-neutral-600 hover:text-neutral-800 px-3 py-2 bg-transparent border-none cursor-pointer font-medium"
+                />
+              </form>
+              <form method="GET" action="/contact" className="inline-block">
+                <input 
+                  type="submit" 
+                  value="İletişim"
+                  className="text-neutral-600 hover:text-neutral-800 px-3 py-2 bg-transparent border-none cursor-pointer font-medium"
+                />
+              </form>
+              <form method="GET" action="/auth" className="inline-block">
+                <input 
+                  type="submit" 
+                  value="Giriş Yap"
+                  className="bg-primary text-white px-4 py-2 rounded border-none cursor-pointer hover:bg-primary-dark font-medium"
+                />
+              </form>
             </div>
           </div>
         </div>
@@ -139,40 +127,39 @@ export default function HomePage() {
                 </Button>
               </div>
               
-              {/* NAVIGATION TEST - FIXED */}
-              <div className="bg-green-100 border-4 border-green-600 rounded-lg p-6 max-w-md mx-auto shadow-lg">
-                <h3 className="font-bold text-green-800 mb-4 text-lg">✅ NAVIGATION FIXED</h3>
-                <p className="text-green-700 mb-4 text-sm">Test navigation links</p>
+              {/* PURE HTML NAVIGATION - NO JAVASCRIPT */}
+              <div className="bg-blue-100 border-4 border-blue-600 rounded-lg p-6 max-w-md mx-auto shadow-lg">
+                <h3 className="font-bold text-blue-800 mb-4 text-lg">🔥 PURE HTML NAVIGATION</h3>
+                <p className="text-blue-700 mb-4 text-sm">Pure HTML forms - no JavaScript</p>
                 <div className="flex flex-wrap gap-3 justify-center">
+                  <form method="GET" action="/about" className="inline-block">
+                    <input 
+                      type="submit" 
+                      value="📄 Hakkımızda"
+                      className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-blue-700 font-bold cursor-pointer border-none"
+                    />
+                  </form>
+                  <form method="GET" action="/how-it-works" className="inline-block">
+                    <input 
+                      type="submit" 
+                      value="⚙️ Nasıl Çalışır"
+                      className="bg-green-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-green-700 font-bold cursor-pointer border-none"
+                    />
+                  </form>
+                  <form method="GET" action="/contact" className="inline-block">
+                    <input 
+                      type="submit" 
+                      value="📧 İletişim"
+                      className="bg-orange-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-orange-700 font-bold cursor-pointer border-none"
+                    />
+                  </form>
+                </div>
+                <div className="mt-4 text-center">
                   <a 
-                    href="/about"
-                    className="bg-green-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-green-700 font-bold inline-block"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      window.location.href = '/about';
-                    }}
+                    href="/pure-nav.html"
+                    className="text-blue-600 hover:text-blue-800 text-sm font-medium"
                   >
-                    📄 Hakkımızda
-                  </a>
-                  <a 
-                    href="/how-it-works"
-                    className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-blue-700 font-bold inline-block"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      window.location.href = '/how-it-works';
-                    }}
-                  >
-                    ⚙️ Nasıl Çalışır
-                  </a>
-                  <a 
-                    href="/contact"
-                    className="bg-orange-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-orange-700 font-bold inline-block"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      window.location.href = '/contact';
-                    }}
-                  >
-                    📧 İletişim
+                    🔍 Pure Nav Test Page
                   </a>
                 </div>
               </div>

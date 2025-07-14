@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pure Navigation Test - FinRasyo</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .nav-forms {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        .nav-form {
+            background: #007bff;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        .nav-form input[type="submit"] {
+            width: 100%;
+            padding: 15px 20px;
+            background: #007bff;
+            color: white;
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .nav-form input[type="submit"]:hover {
+            background: #0056b3;
+        }
+        .status {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .success {
+            background: #d4edda;
+            border-color: #c3e6cb;
+            color: #155724;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔥 Pure HTML Navigation Test</h1>
+        
+        <div class="status success">
+            <strong>Status:</strong> This page uses pure HTML forms - no JavaScript at all!
+        </div>
+        
+        <div class="nav-forms">
+            <form class="nav-form" method="GET" action="/">
+                <input type="submit" value="🏠 Ana Sayfa">
+            </form>
+            
+            <form class="nav-form" method="GET" action="/about">
+                <input type="submit" value="📄 Hakkımızda">
+            </form>
+            
+            <form class="nav-form" method="GET" action="/how-it-works">
+                <input type="submit" value="⚙️ Nasıl Çalışır">
+            </form>
+            
+            <form class="nav-form" method="GET" action="/contact">
+                <input type="submit" value="📧 İletişim">
+            </form>
+            
+            <form class="nav-form" method="GET" action="/auth">
+                <input type="submit" value="🔐 Giriş">
+            </form>
+        </div>
+        
+        <div class="status">
+            <strong>Test Instructions:</strong><br>
+            1. Click any navigation button above<br>
+            2. Navigate to the target page<br>
+            3. Come back to this page<br>
+            4. Try clicking the same button again<br>
+            <br>
+            <strong>Current URL:</strong> <span id="current-url"></span><br>
+            <strong>Time:</strong> <span id="current-time"></span>
+        </div>
+    </div>
+
+    <script>
+        // Only basic info display - no navigation code
+        document.getElementById('current-url').textContent = window.location.href;
+        document.getElementById('current-time').textContent = new Date().toLocaleString('tr-TR');
+    </script>
+</body>
+</html>
