@@ -56,40 +56,56 @@ export default function HomePage() {
 
   return (
     <div className="flex flex-col min-h-screen">
-      {/* Emergency Navigation Navbar */}
+      {/* Fixed Navigation Navbar */}
       <nav className="bg-white shadow-sm sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16 items-center">
             <div className="flex items-center">
-              <span 
-                className="text-primary font-bold text-xl cursor-pointer"
-                onClick={() => forceNavigate('/')}
+              <a 
+                href="/"
+                className="text-primary font-bold text-xl no-underline hover:text-primary-dark"
               >
                 FinRasyo
-              </span>
+              </a>
             </div>
             <div className="flex space-x-4">
               <a 
                 href="/about"
-                className="text-neutral-600 hover:text-neutral-800 px-3 py-2 no-underline"
+                className="text-neutral-600 hover:text-neutral-800 px-3 py-2 no-underline transition-colors"
+                onClick={(e) => {
+                  e.preventDefault();
+                  window.location.href = '/about';
+                }}
               >
                 Hakkımızda
               </a>
               <a 
                 href="/how-it-works"
-                className="text-neutral-600 hover:text-neutral-800 px-3 py-2 no-underline"
+                className="text-neutral-600 hover:text-neutral-800 px-3 py-2 no-underline transition-colors"
+                onClick={(e) => {
+                  e.preventDefault();
+                  window.location.href = '/how-it-works';
+                }}
               >
                 Nasıl Çalışır
               </a>
               <a 
                 href="/contact"
-                className="text-neutral-600 hover:text-neutral-800 px-3 py-2 no-underline"
+                className="text-neutral-600 hover:text-neutral-800 px-3 py-2 no-underline transition-colors"
+                onClick={(e) => {
+                  e.preventDefault();
+                  window.location.href = '/contact';
+                }}
               >
                 İletişim
               </a>
               <a 
                 href="/auth"
-                className="bg-primary text-white px-4 py-2 rounded no-underline hover:bg-primary-dark"
+                className="bg-primary text-white px-4 py-2 rounded no-underline hover:bg-primary-dark transition-colors"
+                onClick={(e) => {
+                  e.preventDefault();
+                  window.location.href = '/auth';
+                }}
               >
                 Giriş Yap
               </a>
@@ -123,34 +139,40 @@ export default function HomePage() {
                 </Button>
               </div>
               
-              {/* EMERGENCY NAVIGATION - CLOUDFLARE WORKAROUND */}
-              <div className="bg-red-100 border-4 border-red-600 rounded-lg p-6 max-w-md mx-auto shadow-lg">
-                <h3 className="font-bold text-red-800 mb-4 text-lg">🚨 NAVIGATION EMERGENCY</h3>
-                <p className="text-red-700 mb-4 text-sm">Cloudflare proxy blocking clicks</p>
+              {/* NAVIGATION TEST - FIXED */}
+              <div className="bg-green-100 border-4 border-green-600 rounded-lg p-6 max-w-md mx-auto shadow-lg">
+                <h3 className="font-bold text-green-800 mb-4 text-lg">✅ NAVIGATION FIXED</h3>
+                <p className="text-green-700 mb-4 text-sm">Test navigation links</p>
                 <div className="flex flex-wrap gap-3 justify-center">
                   <a 
                     href="/about"
-                    className="bg-red-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-red-700 font-bold inline-block"
+                    className="bg-green-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-green-700 font-bold inline-block"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      window.location.href = '/about';
+                    }}
                   >
                     📄 Hakkımızda
                   </a>
                   <a 
                     href="/how-it-works"
                     className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-blue-700 font-bold inline-block"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      window.location.href = '/how-it-works';
+                    }}
                   >
                     ⚙️ Nasıl Çalışır
                   </a>
                   <a 
                     href="/contact"
-                    className="bg-green-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-green-700 font-bold inline-block"
+                    className="bg-orange-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-orange-700 font-bold inline-block"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      window.location.href = '/contact';
+                    }}
                   >
                     📧 İletişim
-                  </a>
-                  <a 
-                    href="/emergency-nav.html"
-                    className="bg-purple-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-purple-700 font-bold inline-block"
-                  >
-                    🚨 Emergency Nav
                   </a>
                 </div>
               </div>
