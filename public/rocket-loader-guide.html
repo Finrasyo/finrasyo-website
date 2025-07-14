@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rocket Loader Kapatma Rehberi - FinRasyo</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+            line-height: 1.6;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #ff6b35;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .step {
+            background: #fff3e0;
+            border-left: 5px solid #ff9800;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        .step h3 {
+            color: #e65100;
+            margin-top: 0;
+            margin-bottom: 15px;
+        }
+        .step-number {
+            background: #ff9800;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        .important {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+        }
+        .success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+            color: #155724;
+        }
+        .menu-path {
+            background: #f5f5f5;
+            border: 1px solid #ddd;
+            padding: 10px;
+            border-radius: 3px;
+            font-family: monospace;
+            font-size: 14px;
+            margin: 10px 0;
+        }
+        .test-buttons {
+            background: #e8f5e8;
+            border: 1px solid #c3e6cb;
+            padding: 20px;
+            border-radius: 5px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        .button {
+            background: #4caf50;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+            display: inline-block;
+            text-decoration: none;
+        }
+        .button:hover {
+            background: #45a049;
+        }
+        .warning {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+            color: #721c24;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 Rocket Loader Kapatma Rehberi</h1>
+        
+        <div class="important">
+            <strong>⚠️ Problem:</strong> Rocket Loader JavaScript'i geciktirir ve React navigation'unu bozar. Bot Fight Mode kapalıysa, muhtemelen Rocket Loader soruna neden oluyor.
+        </div>
+
+        <div class="step">
+            <h3><span class="step-number">1</span>Cloudflare Dashboard'a Giriş</h3>
+            <p>Tarayıcınızda <strong>dash.cloudflare.com</strong> adresine gidin</p>
+            <div class="menu-path">https://dash.cloudflare.com</div>
+            <p>Hesabınızla giriş yapın ve <strong>finrasyo.com</strong> domain'ini seçin</p>
+        </div>
+
+        <div class="step">
+            <h3><span class="step-number">2</span>Speed Menüsüne Gitme</h3>
+            <p>Sol menüden <strong>Speed</strong> sekmesine tıklayın</p>
+            <div class="menu-path">Speed → Optimization</div>
+            <p>Ardından <strong>Optimization</strong> alt menüsünü seçin</p>
+        </div>
+
+        <div class="step">
+            <h3><span class="step-number">3</span>Rocket Loader Bulma</h3>
+            <p>Sayfada <strong>Rocket Loader</strong> bölümünü bulun</p>
+            <div class="important">
+                <strong>Not:</strong> Rocket Loader genellikle "Web Optimization" veya "Performance" bölümünde yer alır
+            </div>
+        </div>
+
+        <div class="step">
+            <h3><span class="step-number">4</span>Rocket Loader Kapatma</h3>
+            <p>Rocket Loader'ın yanındaki toggle switch'i <strong>OFF</strong> konumuna getirin</p>
+            <div class="warning">
+                <strong>Önemli:</strong> Rocket Loader OFF olduğunda genellikle gri renkte görünür
+            </div>
+        </div>
+
+        <div class="step">
+            <h3><span class="step-number">5</span>Değişiklikleri Kaydetme</h3>
+            <p>Değişiklikleri kaydetmek için <strong>Save</strong> butonuna tıklayın</p>
+            <div class="success">
+                ✅ "Settings saved successfully" mesajı görünecek
+            </div>
+        </div>
+
+        <div class="step">
+            <h3><span class="step-number">6</span>Cache Temizleme</h3>
+            <p>Sol menüden <strong>Caching</strong> sekmesine gidin</p>
+            <div class="menu-path">Caching → Configuration</div>
+            <p><strong>Purge Everything</strong> butonuna tıklayın ve onaylayın</p>
+        </div>
+
+        <div class="important">
+            <strong>⏱️ Bekleme Süresi:</strong> Rocket Loader kapatıldıktan sonra 5-10 dakika bekleyin ve cache temizleyin.
+        </div>
+
+        <div class="test-buttons">
+            <h3>🧪 Test Alanı</h3>
+            <p>10 dakika sonra aşağıdaki linklerle test edin:</p>
+            <a href="/" class="button">🏠 Ana Sayfa</a>
+            <a href="/about" class="button">📄 Hakkımızda</a>
+            <a href="/contact" class="button">📧 İletişim</a>
+            <a href="/how-it-works" class="button">⚙️ Nasıl Çalışır</a>
+        </div>
+
+        <div class="success">
+            <h3>🎉 Başarı Kontrolü</h3>
+            <p>Eğer linkler tıklandığında sayfalar açılıyorsa:</p>
+            <ul>
+                <li>✅ Rocket Loader sorunu çözüldü</li>
+                <li>✅ JavaScript navigation çalışıyor</li>
+                <li>✅ Site normal durumda</li>
+            </ul>
+        </div>
+
+        <div class="warning">
+            <h3>🔄 Hala Çalışmıyorsa</h3>
+            <p>Rocket Loader da kapatmak yeterli olmazsa:</p>
+            <ol>
+                <li><strong>Mirage</strong> kapatın (Speed → Optimization)</li>
+                <li><strong>Polish</strong> kapatın (Speed → Optimization)</li>
+                <li><strong>Page Rule</strong> ekleyin (Rules → Page Rules)</li>
+                <li><strong>Development Mode</strong> açın (geçici)</li>
+            </ol>
+        </div>
+
+        <div class="important">
+            <h3>📋 Page Rule Alternatifi</h3>
+            <p>Rules → Page Rules menüsünden yeni rule ekleyin:</p>
+            <div class="menu-path">
+URL: www.finrasyo.com/*<br>
+Settings:<br>
+- Rocket Loader: Off<br>
+- Cache Level: Bypass<br>
+- Security Level: Essentially Off
+            </div>
+        </div>
+    </div>
+</body>
+</html>
