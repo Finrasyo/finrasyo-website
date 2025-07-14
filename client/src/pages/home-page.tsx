@@ -154,10 +154,10 @@ export default function HomePage() {
                 <div className="mt-4 text-center">
                   <div className="flex flex-wrap gap-2 justify-center">
                     <a 
-                      href="/cloudflare-priority-fix.html"
+                      href="/bot-fight-mode-guide.html"
                       className="text-red-600 hover:text-red-800 text-sm font-medium"
                     >
-                      🎯 Öncelikli Çözüm
+                      🛡️ Bot Fight Mode Rehberi
                     </a>
                     <a 
                       href="/meta-refresh-test.html"
