@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page Rule Ek Ayarlar - FinRasyo</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+            line-height: 1.6;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #4caf50;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            padding: 20px;
+            border-radius: 5px;
+            margin: 20px 0;
+            color: #155724;
+        }
+        .step {
+            background: #e8f5e8;
+            border-left: 5px solid #4caf50;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        .code {
+            background: #f5f5f5;
+            border: 1px solid #ddd;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: monospace;
+            font-size: 14px;
+            margin: 10px 0;
+        }
+        .test-buttons {
+            background: #e8f5e8;
+            border: 1px solid #c3e6cb;
+            padding: 20px;
+            border-radius: 5px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        .button {
+            background: #4caf50;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+            display: inline-block;
+            text-decoration: none;
+        }
+        .button:hover {
+            background: #45a049;
+        }
+        .important {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>✅ Page Rule Mevcut - Ek Ayarlar</h1>
+        
+        <div class="success">
+            <h3>🎉 Mevcut Page Rule Doğru!</h3>
+            <p>Screenshot'ta görülen Page Rule doğru şekilde oluşturulmuş:</p>
+            <ul>
+                <li>✅ URL: www.finrasyo.com/</li>
+                <li>✅ Cache Level: Bypass</li>
+                <li>✅ Status: Active</li>
+            </ul>
+        </div>
+
+        <div class="step">
+            <h3>🔧 Ek Ayarlar Ekleyin</h3>
+            <p>Mevcut Page Rule'a ek ayarlar eklemek için:</p>
+            <ol>
+                <li>Page Rule'un yanındaki <strong>Edit</strong> (kalem) ikonuna tıklayın</li>
+                <li>Aşağıdaki ek ayarları ekleyin:</li>
+            </ol>
+            <div class="code">
+Security Level: Essentially Off<br>
+Rocket Loader: Off<br>
+Mirage: Off<br>
+Polish: Off
+            </div>
+        </div>
+
+        <div class="step">
+            <h3>💾 Kaydet ve Cache Temizle</h3>
+            <ol>
+                <li><strong>Save and Deploy</strong> butonuna tıklayın</li>
+                <li>Sol menüden <strong>Caching → Configuration</strong> gidin</li>
+                <li><strong>Purge Everything</strong> butonuna tıklayın</li>
+                <li>Onaylayın ve 30 saniye bekleyin</li>
+            </ol>
+        </div>
+
+        <div class="important">
+            <h3>⏱️ Bekleme Süresi</h3>
+            <p>Cache temizledikten sonra <strong>5 dakika</strong> bekleyin. Bu süre Cloudflare'ın değişiklikleri global olarak yaygınlaştırması için gerekli.</p>
+        </div>
+
+        <div class="test-buttons">
+            <h3>🧪 5 Dakika Sonra Test Edin</h3>
+            <p>Aşağıdaki linkler çalışmalı:</p>
+            <a href="/" class="button">🏠 Ana Sayfa</a>
+            <a href="/about" class="button">📄 Hakkımızda</a>
+            <a href="/contact" class="button">📧 İletişim</a>
+            <a href="/how-it-works" class="button">⚙️ Nasıl Çalışır</a>
+        </div>
+
+        <div class="success">
+            <h3>🎯 Başarı Beklentisi</h3>
+            <p>Page Rule + Cache Bypass ile:</p>
+            <ul>
+                <li>✅ Navigation %100 çalışacak</li>
+                <li>✅ JavaScript engellenmeyecek</li>
+                <li>✅ Site normal hızda olacak</li>
+                <li>✅ Kullanıcı deneyimi düzelecek</li>
+            </ul>
+        </div>
+
+        <div class="step">
+            <h3>🔄 Çalışmazsa (İhtimal %1)</h3>
+            <p>Eğer 5 dakika sonra hala çalışmıyorsa:</p>
+            <ol>
+                <li><strong>Development Mode</strong> açın (3 saat geçici)</li>
+                <li>DNS'i <strong>DNS Only</strong> yapın (proxy bypass)</li>
+                <li><strong>app.finrasyo.com</strong> subdomain oluşturun</li>
+            </ol>
+        </div>
+    </div>
+</body>
+</html>
