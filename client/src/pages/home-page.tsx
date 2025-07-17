@@ -129,8 +129,8 @@ export default function HomePage() {
               
               {/* CRITICAL NAVIGATION FIX */}
               <div className="bg-red-100 border-4 border-red-600 rounded-lg p-6 max-w-2xl mx-auto shadow-lg">
-                <h3 className="font-bold text-red-800 mb-4 text-lg">🚨 NAVIGATION CRISIS</h3>
-                <p className="text-red-700 mb-4 text-sm">Cache Temizlendi - 5 dakika propagation bekleniyor</p>
+                <h3 className="font-bold text-red-800 mb-4 text-lg">🚨 GÜVENİLİRLİK KRİZİ</h3>
+                <p className="text-red-700 mb-4 text-sm">Sayfalar açılmıyor - Subdomain çözümü gerekli</p>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <h4 className="font-bold text-red-800 mb-2">HTML Forms:</h4>
@@ -154,10 +154,10 @@ export default function HomePage() {
                 <div className="mt-4 text-center">
                   <div className="flex flex-wrap gap-2 justify-center">
                     <a 
-                      href="/waiting-test.html"
+                      href="/subdomain-solution.html"
                       className="text-red-600 hover:text-red-800 text-sm font-medium"
                     >
-                      ⏳ 5 Dakika Timer
+                      🚀 Subdomain Çözümü
                     </a>
                     <a 
                       href="/meta-refresh-test.html"
