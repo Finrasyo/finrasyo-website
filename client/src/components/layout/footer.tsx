@@ -57,7 +57,7 @@ export default function Footer() {
                 <a href="#" className="text-sm text-neutral-600 hover:text-primary">SSS</a>
               </li>
               <li>
-                <a href="#" className="text-sm text-neutral-600 hover:text-primary">İletişim</a>
+                <a href="/contact" className="text-sm text-neutral-600 hover:text-primary">İletişim</a>
               </li>
               <li>
                 <a href="#" className="text-sm text-neutral-600 hover:text-primary">Eğitim Videoları</a>
@@ -69,7 +69,7 @@ export default function Footer() {
             <h3 className="text-sm font-semibold text-neutral-800 uppercase tracking-wider">Şirket</h3>
             <ul className="mt-4 space-y-2">
               <li>
-                <a href="#" className="text-sm text-neutral-600 hover:text-primary">Hakkımızda</a>
+                <a href="/about" className="text-sm text-neutral-600 hover:text-primary">Hakkımızda</a>
               </li>
               <li>
                 <a href="#" className="text-sm text-neutral-600 hover:text-primary">Kariyer</a>
