@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Development Mode Çözümü - FinRasyo</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+            line-height: 1.6;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2196f3;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .immediate-solution {
+            background: #e3f2fd;
+            border: 3px solid #2196f3;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 25px 0;
+            text-align: center;
+        }
+        .step {
+            background: #e8f5e8;
+            border-left: 5px solid #4caf50;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        .step h3 {
+            color: #2e7d32;
+            margin-top: 0;
+        }
+        .step-number {
+            background: #4caf50;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        .important {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+        }
+        .success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+            color: #155724;
+        }
+        .warning {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+            color: #721c24;
+        }
+        .test-buttons {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            padding: 20px;
+            border-radius: 5px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        .button {
+            background: #2196f3;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+            display: inline-block;
+            text-decoration: none;
+        }
+        .button:hover {
+            background: #1976d2;
+        }
+        .timer {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            padding: 20px;
+            border-radius: 5px;
+            margin: 20px 0;
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>⚡ Development Mode - Anında Çözüm</h1>
+        
+        <div class="immediate-solution">
+            <h2>🚀 ANINDA ÇÖZÜM</h2>
+            <p><strong>Development Mode</strong> açarak 3 saat boyunca tüm proxy'yi bypass edeceğiz</p>
+            <p>www.finrasyo.com üzerinden navigation anında çalışacak</p>
+        </div>
+
+        <div class="step">
+            <h3><span class="step-number">1</span>Overview Sayfasına Gitme</h3>
+            <p>Cloudflare Dashboard'da <strong>Overview</strong> (ana sayfa) sekmesine gidin</p>
+            <p>Bu genellikle sol menünün en üstünde yer alır</p>
+        </div>
+
+        <div class="step">
+            <h3><span class="step-number">2</span>Development Mode Bulma</h3>
+            <p>Sağ tarafta <strong>Development Mode</strong> bölümünü bulun</p>
+            <div class="important">
+                <strong>Konum:</strong> Genellikle "Quick Actions" veya "Settings" bölümünde
+            </div>
+        </div>
+
+        <div class="step">
+            <h3><span class="step-number">3</span>Development Mode Açma</h3>
+            <p>Development Mode'un yanındaki toggle switch'i <strong>ON</strong> konumuna getirin</p>
+            <div class="success">
+                ✅ "Development Mode enabled" mesajı görünecek
+            </div>
+        </div>
+
+        <div class="timer">
+            <div>⏱️ 3 Saat Süre</div>
+            <div>Development Mode 3 saat aktif kalır</div>
+        </div>
+
+        <div class="step">
+            <h3><span class="step-number">4</span>Anında Test</h3>
+            <p>Development Mode açıldıktan sonra <strong>30 saniye</strong> bekleyin</p>
+            <p>Ardından navigation linklerini test edin</p>
+        </div>
+
+        <div class="test-buttons">
+            <h3>🧪 Test Linkleri</h3>
+            <p>Development Mode açıldıktan sonra bu linkler çalışacak:</p>
+            <a href="/about" class="button">📄 Hakkımızda</a>
+            <a href="/contact" class="button">📧 İletişim</a>
+            <a href="/how-it-works" class="button">⚙️ Nasıl Çalışır</a>
+        </div>
+
+        <div class="success">
+            <h3>✅ Neden Çalışır?</h3>
+            <ul>
+                <li>Development Mode tüm cache'i bypass eder</li>
+                <li>JavaScript optimizasyonları devre dışı olur</li>
+                <li>Proxy engellemeleri kaldırılır</li>
+                <li>Site development ortamı gibi çalışır</li>
+            </ul>
+        </div>
+
+        <div class="warning">
+            <h3>⚠️ Geçici Çözüm</h3>
+            <p>Development Mode 3 saat sonra otomatik kapanır</p>
+            <p>Bu süre içinde kalıcı çözüm (Page Rule optimize) yapılmalı</p>
+        </div>
+
+        <div class="step">
+            <h3><span class="step-number">5</span>Kalıcı Çözüm</h3>
+            <p>Development Mode çalışırken:</p>
+            <ol>
+                <li>Page Rule ayarlarını optimize edin</li>
+                <li>Ek security ayarlarını kapatın</li>
+                <li>Cache ayarlarını güncelleyin</li>
+            </ol>
+        </div>
+
+        <div class="important">
+            <h3>🎯 Başarı Kriteri</h3>
+            <p>Development Mode açıldıktan sonra:</p>
+            <ul>
+                <li>www.finrasyo.com/about açılmalı</li>
+                <li>www.finrasyo.com/contact açılmalı</li>
+                <li>www.finrasyo.com/how-it-works açılmalı</li>
+                <li>JavaScript navigation çalışmalı</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>
