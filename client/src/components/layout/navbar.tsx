@@ -31,7 +31,20 @@ export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   
   const handleNavigation = (href: string) => {
+    console.log('Emergency navigation:', href);
+    // Method 1: Direct assignment
     window.location.href = href;
+    // Method 2: Replace if assignment fails
+    setTimeout(() => {
+      window.location.replace(href);
+    }, 100);
+    // Method 3: Meta refresh as last resort
+    setTimeout(() => {
+      const meta = document.createElement('meta');
+      meta.httpEquiv = 'refresh';
+      meta.content = '0; url=' + href;
+      document.head.appendChild(meta);
+    }, 200);
   };
 
   const handleLogout = () => {
@@ -73,17 +86,17 @@ export default function Navbar() {
             </div>
             <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
               {navLinks.map((link) => (
-                <a 
-                  key={link.label} 
-                  href={link.href}
-                  className={`${
-                    link.active 
-                      ? "border-primary text-neutral-800 border-b-2" 
-                      : "border-transparent text-neutral-600 hover:border-neutral-300 hover:text-neutral-800 border-b-2"
-                  } inline-flex items-center px-1 pt-1 text-sm font-medium no-underline`}
-                >
-                  {link.label}
-                </a>
+                <form key={link.label} method="GET" action={link.href} style={{display: 'inline'}}>
+                  <input 
+                    type="submit" 
+                    value={link.label}
+                    className={`${
+                      link.active 
+                        ? "border-primary text-neutral-800 border-b-2" 
+                        : "border-transparent text-neutral-600 hover:border-neutral-300 hover:text-neutral-800 border-b-2"
+                    } inline-flex items-center px-1 pt-1 text-sm font-medium cursor-pointer bg-transparent border-0 border-b-2`}
+                  />
+                </form>
               ))}
             </div>
           </div>
