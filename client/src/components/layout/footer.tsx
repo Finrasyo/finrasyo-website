@@ -1,4 +1,4 @@
-import { Link } from "wouter";
+// import { Link } from "wouter"; // Removed - using pure HTML links
 
 export default function Footer() {
   return (
@@ -31,9 +31,7 @@ export default function Footer() {
             <h3 className="text-sm font-semibold text-neutral-800 uppercase tracking-wider">Ürünler</h3>
             <ul className="mt-4 space-y-2">
               <li>
-                <Link href="/">
-                  <a className="text-sm text-neutral-600 hover:text-primary">Oran Hesaplama</a>
-                </Link>
+                <a href="/" className="text-sm text-neutral-600 hover:text-primary">Oran Hesaplama</a>
               </li>
               <li>
                 <a href="#" className="text-sm text-neutral-600 hover:text-primary">Şirket Karşılaştırma</a>

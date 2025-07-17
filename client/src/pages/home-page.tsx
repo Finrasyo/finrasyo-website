@@ -154,10 +154,10 @@ export default function HomePage() {
                 <div className="mt-4 text-center">
                   <div className="flex flex-wrap gap-2 justify-center">
                     <a 
-                      href="/development-mode-test.html"
-                      className="text-green-600 hover:text-green-800 text-sm font-medium"
+                      href="/pure-html-test.html"
+                      className="text-blue-600 hover:text-blue-800 text-sm font-medium"
                     >
-                      🧪 Navigation Test
+                      🧪 Pure HTML Test
                     </a>
                     <a 
                       href="/meta-refresh-test.html"

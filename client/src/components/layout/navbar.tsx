@@ -1,6 +1,6 @@
 import { useAuth } from "@/hooks/use-auth";
 import { Button } from "@/components/ui/button";
-import { Link, useLocation } from "wouter";
+import { useLocation } from "wouter";
 import { 
   Menu, 
   User, 
@@ -120,10 +120,10 @@ export default function Navbar() {
                     </DropdownMenuItem>
                     {user.role === 'admin' && (
                       <DropdownMenuItem asChild>
-                        <Link href="/admin">
+                        <a href="/admin">
                           <UserCog className="mr-2 h-4 w-4" />
                           <span>Admin Paneli</span>
-                        </Link>
+                        </a>
                       </DropdownMenuItem>
                     )}
                     <DropdownMenuSeparator />
@@ -181,20 +181,16 @@ export default function Navbar() {
                         </div>
                       </div>
                       <div className="mt-3 px-2 space-y-1">
-                        <Link href="/profile">
-                          <a className="block px-3 py-2 rounded-md text-base font-medium text-neutral-600 hover:bg-neutral-50 hover:text-neutral-800">
-                            Profil
-                          </a>
-                        </Link>
+                        <a href="/profile" className="block px-3 py-2 rounded-md text-base font-medium text-neutral-600 hover:bg-neutral-50 hover:text-neutral-800">
+                          Profil
+                        </a>
                         {user.role === 'admin' && (
-                          <Link href="/admin" onClick={() => setIsOpen(false)}>
-                            <a className="block px-3 py-2 rounded-md text-base font-medium text-neutral-600 hover:bg-neutral-50 hover:text-neutral-800">
-                              <div className="flex items-center">
-                                <UserCog className="mr-2 h-4 w-4" />
-                                <span>Admin Paneli</span>
-                              </div>
-                            </a>
-                          </Link>
+                          <a href="/admin" onClick={() => setIsOpen(false)} className="block px-3 py-2 rounded-md text-base font-medium text-neutral-600 hover:bg-neutral-50 hover:text-neutral-800">
+                            <div className="flex items-center">
+                              <UserCog className="mr-2 h-4 w-4" />
+                              <span>Admin Paneli</span>
+                            </div>
+                          </a>
                         )}
                         <div className="block px-3 py-2 rounded-md text-base font-medium text-neutral-600">
                           Bakiye: <strong>{formatCurrency(user.credits)}</strong>

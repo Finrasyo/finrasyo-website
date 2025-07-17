@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pure HTML Navigation Test - FinRasyo</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+            line-height: 1.6;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .nav-test {
+            background: #e8f5e8;
+            border: 2px solid #4caf50;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 25px 0;
+            text-align: center;
+        }
+        .nav-link {
+            display: inline-block;
+            background: #4caf50;
+            color: white;
+            padding: 15px 25px;
+            margin: 10px;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+        .nav-link:hover {
+            background: #45a049;
+        }
+        .success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            padding: 20px;
+            border-radius: 5px;
+            margin: 20px 0;
+            color: #155724;
+        }
+        .warning {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            padding: 20px;
+            border-radius: 5px;
+            margin: 20px 0;
+            color: #856404;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Pure HTML Navigation Test</h1>
+        
+        <div class="nav-test">
+            <h2>Navigation Test Linkleri</h2>
+            <p>Bu linkler %100 Pure HTML - JavaScript yok!</p>
+            <a href="/about" class="nav-link">Hakkımızda</a>
+            <a href="/contact" class="nav-link">İletişim</a>
+            <a href="/how-it-works" class="nav-link">Nasıl Çalışır</a>
+            <a href="/" class="nav-link">Ana Sayfa</a>
+        </div>
+
+        <div class="success">
+            <h3>Bu Test Neden Çalışır?</h3>
+            <ul>
+                <li>✅ Saf HTML `&lt;a&gt;` linkleri</li>
+                <li>✅ JavaScript yok</li>
+                <li>✅ React Router yok</li>
+                <li>✅ Cloudflare proxy engelleyemez</li>
+            </ul>
+        </div>
+
+        <div class="warning">
+            <h3>Navbar Sorunu</h3>
+            <p>Eğer yukarıdaki linkler çalışıyorsa ama navbar'dakiler çalışmıyorsa:</p>
+            <ul>
+                <li>❌ Navbar'da hala React Link var</li>
+                <li>❌ Nested &lt;a&gt; tag'leri var</li>
+                <li>❌ JavaScript event handler'ları var</li>
+            </ul>
+        </div>
+
+        <div class="nav-test">
+            <h2>Test Süreci</h2>
+            <p>1. Bu linkler çalışıyor mu?</p>
+            <p>2. Navbar'daki linkler çalışıyor mu?</p>
+            <p>3. Eğer hayır ise, navbar'ı tamamen pure HTML yapmak gerekiyor</p>
+        </div>
+    </div>
+</body>
+</html>
