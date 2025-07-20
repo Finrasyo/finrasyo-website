@@ -12,6 +12,7 @@ import {
 import { getCompanyFinancials, getAllCompaniesFinancials } from "./api/company-financials";
 import Stripe from 'stripe';
 import crypto from 'crypto';
+import path from 'path';
 
 const contactFormSchema = z.object({
   name: z.string().min(2),
@@ -30,6 +31,23 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
 export async function registerRoutes(app: Express): Promise<Server> {
   // sets up /api/register, /api/login, /api/logout, /api/user
   setupAuth(app);
+
+  // CRITICAL FIX: Server-side routing for Cloudflare proxy issue
+  app.get('/about', (req, res) => {
+    res.sendFile(path.join(__dirname, '../dist/index.html'));
+  });
+  
+  app.get('/contact', (req, res) => {
+    res.sendFile(path.join(__dirname, '../dist/index.html'));
+  });
+  
+  app.get('/how-it-works', (req, res) => {
+    res.sendFile(path.join(__dirname, '../dist/index.html'));
+  });
+  
+  app.get('/auth', (req, res) => {
+    res.sendFile(path.join(__dirname, '../dist/index.html'));
+  });
   
   // Şifre sıfırlama endpointleri
   app.post("/api/request-password-reset", async (req, res) => {

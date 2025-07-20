@@ -130,7 +130,7 @@ export default function HomePage() {
               {/* CRITICAL NAVIGATION FIX */}
               <div className="bg-blue-100 border-4 border-blue-600 rounded-lg p-6 max-w-2xl mx-auto shadow-lg">
                 <h3 className="font-bold text-blue-800 mb-4 text-lg">🔧 NAVBAR FIX UYGULANDI</h3>
-                <p className="text-blue-700 mb-4 text-sm">NAVBAR → HTML FORM SUBMISSION dönüştürüldü</p>
+                <p className="text-blue-700 mb-4 text-sm">SERVER-SIDE ROUTING eklendi - Cloudflare bypass</p>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <h4 className="font-bold text-red-800 mb-2">HTML Forms:</h4>
@@ -154,10 +154,10 @@ export default function HomePage() {
                 <div className="mt-4 text-center">
                   <div className="flex flex-wrap gap-2 justify-center">
                     <a 
-                      href="/bypass-test.html"
-                      className="text-blue-600 hover:text-blue-800 text-sm font-medium"
+                      href="/emergency-nav.html"
+                      className="text-red-600 hover:text-red-800 text-sm font-medium"
                     >
-                      🧪 Bypass Test
+                      🚨 Emergency Nav
                     </a>
                     <a 
                       href="/meta-refresh-test.html"
