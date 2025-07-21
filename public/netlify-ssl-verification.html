@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Netlify SSL Doğrulama - FinRasyo</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            line-height: 1.6;
+        }
+        .verification-guide {
+            background: rgba(255,255,255,0.95);
+            color: #333;
+            padding: 40px;
+            border-radius: 15px;
+            margin: 20px 0;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #667eea;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+        .step-box {
+            background: #f8f9fa;
+            border: 2px solid #28a745;
+            padding: 25px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+        .warning-box {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            color: #856404;
+        }
+        .success-box {
+            background: #d4edda;
+            border: 2px solid #28a745;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            color: #155724;
+        }
+        .dns-check {
+            background: #2d3748;
+            color: #68d391;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: monospace;
+            margin: 15px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="verification-guide">
+        <h1>🔐 SSL Sertifikası Doğrulama</h1>
+        
+        <div class="step-box">
+            <h3>✅ ŞU AN YAPMANIZ GEREKEN</h3>
+            <ol>
+                <li>Netlify'de <strong>"Verify DNS configuration"</strong> butonuna tıklayın</li>
+                <li>Netlify DNS kayıtlarını kontrol edecek</li>
+                <li>Cloudflare ayarlarınızı doğrulayacak</li>
+                <li>Sorun varsa size bildirecek</li>
+            </ol>
+        </div>
+
+        <div class="warning-box">
+            <h3>⚠️ Yaygın DNS Sorunları</h3>
+            <p><strong>Eğer DNS doğrulama başarısız olursa:</strong></p>
+            <ul>
+                <li><strong>Proxy aktif:</strong> Cloudflare'de gri bulut olduğundan emin olun</li>
+                <li><strong>Yanlış CNAME:</strong> Target'ın doğru Netlify URL olduğunu kontrol edin</li>
+                <li><strong>DNS propagation:</strong> 15-30 dakika beklemek gerekebilir</li>
+                <li><strong>Cache sorunu:</strong> Cloudflare cache temizleyin</li>
+            </ul>
+        </div>
+
+        <div class="dns-check">
+Cloudflare DNS Kontrol:
+- Type: CNAME
+- Name: www  
+- Target: [your-site].netlify.app
+- Proxy: DNS only (gri bulut)
+        </div>
+
+        <div class="success-box">
+            <h3>🎯 DNS Doğrulama Başarılı Olursa</h3>
+            <ul>
+                <li>SSL sertifikası otomatik oluşacak (5-15 dakika)</li>
+                <li>"HTTPS certificate provisioned" mesajı görünecek</li>
+                <li>www.finrasyo.com güvenli şekilde açılacak</li>
+                <li>Navigation tamamen çalışacak</li>
+            </ul>
+        </div>
+
+        <div style="text-align: center; margin-top: 40px; padding: 25px; background: #e7f3ff; border-radius: 12px; color: #0066cc;">
+            <h3>📋 Şimdi Yapın</h3>
+            <p><strong>1.</strong> "Verify DNS configuration" butonuna tıklayın</p>
+            <p><strong>2.</strong> Sonucu bekleyin (2-3 dakika)</p>
+            <p><strong>3.</strong> Başarılıysa SSL otomatik başlayacak</p>
+            <p><strong>4.</strong> Başarısızsa DNS ayarlarını kontrol edin</p>
+        </div>
+    </div>
+</body>
+</html>
