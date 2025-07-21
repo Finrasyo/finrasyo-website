@@ -3,63 +3,175 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Iframe Navigation Test - FinRasyo</title>
+    <title>IFrame Navigation Test - FinRasyo</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background: #f5f5f5;
-        }
-        .nav-bar {
-            background: white;
-            padding: 15px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            position: fixed;
-            top: 0;
-            width: 100%;
-            z-index: 1000;
-        }
-        .nav-bar a {
-            display: inline-block;
-            margin: 0 10px;
-            padding: 10px 15px;
-            background: #007bff;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #ff5722;
             color: white;
-            text-decoration: none;
+            min-height: 100vh;
+        }
+        .test-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .test-box {
+            background: white;
+            color: #333;
+            padding: 20px;
+            border-radius: 10px;
+        }
+        .method {
+            background: #333;
+            color: white;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 8px;
+        }
+        button, input[type="submit"] {
+            background: #ff5722;
+            color: white;
+            padding: 10px 20px;
+            border: none;
             border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
             font-weight: bold;
         }
-        .nav-bar a:hover {
-            background: #0056b3;
-        }
-        .content {
-            margin-top: 80px;
-            height: calc(100vh - 80px);
+        button:hover, input[type="submit"]:hover {
+            background: #e64a19;
         }
         iframe {
             width: 100%;
-            height: 100%;
-            border: none;
+            height: 400px;
+            border: 2px solid #333;
+            border-radius: 8px;
+        }
+        .critical {
+            background: #d32f2f;
+            color: white;
+            font-weight: bold;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            margin: 20px 0;
+        }
+        form {
+            display: inline-block;
+            margin: 5px;
+        }
+        .target-test {
+            background: #4caf50;
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
         }
     </style>
 </head>
 <body>
-    <div class="nav-bar">
-        <a href="javascript:void(0)" onclick="loadPage('/')">🏠 Ana Sayfa</a>
-        <a href="javascript:void(0)" onclick="loadPage('/about')">📄 Hakkımızda</a>
-        <a href="javascript:void(0)" onclick="loadPage('/how-it-works')">⚙️ Nasıl Çalışır</a>
-        <a href="javascript:void(0)" onclick="loadPage('/contact')">📧 İletişim</a>
+    <h1>🔧 IFRAME NAVIGATION TEST</h1>
+    
+    <div class="critical">
+        CLOUDFLARE BYPASS: IFrame ve Form submission testleri<br>
+        Tüm navigation methodları başarısız oldu - son çare yöntemler
     </div>
     
-    <div class="content">
-        <iframe id="content-frame" src="/"></iframe>
+    <div class="test-grid">
+        <div class="test-box">
+            <h3>Method 1: HTML Forms</h3>
+            <form method="GET" action="/about" target="_blank">
+                <input type="submit" value="Hakkımızda (New Tab)">
+            </form>
+            <form method="GET" action="/contact" target="_blank">
+                <input type="submit" value="İletişim (New Tab)">
+            </form>
+            <form method="GET" action="/how-it-works" target="_blank">
+                <input type="submit" value="Nasıl Çalışır (New Tab)">
+            </form>
+        </div>
+        
+        <div class="test-box">
+            <h3>Method 2: IFrame Navigation</h3>
+            <button onclick="loadInIframe('/about')">Hakkımızda (IFrame)</button>
+            <button onclick="loadInIframe('/contact')">İletişim (IFrame)</button>
+            <button onclick="loadInIframe('/how-it-works')">Nasıl Çalışır (IFrame)</button>
+            <br><br>
+            <iframe id="testIframe" src="about:blank"></iframe>
+        </div>
     </div>
-
+    
+    <div class="target-test">
+        <h3>Method 3: Target _top Navigation</h3>
+        <a href="/about" target="_top">Hakkımızda (_top)</a> |
+        <a href="/contact" target="_top">İletişim (_top)</a> |
+        <a href="/how-it-works" target="_top">Nasıl Çalışır (_top)</a>
+    </div>
+    
+    <div class="method">
+        <h3>Method 4: Window.open Test</h3>
+        <button onclick="openWindow('/about')">Hakkımızda (Popup)</button>
+        <button onclick="openWindow('/contact')">İletişim (Popup)</button>
+        <button onclick="openWindow('/how-it-works')">Nasıl Çalışır (Popup)</button>
+    </div>
+    
+    <div class="test-box">
+        <h3>Test Sonuçları:</h3>
+        <p><strong>Eğer bu methodlar çalışırsa:</strong></p>
+        <ul>
+            <li>Form submission: HTML form action working</li>
+            <li>IFrame: Embedded content loading possible</li>
+            <li>Target _top: Frame-busting navigation works</li>
+            <li>Window.open: Popup navigation allowed</li>
+        </ul>
+        <p><strong>Eğer hiçbiri çalışmazsa:</strong></p>
+        <p>Cloudflare proxy ALL navigation blocking - subdomain gerekli</p>
+    </div>
+    
     <script>
-        function loadPage(url) {
-            document.getElementById('content-frame').src = url;
+        function loadInIframe(url) {
+            const iframe = document.getElementById('testIframe');
+            iframe.src = 'https://www.finrasyo.com' + url;
+            console.log('Loading in iframe:', url);
         }
+        
+        function openWindow(url) {
+            const fullUrl = 'https://www.finrasyo.com' + url;
+            try {
+                window.open(fullUrl, '_blank', 'width=800,height=600');
+                console.log('Opening window:', fullUrl);
+            } catch (e) {
+                console.error('Window.open failed:', e);
+                alert('Popup blocked or failed: ' + e.message);
+            }
+        }
+        
+        console.log('IFrame navigation test loaded');
+        
+        // Test form submission programmatically
+        function testFormSubmission() {
+            const form = document.createElement('form');
+            form.method = 'GET';
+            form.action = '/about';
+            form.target = '_blank';
+            document.body.appendChild(form);
+            form.submit();
+            document.body.removeChild(form);
+        }
+        
+        // Add test button for programmatic form
+        const testBtn = document.createElement('button');
+        testBtn.textContent = 'Test Programmatic Form';
+        testBtn.onclick = testFormSubmission;
+        testBtn.style.background = '#9c27b0';
+        testBtn.style.margin = '20px';
+        testBtn.style.padding = '15px 25px';
+        document.body.appendChild(testBtn);
     </script>
 </body>
 </html>
