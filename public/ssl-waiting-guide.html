@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SSL Bekleme Süreci - FinRasyo</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            color: #333;
+            line-height: 1.6;
+        }
+        .ssl-guide {
+            background: rgba(255,255,255,0.95);
+            padding: 40px;
+            border-radius: 15px;
+            margin: 20px 0;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #e67e22;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+        .timing-box {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            padding: 25px;
+            margin: 20px 0;
+            border-radius: 8px;
+            color: #856404;
+        }
+        .test-now {
+            background: #d4edda;
+            border: 2px solid #28a745;
+            padding: 25px;
+            margin: 20px 0;
+            border-radius: 8px;
+            color: #155724;
+        }
+        .checklist {
+            background: #e7f3ff;
+            border: 2px solid #0066cc;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            color: #0066cc;
+        }
+        .netlify-url {
+            background: #2d3748;
+            color: #68d391;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: monospace;
+            text-align: center;
+            margin: 15px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="ssl-guide">
+        <h1>⏳ SSL Sertifikası Bekleme</h1>
+        
+        <div class="timing-box">
+            <h3>📅 Normal SSL Süreçleri</h3>
+            <ul>
+                <li><strong>DNS Propagation:</strong> 15-30 dakika</li>
+                <li><strong>SSL Provisioning:</strong> 30 dakika - 2 saat</li>
+                <li><strong>Maksimum süre:</strong> 24 saat</li>
+                <li><strong>Cloudflare etkisi:</strong> Proxy kapalıysa daha hızlı</li>
+            </ul>
+            <p><strong>Şu anda:</strong> Domain bağlandı, SSL sertifikası oluşuyor</p>
+        </div>
+
+        <div class="test-now">
+            <h3>🚀 ŞİMDİ TEST: Netlify URL</h3>
+            <p><strong>SSL beklerken navigation'ı test edebilirsiniz:</strong></p>
+            <ol>
+                <li>Netlify dashboard → Sites</li>
+                <li>Site'inizin otomatik URL'ini bulun</li>
+                <li>Örnek format:</li>
+            </ol>
+            <div class="netlify-url">
+https://amazing-butterfly-12345.netlify.app
+            </div>
+            <p><strong>Bu URL'de test edin:</strong></p>
+            <ul>
+                <li>Ana sayfa açılıyor mu?</li>
+                <li>Hakkımızda linkine tıklayın</li>
+                <li>İletişim sayfası çalışıyor mu?</li>
+                <li>Nasıl Çalışır açılıyor mu?</li>
+            </ul>
+        </div>
+
+        <div class="checklist">
+            <h3>✅ SSL Kontrol Listesi</h3>
+            <p><strong>www.finrasyo.com için kontrol edin:</strong></p>
+            <ol>
+                <li><strong>Site açılıyor mu?</strong> (Hata sayfası yerine)</li>
+                <li><strong>SSL aktif mi?</strong> (Adres çubuğunda 🔒)</li>
+                <li><strong>HTTPS zorunlu mu?</strong> (HTTP otomatik yönlendiriliyor)</li>
+                <li><strong>Navigation çalışıyor mu?</strong> (404 yok)</li>
+                <li><strong>Mobil uyumlu mu?</strong> (Responsive design)</li>
+            </ol>
+        </div>
+
+        <div style="text-align: center; margin-top: 40px; padding: 25px; background: #f8f9fa; border-radius: 12px;">
+            <h3>🎯 Şimdi Ne Yapmalı?</h3>
+            <p><strong>Seçenek 1:</strong> Netlify URL'de navigation test et (5 dakika)</p>
+            <p><strong>Seçenek 2:</strong> 30 dakika bekle, sonra www.finrasyo.com dene</p>
+            <p><strong>Seçenek 3:</strong> 2 saat bekle, SSL tamamen hazır olsun</p>
+            <p>Hangisini tercih ediyorsunuz?</p>
+        </div>
+    </div>
+</body>
+</html>
