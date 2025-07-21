@@ -110,6 +110,7 @@ The application follows a monorepo pattern with shared types and schemas:
 - July 10, 2025. Fixed Router structure and SSL certificate issues
 - July 10, 2025. **CRITICAL ISSUE**: Navbar navigation completely broken - neither HTML links nor JavaScript buttons work on production. Local development works fine. Issue likely related to Cloudflare proxy or deployment environment.
 - July 21, 2025. **MIGRATION STRATEGY**: Prepared comprehensive Vercel migration plan to permanently solve navigation issues. User decided to migrate from Cloudflare proxy to Vercel hosting platform.
+- July 21, 2025. **NETLIFY DEPLOYMENT**: Successfully completed build process and file compression. User uploaded finrasyo-build.tar.gz to Netlify. Now testing deployment and preparing domain connection.
 
 ## User Preferences
 
