@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shell Nasıl Kullanılır - FinRasyo</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            line-height: 1.6;
+        }
+        .shell-tutorial {
+            background: rgba(255,255,255,0.95);
+            color: #333;
+            padding: 40px;
+            border-radius: 15px;
+            margin: 20px 0;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+        .shell-window {
+            background: #1e1e1e;
+            color: #00ff00;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            margin: 20px 0;
+            border: 3px solid #333;
+        }
+        .shell-prompt {
+            color: #00ff00;
+        }
+        .user-input {
+            color: #ffffff;
+        }
+        .shell-output {
+            color: #cccccc;
+            margin: 5px 0;
+        }
+        .step-demo {
+            background: #f8f9fa;
+            border-left: 5px solid #28a745;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        .warning-box {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            color: #856404;
+        }
+        .success-box {
+            background: #d4edda;
+            border: 2px solid #28a745;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            color: #155724;
+        }
+        .command-highlight {
+            background: #ffffcc;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: monospace;
+            color: #333;
+        }
+        .typing-demo {
+            background: #e9ecef;
+            border: 2px dashed #6c757d;
+            padding: 20px;
+            text-align: center;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="shell-tutorial">
+        <h1>🖥️ Shell Nasıl Kullanılır</h1>
+        <p style="text-align: center; font-size: 1.2em; color: #666;">Komutları Shell'e yazıp Enter'a basın</p>
+
+        <h2>📝 Basit Adımlar</h2>
+        
+        <div class="step-demo">
+            <h3>1. Shell'i Gördünüz</h3>
+            <p>Shell açık ve şu şekilde görünüyor:</p>
+            <div class="shell-window">
+                <span class="shell-prompt">~ $</span> <span style="background: #444; color: white;">█</span>
+            </div>
+            <p>Bu <strong>cursor (imleç)</strong> - komut yazabileceğinizi gösterir.</p>
+        </div>
+
+        <div class="step-demo">
+            <h3>2. İlk Komutu Yazın</h3>
+            <p>İlk komut: <span class="command-highlight">cd /home/runner/workspace</span></p>
+            <p><strong>Nasıl:</strong> Bu komutu kelime kelime yazın</p>
+            
+            <div class="shell-window">
+                <span class="shell-prompt">~ $</span> <span class="user-input">cd /home/runner/workspace</span><span style="background: #444; color: white;">█</span>
+            </div>
+            
+            <p><strong>Sonra:</strong> <strong>Enter</strong> tuşuna basın!</p>
+        </div>
+
+        <div class="step-demo">
+            <h3>3. Enter'a Bastıktan Sonra</h3>
+            <p>Komut çalışacak ve yeni satır görünecek:</p>
+            
+            <div class="shell-window">
+                <span class="shell-prompt">~ $</span> <span class="user-input">cd /home/runner/workspace</span><br>
+                <span class="shell-prompt">/home/runner/workspace $</span> <span style="background: #444; color: white;">█</span>
+            </div>
+            
+            <p>Görüyorsunuz? Klasör değişti! Artık ikinci komutu yazabilirsiniz.</p>
+        </div>
+
+        <h2>🚀 Tüm Komutlar Sırayla</h2>
+
+        <div class="step-demo">
+            <h3>Komut 1: Klasöre Git</h3>
+            <p><strong>Yazın:</strong> <span class="command-highlight">cd /home/runner/workspace</span></p>
+            <p><strong>Enter'a basın</strong></p>
+            
+            <div class="shell-window">
+                <span class="shell-prompt">~ $</span> <span class="user-input">cd /home/runner/workspace</span><br>
+                <span class="shell-prompt">/home/runner/workspace $</span> <span style="background: #444; color: white;">█</span>
+            </div>
+        </div>
+
+        <div class="step-demo">
+            <h3>Komut 2: Git Başlat</h3>
+            <p><strong>Yazın:</strong> <span class="command-highlight">git init</span></p>
+            <p><strong>Enter'a basın</strong></p>
+            
+            <div class="shell-window">
+                <span class="shell-prompt">/home/runner/workspace $</span> <span class="user-input">git init</span><br>
+                <span class="shell-output">Initialized empty Git repository in /home/runner/workspace/.git/</span><br>
+                <span class="shell-prompt">/home/runner/workspace $</span> <span style="background: #444; color: white;">█</span>
+            </div>
+        </div>
+
+        <div class="step-demo">
+            <h3>Komut 3: GitHub Bağla</h3>
+            <p><strong>ÖNEMLİ:</strong> KULLANICI_ADI yerine gerçek GitHub kullanıcı adınızı yazın!</p>
+            <p><strong>Yazın:</strong> <span class="command-highlight">git remote add origin https://github.com/KULLANICI_ADI/finrasyo.git</span></p>
+            <p><strong>Enter'a basın</strong></p>
+            
+            <div class="shell-window">
+                <span class="shell-prompt">/home/runner/workspace $</span> <span class="user-input">git remote add origin https://github.com/mehmet123/finrasyo.git</span><br>
+                <span class="shell-prompt">/home/runner/workspace $</span> <span style="background: #444; color: white;">█</span>
+            </div>
+        </div>
+
+        <div class="step-demo">
+            <h3>Komut 4: Dosyaları Hazırla</h3>
+            <p><strong>Yazın:</strong> <span class="command-highlight">git add .</span></p>
+            <p><strong>Enter'a basın</strong></p>
+            
+            <div class="shell-window">
+                <span class="shell-prompt">/home/runner/workspace $</span> <span class="user-input">git add .</span><br>
+                <span class="shell-prompt">/home/runner/workspace $</span> <span style="background: #444; color: white;">█</span>
+            </div>
+            <p><em>Bu komut sessizce çalışır, çıktı vermeyebilir.</em></p>
+        </div>
+
+        <div class="step-demo">
+            <h3>Komut 5: Commit Oluştur</h3>
+            <p><strong>Yazın:</strong> <span class="command-highlight">git commit -m "Initial commit: FinRasyo platform"</span></p>
+            <p><strong>Enter'a basın</strong></p>
+            
+            <div class="shell-window">
+                <span class="shell-prompt">/home/runner/workspace $</span> <span class="user-input">git commit -m "Initial commit: FinRasyo platform"</span><br>
+                <span class="shell-output">[main (root-commit) abc1234] Initial commit: FinRasyo platform</span><br>
+                <span class="shell-output"> 25 files changed, 1500 insertions(+)</span><br>
+                <span class="shell-prompt">/home/runner/workspace $</span> <span style="background: #444; color: white;">█</span>
+            </div>
+        </div>
+
+        <div class="step-demo">
+            <h3>Komut 6: Branch Ayarla</h3>
+            <p><strong>Yazın:</strong> <span class="command-highlight">git branch -M main</span></p>
+            <p><strong>Enter'a basın</strong></p>
+            
+            <div class="shell-window">
+                <span class="shell-prompt">/home/runner/workspace $</span> <span class="user-input">git branch -M main</span><br>
+                <span class="shell-prompt">/home/runner/workspace $</span> <span style="background: #444; color: white;">█</span>
+            </div>
+        </div>
+
+        <div class="step-demo">
+            <h3>Komut 7: GitHub'a Yükle</h3>
+            <p><strong>Yazın:</strong> <span class="command-highlight">git push -u origin main</span></p>
+            <p><strong>Enter'a basın</strong></p>
+            
+            <div class="shell-window">
+                <span class="shell-prompt">/home/runner/workspace $</span> <span class="user-input">git push -u origin main</span><br>
+                <span class="shell-output">Username for 'https://github.com': </span><span style="background: #444; color: white;">█</span>
+            </div>
+            <p><strong>Bu noktada GitHub kullanıcı adınızı yazın ve Enter'a basın!</strong></p>
+        </div>
+
+        <div class="warning-box">
+            <h3>⚠️ Authentication (Kimlik Doğrulama)</h3>
+            <p><strong>git push</strong> komutunda GitHub iki şey isteyecek:</p>
+            <ol>
+                <li><strong>Username:</strong> GitHub kullanıcı adınız</li>
+                <li><strong>Password:</strong> Personal Access Token (GitHub şifreniz DEĞİL!)</li>
+            </ol>
+            
+            <h4>Personal Access Token nasıl alınır:</h4>
+            <ol>
+                <li>GitHub → Settings → Developer settings</li>
+                <li>Personal access tokens → Tokens (classic)</li>
+                <li>Generate new token → Classic</li>
+                <li>Permissions: "repo" seçin</li>
+                <li>Token'ı kopyalayın</li>
+            </ol>
+        </div>
+
+        <div class="success-box">
+            <h3>✅ Başarı İşaretleri</h3>
+            <p>Upload başarılı olduğunda şu mesajları göreceksiniz:</p>
+            <div class="shell-window">
+                <span class="shell-output">Enumerating objects: 150, done.</span><br>
+                <span class="shell-output">Counting objects: 100% (150/150), done.</span><br>
+                <span class="shell-output">Writing objects: 100% (150/150), done.</span><br>
+                <span class="shell-output">Branch 'main' set up to track remote branch 'main' from 'origin'.</span>
+            </div>
+        </div>
+
+        <div class="typing-demo">
+            <h3>💡 Hatırlatma</h3>
+            <p><strong>Her komuttan sonra Enter'a basmayı unutmayın!</strong></p>
+            <p>Komut → Enter → Sonuç → Yeni komut → Enter</p>
+        </div>
+
+        <div style="text-align: center; margin-top: 40px; padding: 20px; background: #d4edda; border-radius: 8px; color: #155724;">
+            <h3>🎯 Başlayın!</h3>
+            <p>İlk komutla başlayın: <strong>cd /home/runner/workspace</strong></p>
+            <p>Shell'e yazın ve Enter'a basın!</p>
+        </div>
+    </div>
+</body>
+</html>
