@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Final Navigation Test - FinRasyo</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #ff4444;
+            color: white;
+            min-height: 100vh;
+        }
+        .emergency {
+            background: white;
+            color: #333;
+            padding: 30px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        h1 {
+            text-align: center;
+            font-size: 3em;
+            margin-bottom: 30px;
+        }
+        .method {
+            background: #333;
+            color: white;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 8px;
+        }
+        button, a {
+            background: #007cba;
+            color: white;
+            padding: 15px 25px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px;
+            text-decoration: none;
+            display: inline-block;
+            font-weight: bold;
+        }
+        button:hover, a:hover {
+            background: #005a8b;
+        }
+        .critical {
+            background: #ffeb3b;
+            color: #333;
+            font-weight: bold;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>🚨 FINAL TEST</h1>
+    
+    <div class="critical">
+        CLOUDFLARE PROXY TÜM NAVİGATİON'I BLOKE EDİYOR!<br>
+        SON ÇARE: WINDOW.LOCATION.RELOAD TESTİ
+    </div>
+    
+    <div class="method">
+        <h3>Method 1: Location Assign + Reload</h3>
+        <button onclick="method1('/about')">Hakkımızda (Method 1)</button>
+        <button onclick="method1('/contact')">İletişim (Method 1)</button>
+        <button onclick="method1('/how-it-works')">Nasıl Çalışır (Method 1)</button>
+    </div>
+    
+    <div class="method">
+        <h3>Method 2: Location Replace + Reload</h3>
+        <button onclick="method2('/about')">Hakkımızda (Method 2)</button>
+        <button onclick="method2('/contact')">İletişim (Method 2)</button>
+        <button onclick="method2('/how-it-works')">Nasıl Çalışır (Method 2)</button>
+    </div>
+    
+    <div class="method">
+        <h3>Method 3: Document Location + Reload</h3>
+        <button onclick="method3('/about')">Hakkımızda (Method 3)</button>
+        <button onclick="method3('/contact')">İletişim (Method 3)</button>
+        <button onclick="method3('/how-it-works')">Nasıl Çalışır (Method 3)</button>
+    </div>
+    
+    <div class="method">
+        <h3>Method 4: Pure Links (Reference)</h3>
+        <a href="https://www.finrasyo.com/about">Hakkımızda (Pure)</a>
+        <a href="https://www.finrasyo.com/contact">İletişim (Pure)</a>
+        <a href="https://www.finrasyo.com/how-it-works">Nasıl Çalışır (Pure)</a>
+    </div>
+    
+    <div class="emergency">
+        <h3>Test Talimatları:</h3>
+        <p>1. Her methodu test edin</p>
+        <p>2. Hangi method çalışırsa bildirin</p>
+        <p>3. O method ile navbar'ı düzelteceğim</p>
+        <p>4. Eğer hiçbiri çalışmazsa tamamen static HTML navbar yapacağım</p>
+    </div>
+    
+    <script>
+        function method1(url) {
+            console.log('Method 1: Location assign + reload');
+            try {
+                window.location.assign('https://www.finrasyo.com' + url);
+                setTimeout(() => {
+                    window.location.reload();
+                }, 100);
+            } catch (e) {
+                console.error('Method 1 failed:', e);
+                alert('Method 1 failed: ' + e.message);
+            }
+        }
+        
+        function method2(url) {
+            console.log('Method 2: Location replace + reload');
+            try {
+                window.location.replace('https://www.finrasyo.com' + url);
+                setTimeout(() => {
+                    window.location.reload();
+                }, 100);
+            } catch (e) {
+                console.error('Method 2 failed:', e);
+                alert('Method 2 failed: ' + e.message);
+            }
+        }
+        
+        function method3(url) {
+            console.log('Method 3: Document location + reload');
+            try {
+                document.location = 'https://www.finrasyo.com' + url;
+                setTimeout(() => {
+                    document.location.reload();
+                }, 100);
+            } catch (e) {
+                console.error('Method 3 failed:', e);
+                alert('Method 3 failed: ' + e.message);
+            }
+        }
+        
+        console.log('Final navigation test loaded');
+    </script>
+</body>
+</html>
