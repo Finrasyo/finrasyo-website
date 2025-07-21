@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Netlify Upload Adımları - FinRasyo</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #00D4AA 0%, #00A3FF 100%);
+            color: white;
+            line-height: 1.6;
+        }
+        .upload-guide {
+            background: rgba(255,255,255,0.95);
+            color: #333;
+            padding: 40px;
+            border-radius: 15px;
+            margin: 20px 0;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #00D4AA;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+        .step {
+            background: #f8f9fa;
+            border-left: 5px solid #00D4AA;
+            padding: 25px;
+            margin: 20px 0;
+            border-radius: 0 12px 12px 0;
+            position: relative;
+        }
+        .step-number {
+            background: #00D4AA;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            position: absolute;
+            left: -20px;
+            top: 25px;
+            font-size: 18px;
+        }
+        .drag-area {
+            background: #f0f8ff;
+            border: 3px dashed #0066cc;
+            border-radius: 12px;
+            padding: 40px;
+            text-align: center;
+            margin: 20px 0;
+            color: #0066cc;
+            font-size: 18px;
+        }
+        .success-box {
+            background: #d4edda;
+            border: 2px solid #28a745;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            color: #155724;
+        }
+        .important-note {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            color: #856404;
+        }
+        .url-example {
+            background: #2d3748;
+            color: #68d391;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: monospace;
+            text-align: center;
+            margin: 15px 0;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div class="upload-guide">
+        <h1>🚀 Netlify Upload Adımları</h1>
+        <p style="text-align: center; font-size: 1.2em; color: #666;">Dosyayı Netlify'e yükleyip site'inizi yayınlayın</p>
+
+        <div class="step">
+            <div class="step-number">1</div>
+            <h3>İndirilen Dosyayı Açın</h3>
+            <p><strong>finrasyo-build.tar.gz</strong> dosyasını açın:</p>
+            <ol>
+                <li>İndirilen dosyaya çift tıklayın</li>
+                <li>Açılım programı (WinRAR, 7-Zip vb.) çalışacak</li>
+                <li><strong>dist/public/</strong> klasörünü çıkarın</li>
+                <li>Masaüstüne kaydedin</li>
+            </ol>
+            <div class="important-note">
+                <p><strong>Önemli:</strong> <code>public</code> klasörünün içinde index.html ve assets/ klasörü olmalı!</p>
+            </div>
+        </div>
+
+        <div class="step">
+            <div class="step-number">2</div>
+            <h3>Netlify'e Giriş Yapın</h3>
+            <p><strong>netlify.com</strong> sitesine gidin:</p>
+            <ol>
+                <li>Tarayıcınızda <strong>netlify.com</strong> açın</li>
+                <li><strong>"Sign up"</strong> butonuna tıklayın</li>
+                <li>Email + Password ile kayıt olun</li>
+                <li>Email doğrulama yapın</li>
+                <li>Dashboard'a giriş yapın</li>
+            </ol>
+        </div>
+
+        <div class="step">
+            <div class="step-number">3</div>
+            <h3>Drag & Drop Upload</h3>
+            <p>Netlify dashboard'da upload alanını bulun:</p>
+            
+            <div class="drag-area">
+                <h4>Want to deploy a new site without connecting to Git?</h4>
+                <p><strong>Drag and drop your site output folder here</strong></p>
+                <p>Or, browse to choose files</p>
+            </div>
+            
+            <p><strong>Upload işlemi:</strong></p>
+            <ol>
+                <li><strong>public</strong> klasörünü Netlify'nin mavi alanına sürükleyin</li>
+                <li>Klasörü bıraktığınızda upload başlayacak</li>
+                <li>"Uploading..." mesajı görünecek</li>
+                <li>2-3 dakika bekleyin</li>
+            </ol>
+        </div>
+
+        <div class="step">
+            <div class="step-number">4</div>
+            <h3>Deploy Tamamlandı</h3>
+            <p>Upload bitince otomatik URL alacaksınız:</p>
+            
+            <div class="url-example">
+https://amazing-butterfly-12345.netlify.app
+            </div>
+            
+            <div class="success-box">
+                <h4>✅ Test Checklist</h4>
+                <ol>
+                    <li>URL'e tıklayın</li>
+                    <li>Site açılıyor mu?</li>
+                    <li>Ana sayfa görünüyor mu?</li>
+                    <li>Navigation linkler çalışıyor mu?</li>
+                    <li>Hakkımızda sayfası açılıyor mu?</li>
+                </ol>
+                <p><strong>Hepsi tamam ise sonraki adıma geçin!</strong></p>
+            </div>
+        </div>
+
+        <div class="step">
+            <div class="step-number">5</div>
+            <h3>Custom Domain (www.finrasyo.com)</h3>
+            <p>Kendi domain'inizi bağlayın:</p>
+            <ol>
+                <li>Site settings → Domain management</li>
+                <li><strong>"Add custom domain"</strong> butonuna tıklayın</li>
+                <li><strong>"www.finrasyo.com"</strong> yazın</li>
+                <li>DNS records gösterilecek</li>
+                <li>Cloudflare'de A record'u değiştirin</li>
+            </ol>
+        </div>
+
+        <div class="important-note">
+            <h4>⚠️ Upload Sorunları</h4>
+            <ul>
+                <li><strong>404 Error:</strong> public klasörünün içeriğini değil, klasörün kendisini yükleyin</li>
+                <li><strong>Beyaz sayfa:</strong> index.html dosyası eksik olabilir</li>
+                <li><strong>CSS yok:</strong> assets klasörü yüklenmemiş olabilir</li>
+            </ul>
+        </div>
+
+        <div style="text-align: center; margin-top: 40px; padding: 25px; background: #d4edda; border-radius: 12px; color: #155724;">
+            <h3>🎯 Başlayın!</h3>
+            <p><strong>Adım 1:</strong> finrasyo-build.tar.gz dosyasını açın</p>
+            <p><strong>Adım 2:</strong> netlify.com'a gidin</p>
+            <p><strong>Adım 3:</strong> public klasörünü drag & drop edin</p>
+            <p>Hangi adımdasınız?</p>
+        </div>
+    </div>
+</body>
+</html>
