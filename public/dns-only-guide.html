@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cloudflare DNS Only Mode - Adım Adım Rehber</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            line-height: 1.6;
+        }
+        .guide-container {
+            background: rgba(255,255,255,0.98);
+            color: #333;
+            padding: 40px;
+            border-radius: 15px;
+            margin: 20px 0;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+        }
+        h1 {
+            text-align: center;
+            color: #28a745;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+        h2 {
+            color: #dc3545;
+            border-bottom: 2px solid #dc3545;
+            padding-bottom: 10px;
+            margin-top: 40px;
+        }
+        .step {
+            background: #f8f9fa;
+            border-left: 5px solid #28a745;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 0 8px 8px 0;
+            position: relative;
+        }
+        .step-number {
+            background: #28a745;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            position: absolute;
+            left: -15px;
+            top: 20px;
+        }
+        .screenshot-placeholder {
+            background: #e9ecef;
+            border: 2px dashed #6c757d;
+            padding: 40px;
+            text-align: center;
+            border-radius: 8px;
+            margin: 15px 0;
+            color: #6c757d;
+            font-style: italic;
+        }
+        .warning-box {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            color: #856404;
+        }
+        .success-box {
+            background: #d4edda;
+            border: 2px solid #28a745;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            color: #155724;
+        }
+        .critical-box {
+            background: #f8d7da;
+            border: 2px solid #dc3545;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            color: #721c24;
+        }
+        .code-snippet {
+            background: #2d3748;
+            color: #68d391;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            margin: 10px 0;
+            font-size: 14px;
+        }
+        .before-after {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .before, .after {
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .before {
+            background: #f8d7da;
+            border: 2px solid #dc3545;
+            color: #721c24;
+        }
+        .after {
+            background: #d4edda;
+            border: 2px solid #28a745;
+            color: #155724;
+        }
+        .test-section {
+            background: #e7f3ff;
+            border: 2px solid #0066cc;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 30px 0;
+        }
+        .rollback-section {
+            background: #ffe6e6;
+            border: 2px solid #ff6b6b;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="guide-container">
+        <h1>🛠️ Cloudflare DNS Only Mode</h1>
+        <p style="text-align: center; font-size: 1.2em; color: #666;">Navigation problemini 5 dakikada çözün</p>
+        
+        <div class="critical-box">
+            <h3>⚠️ Önemli Uyarı</h3>
+            <p>DNS Only Mode'a geçtiğinizde:</p>
+            <ul>
+                <li>✅ Navigation problemi çözülür</li>
+                <li>❌ Cloudflare CDN devre dışı kalır</li>
+                <li>❌ DDoS koruması azalır</li>
+                <li>❌ Cache özelliği çalışmaz</li>
+            </ul>
+            <p><strong>Sonuç:</strong> Site çalışır ama performans düşebilir.</p>
+        </div>
+
+        <h2>📋 Adım Adım Uygulama</h2>
+
+        <div class="step">
+            <div class="step-number">1</div>
+            <h3>Cloudflare Dashboard'a Giriş</h3>
+            <p>Web tarayıcınızda şu adrese gidin:</p>
+            <div class="code-snippet">https://dash.cloudflare.com/</div>
+            <p>Cloudflare hesabınızla giriş yapın.</p>
+            <div class="screenshot-placeholder">
+                📸 Ekran görüntüsü: Cloudflare login sayfası
+            </div>
+        </div>
+
+        <div class="step">
+            <div class="step-number">2</div>
+            <h3>Domain Seçimi</h3>
+            <p>Dashboard'da <strong>finrasyo.com</strong> domain'ini bulun ve tıklayın.</p>
+            <div class="screenshot-placeholder">
+                📸 Ekran görüntüsü: Domain listesi
+            </div>
+        </div>
+
+        <div class="step">
+            <div class="step-number">3</div>
+            <h3>DNS Sekmesine Git</h3>
+            <p>Sol menüden <strong>"DNS"</strong> sekmesini tıklayın.</p>
+            <p>Ardından <strong>"Records"</strong> alt sekmesine gidin.</p>
+            <div class="screenshot-placeholder">
+                📸 Ekran görüntüsü: DNS menü seçimi
+            </div>
+        </div>
+
+        <div class="step">
+            <div class="step-number">4</div>
+            <h3>www Record'unu Bulun</h3>
+            <p>DNS records listesinde şu kaydı arayın:</p>
+            <div class="code-snippet">
+Type: A
+Name: www
+Content: [IP adresi]
+Proxy status: Proxied (🟠 turuncu bulut)
+            </div>
+            <div class="screenshot-placeholder">
+                📸 Ekran görüntüsü: www.finrasyo.com A record
+            </div>
+        </div>
+
+        <div class="step">
+            <div class="step-number">5</div>
+            <h3>Proxy Status'u Değiştirin</h3>
+            <p><strong>www</strong> record'unun yanındaki <strong>turuncu bulut ikonuna</strong> tıklayın.</p>
+            <div class="before-after">
+                <div class="before">
+                    <h4>ÖNCESİ</h4>
+                    <p>🟠 Proxied</p>
+                    <p>(Turuncu bulut)</p>
+                </div>
+                <div class="after">
+                    <h4>SONRASI</h4>
+                    <p>⚪ DNS only</p>
+                    <p>(Gri bulut)</p>
+                </div>
+            </div>
+            <div class="screenshot-placeholder">
+                📸 Ekran görüntüsü: Proxy status değişimi
+            </div>
+        </div>
+
+        <div class="step">
+            <div class="step-number">6</div>
+            <h3>Değişiklikleri Kaydet</h3>
+            <p><strong>"Save"</strong> butonuna tıklayın.</p>
+            <p>Cloudflare değişikliğin 1-2 dakika sürebileceğini belirtecek.</p>
+            <div class="warning-box">
+                <strong>Not:</strong> DNS propagation 5-10 dakika sürebilir.
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h2>🧪 Test Etme</h2>
+            <div class="step">
+                <div class="step-number">7</div>
+                <h3>Navigation Testi</h3>
+                <p>5 dakika bekledikten sonra şu sayfaları test edin:</p>
+                <ul>
+                    <li><strong>Ana sayfa:</strong> www.finrasyo.com</li>
+                    <li><strong>Hakkımızda:</strong> www.finrasyo.com/about</li>
+                    <li><strong>İletişim:</strong> www.finrasyo.com/contact</li>
+                    <li><strong>Nasıl Çalışır:</strong> www.finrasyo.com/how-it-works</li>
+                </ul>
+            </div>
+            
+            <div class="success-box">
+                <h4>✅ Başarı Kriterleri</h4>
+                <ul>
+                    <li>Navbar linkleri çalışıyor</li>
+                    <li>Sayfalar arası geçiş sorunsuz</li>
+                    <li>JavaScript navigation aktif</li>
+                    <li>React Router çalışıyor</li>
+                </ul>
+            </div>
+        </div>
+
+        <h2>🔄 Geri Alma (Rollback)</h2>
+        <div class="rollback-section">
+            <h3>Eğer Sorunlar Çıkarsa</h3>
+            <p>DNS Only Mode'dan geri dönmek için:</p>
+            <ol>
+                <li>Aynı DNS Records sayfasına gidin</li>
+                <li>www record'unun gri bulutuna tıklayın</li>
+                <li>Turuncu bulut (Proxied) moduna geri döndürün</li>
+                <li>Save edin</li>
+            </ol>
+            <p><strong>Sonuç:</strong> Eski probleme geri dönersiniz ama CDN aktif olur.</p>
+        </div>
+
+        <h2>🎯 Sonraki Adımlar</h2>
+        <div class="success-box">
+            <h3>DNS Only Mode Başarılı Olursa</h3>
+            <ul>
+                <li>Site tamamen functional</li>
+                <li>Navigation problemi çözüldü</li>
+                <li>Normal kullanıma devam edebilirsiniz</li>
+                <li>Performans monitörü yapın</li>
+            </ul>
+        </div>
+
+        <div class="warning-box">
+            <h3>DNS Only Mode Çalışmazsa</h3>
+            <p>Sorun Cloudflare'de değil, başka bir yerde. Bu durumda:</p>
+            <ol>
+                <li>Vercel migration gerekli</li>
+                <li>Veya Replit hosting configuration hatası</li>
+                <li>Detaylı diagnostic gerekli</li>
+            </ol>
+        </div>
+
+        <div class="critical-box">
+            <h3>🚨 Acil Durum İletişim</h3>
+            <p>Eğer site tamamen erişilemez hale gelirse:</p>
+            <ol>
+                <li>Proxy status'u hemen geri açın (Proxied)</li>
+                <li>5 dakika bekleyin</li>
+                <li>www.finrasyo.com kontrol edin</li>
+                <li>Eski duruma döndü mü test edin</li>
+            </ol>
+        </div>
+
+        <div style="text-align: center; margin-top: 40px; padding: 20px; background: #f8f9fa; border-radius: 8px;">
+            <h3>🎉 Başarıyla tamamladığınızda site navigation sorunu çözülmüş olacak!</h3>
+            <p>Bu rehberle ilgili sorularınız için benimle iletişime geçin.</p>
+        </div>
+    </div>
+</body>
+</html>
