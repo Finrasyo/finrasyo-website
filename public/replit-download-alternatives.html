@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Replit Download Alternatifleri - FinRasyo</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            line-height: 1.6;
+        }
+        .download-guide {
+            background: rgba(255,255,255,0.95);
+            color: #333;
+            padding: 40px;
+            border-radius: 15px;
+            margin: 20px 0;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+        .method {
+            background: #f8f9fa;
+            border: 2px solid #007bff;
+            padding: 25px;
+            margin: 20px 0;
+            border-radius: 12px;
+        }
+        .method-number {
+            background: #007bff;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            float: left;
+            margin-right: 15px;
+            margin-top: 5px;
+        }
+        .terminal-box {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            margin: 15px 0;
+        }
+        .success-box {
+            background: #d4edda;
+            border: 2px solid #28a745;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            color: #155724;
+        }
+        .warning-box {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            color: #856404;
+        }
+    </style>
+</head>
+<body>
+    <div class="download-guide">
+        <h1>📥 Replit Download Alternatifleri</h1>
+        <p style="text-align: center; font-size: 1.2em; color: #666;">Sağ tık download çalışmıyorsa bu yöntemleri deneyin</p>
+
+        <div class="method">
+            <div class="method-number">1</div>
+            <h3>ZIP Oluştur ve İndir</h3>
+            <p>Shell'de klasörü ZIP yapıp indirin:</p>
+            <div class="terminal-box">
+# Klasörü ZIP yap
+cd /home/runner/workspace
+zip -r finrasyo-build.zip dist/public/
+
+# ZIP boyutunu kontrol et
+ls -lh finrasyo-build.zip
+            </div>
+            <p>Sonra Files panelinde finrasyo-build.zip dosyasını indirin.</p>
+        </div>
+
+        <div class="method">
+            <div class="method-number">2</div>
+            <h3>GitHub Upload + Netlify Import</h3>
+            <p>GitHub'a yükleyip Netlify'den import edin:</p>
+            <ol>
+                <li>Basit GitHub upload (web interface)</li>
+                <li>Netlify → New site from Git</li>
+                <li>Repository seç → Build settings</li>
+                <li>Auto deploy</li>
+            </ol>
+        </div>
+
+        <div class="method">
+            <div class="method-number">3</div>
+            <h3>Vercel Direct Deploy</h3>
+            <p>En kolay seçenek - direkt Vercel:</p>
+            <ol>
+                <li>vercel.com → Continue with GitHub</li>
+                <li>Import Repository</li>
+                <li>Otomatik deploy</li>
+                <li>Environment variables ekle</li>
+            </ol>
+        </div>
+
+        <div class="method">
+            <div class="method-number">4</div>
+            <h3>Replit Deployment</h3>
+            <p>Replit'in kendi hosting servisi:</p>
+            <ol>
+                <li>Replit → Deploy tab</li>
+                <li>Enable deployment</li>
+                <li>Custom domain bağla</li>
+                <li>En basit ama limitli</li>
+            </ol>
+        </div>
+
+        <div class="success-box">
+            <h3>🚀 En Hızlı Çözüm: ZIP Yöntemi</h3>
+            <p>Shell'de ZIP oluşturup indirin. 2 dakika sürer!</p>
+        </div>
+
+        <div class="warning-box">
+            <h3>⚠️ Replit Download Sorunları</h3>
+            <ul>
+                <li>Büyük klasörler download sorunu yaşar</li>
+                <li>Files panel bazen yavaş çalışır</li>
+                <li>ZIP yöntemi daha güvenilir</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>
