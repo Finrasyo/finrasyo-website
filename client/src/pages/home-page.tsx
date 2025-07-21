@@ -82,6 +82,8 @@ export default function HomePage() {
                       <div><a href="/vercel-vs-cloudflare.html" className="text-indigo-600 hover:text-indigo-800 font-bold">🚀 Vercel vs Cloudflare</a></div>
                       <div><a href="/vercel-migration-guide.html" className="text-purple-600 hover:text-purple-800 font-bold">📋 Vercel Migration Rehberi</a></div>
                       <div><a href="/shell-guide.html" className="text-teal-600 hover:text-teal-800 font-bold">🐚 Replit Shell Nasıl Bulunur</a></div>
+                      <div><a href="/easy-github-upload.html" className="text-cyan-600 hover:text-cyan-800 font-bold">📁 Kolay GitHub Upload</a></div>
+                      <div><a href="/free-easy-hosting.html" className="text-amber-600 hover:text-amber-800 font-bold">🌐 Ücretsiz Kolay Hosting</a></div>
                     </div>
                   </div>
                 </div>
