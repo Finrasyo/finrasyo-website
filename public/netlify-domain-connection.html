@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Domain Bağlama - www.finrasyo.com</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            line-height: 1.6;
+        }
+        .domain-guide {
+            background: rgba(255,255,255,0.95);
+            color: #333;
+            padding: 40px;
+            border-radius: 15px;
+            margin: 20px 0;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #667eea;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+        .step-box {
+            background: #f8f9fa;
+            border: 2px solid #007bff;
+            padding: 25px;
+            margin: 20px 0;
+            border-radius: 12px;
+            position: relative;
+        }
+        .step-number {
+            background: #007bff;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            position: absolute;
+            left: -20px;
+            top: 25px;
+        }
+        .dns-record {
+            background: #2d3748;
+            color: #68d391;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            margin: 15px 0;
+            border: 1px solid #4a5568;
+        }
+        .success-alert {
+            background: #d4edda;
+            border: 2px solid #28a745;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            color: #155724;
+        }
+        .warning-alert {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            color: #856404;
+        }
+        .cloudflare-panel {
+            background: #ff6b35;
+            color: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin: 20px 0;
+        }
+        .final-test {
+            background: #e7f3ff;
+            border: 3px solid #0066cc;
+            padding: 30px;
+            border-radius: 12px;
+            margin: 30px 0;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="domain-guide">
+        <h1>🌐 Domain Bağlama: www.finrasyo.com</h1>
+        <p style="text-align: center; font-size: 1.2em; color: #666;">Netlify test başarılı! Şimdi domain bağlayalım</p>
+
+        <div class="step-box">
+            <div class="step-number">1</div>
+            <h3>Netlify Domain Ayarları</h3>
+            <p><strong>Netlify site dashboard'ında:</strong></p>
+            <ol>
+                <li><strong>"Site settings"</strong> butonuna tıklayın</li>
+                <li>Sol menüden <strong>"Domain management"</strong> seçin</li>
+                <li><strong>"Add custom domain"</strong> butonuna tıklayın</li>
+                <li>Domain kutusuna <strong>"www.finrasyo.com"</strong> yazın</li>
+                <li><strong>"Verify"</strong> ve <strong>"Yes, add domain"</strong> tıklayın</li>
+            </ol>
+            <div class="success-alert">
+                <p><strong>✅ Netlify size DNS kayıtlarını gösterecek</strong></p>
+                <p>Sonraki adımda bu bilgileri Cloudflare'de kullanacağız</p>
+            </div>
+        </div>
+
+        <div class="step-box">
+            <div class="step-number">2</div>
+            <h3>DNS Bilgilerini Kopyalayın</h3>
+            <p><strong>Netlify size şu bilgileri verecek:</strong></p>
+            <div class="dns-record">
+CNAME Record:
+Name: www
+Value: [your-site-name].netlify.app
+
+A Record (optional):
+Name: @ (or finrasyo.com)
+Value: 75.2.60.5
+            </div>
+            <p><strong>Önemli:</strong> [your-site-name] kısmı sizin Netlify URL'inizdir</p>
+        </div>
+
+        <div class="cloudflare-panel">
+            <h3>🔧 Cloudflare DNS Güncellemesi</h3>
+            <p><strong>Cloudflare Dashboard'a gidin ve şu adımları izleyin:</strong></p>
+            <ol>
+                <li><strong>DNS</strong> → <strong>Records</strong> seçin</li>
+                <li>Mevcut <strong>"www"</strong> kaydını bulun</li>
+                <li><strong>"Edit"</strong> butonuna tıklayın</li>
+                <li><strong>Type:</strong> CNAME olarak değiştirin</li>
+                <li><strong>Name:</strong> www (değişmez)</li>
+                <li><strong>Target:</strong> [your-site-name].netlify.app</li>
+                <li><strong>Proxy status:</strong> DNS only (gri bulut)</li>
+                <li><strong>"Save"</strong> tıklayın</li>
+            </ol>
+        </div>
+
+        <div class="step-box">
+            <div class="step-number">3</div>
+            <h3>SSL Sertifikası Bekleyin</h3>
+            <p><strong>DNS değişikliği sonrası:</strong></p>
+            <ol>
+                <li>DNS propagation: <strong>15-30 dakika</strong></li>
+                <li>Netlify otomatik SSL oluşturur</li>
+                <li>Site settings'te <strong>"HTTPS certificate provisioned"</strong> mesajını bekleyin</li>
+                <li>Yeşil kilit simgesi görünecek</li>
+            </ol>
+            <div class="warning-alert">
+                <p><strong>⚠️ SSL Sorunları:</strong></p>
+                <ul>
+                    <li>Cloudflare proxy aktifse SSL çakışması olabilir</li>
+                    <li>Mutlaka "DNS only" modda olduğundan emin olun</li>
+                    <li>24 saat beklemek gerekebilir</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="step-box">
+            <div class="step-number">4</div>
+            <h3>Force HTTPS Ayarı</h3>
+            <p><strong>SSL aktif olduktan sonra:</strong></p>
+            <ol>
+                <li>Netlify → Site settings → Domain management</li>
+                <li><strong>"Force HTTPS"</strong> butonunu aktifleştirin</li>
+                <li>HTTP otomatik HTTPS'e yönlendirilecek</li>
+                <li>Güvenlik maksimum seviyede olacak</li>
+            </ol>
+        </div>
+
+        <div class="final-test">
+            <h3>🎯 Final Test: www.finrasyo.com</h3>
+            <p><strong>Domain bağlama tamamlandıktan sonra test edin:</strong></p>
+            <div class="success-alert" style="margin: 20px 0; text-align: left;">
+                <h4>✅ Test Checklist</h4>
+                <ol>
+                    <li><strong>www.finrasyo.com</strong> açılıyor mu?</li>
+                    <li><strong>SSL aktif mi?</strong> (🔒 simgesi var mı?)</li>
+                    <li><strong>Navigation çalışıyor mu?</strong> (Hakkımızda, İletişim)</li>
+                    <li><strong>Mobile responsive mi?</strong> (F12 → mobile view)</li>
+                    <li><strong>Hız kabul edilebilir mi?</strong> (3 saniye altı)</li>
+                </ol>
+            </div>
+            <p><strong>Hepsi ✅ ise: DEPLOYMENT BAŞARILI!</strong></p>
+            <p><strong>❌ varsa: DNS ayarlarını kontrol edin</strong></p>
+        </div>
+
+        <div class="warning-alert">
+            <h4>🚨 Yaygın Sorunlar ve Çözümler</h4>
+            <ul>
+                <li><strong>DNS hatası:</strong> Cloudflare proxy'yi kapatın (gri bulut)</li>
+                <li><strong>SSL pending:</strong> 24 saat bekleyin, sonra Netlify support'a yazın</li>
+                <li><strong>404 errors:</strong> netlify.toml dosyası eksik (bizde var)</li>
+                <li><strong>Slow loading:</strong> CDN cache temizleyin</li>
+                <li><strong>Mixed content:</strong> Force HTTPS aktifleştirin</li>
+            </ul>
+        </div>
+
+        <div style="text-align: center; margin-top: 40px; padding: 25px; background: #d4edda; border-radius: 12px; color: #155724;">
+            <h3>🚀 Başlayın!</h3>
+            <p><strong>Adım 1:</strong> Netlify → Site settings → Domain management</p>
+            <p><strong>Adım 2:</strong> Add custom domain → www.finrasyo.com</p>
+            <p><strong>Adım 3:</strong> DNS bilgilerini Cloudflare'e girin</p>
+            <p><strong>Final:</strong> www.finrasyo.com test edin!</p>
+        </div>
+    </div>
+</body>
+</html>
