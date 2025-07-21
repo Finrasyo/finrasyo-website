@@ -80,6 +80,7 @@ export default function HomePage() {
                       <div><a href="/dns-only-guide.html" className="text-emerald-600 hover:text-emerald-800 font-bold">⚡ DNS Only Mode Rehberi</a></div>
                       <div><a href="/cdn-explanation.html" className="text-blue-600 hover:text-blue-800 font-bold">📚 CDN Nedir?</a></div>
                       <div><a href="/vercel-vs-cloudflare.html" className="text-indigo-600 hover:text-indigo-800 font-bold">🚀 Vercel vs Cloudflare</a></div>
+                      <div><a href="/vercel-migration-guide.html" className="text-purple-600 hover:text-purple-800 font-bold">📋 Vercel Migration Rehberi</a></div>
                     </div>
                   </div>
                 </div>
