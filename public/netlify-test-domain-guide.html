@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Netlify Test ve Domain Bağlama - FinRasyo</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #00D4AA 0%, #00A3FF 100%);
+            color: white;
+            line-height: 1.6;
+        }
+        .test-guide {
+            background: rgba(255,255,255,0.95);
+            color: #333;
+            padding: 40px;
+            border-radius: 15px;
+            margin: 20px 0;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #00D4AA;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+        .section {
+            background: #f8f9fa;
+            border: 2px solid #00D4AA;
+            padding: 30px;
+            margin: 25px 0;
+            border-radius: 12px;
+        }
+        .test-checklist {
+            background: #d4edda;
+            border: 2px solid #28a745;
+            padding: 25px;
+            margin: 20px 0;
+            border-radius: 8px;
+            color: #155724;
+        }
+        .dns-settings {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            margin: 15px 0;
+        }
+        .important-note {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            color: #856404;
+        }
+        .success-indicator {
+            background: #d1ecf1;
+            border: 2px solid #0c5460;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            color: #0c5460;
+        }
+        .step-list {
+            background: #e7f3ff;
+            border-left: 4px solid #0066cc;
+            padding: 20px;
+            margin: 15px 0;
+            color: #0066cc;
+        }
+        .url-demo {
+            background: #2d3748;
+            color: #68d391;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: monospace;
+            text-align: center;
+            margin: 15px 0;
+            font-size: 16px;
+        }
+        .cloudflare-panel {
+            background: #ff6b00;
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-guide">
+        <h1>🧪 Test ve Domain Bağlama</h1>
+        <p style="text-align: center; font-size: 1.2em; color: #666;">Site testinden domain kurulumuna kadar</p>
+
+        <div class="section">
+            <h2>🔍 Bölüm 1: Site Testi</h2>
+            <p><strong>Upload sonrası Netlify size otomatik URL verecek:</strong></p>
+            
+            <div class="url-demo">
+https://amazing-butterfly-12345.netlify.app
+            </div>
+
+            <div class="test-checklist">
+                <h3>✅ Test Checklist - Sırayla Kontrol Edin</h3>
+                <ol>
+                    <li><strong>Ana Sayfa Test:</strong>
+                        <ul>
+                            <li>URL'e tıklayın</li>
+                            <li>Site açılıyor mu?</li>
+                            <li>FinRasyo başlığı görünüyor mu?</li>
+                            <li>Sayfanın tasarımı düzgün mü?</li>
+                        </ul>
+                    </li>
+                    <li><strong>Navigation Test:</strong>
+                        <ul>
+                            <li>Navbar'daki "Hakkımızda" linkine tıklayın</li>
+                            <li>Sayfa açılıyor mu? (404 yok mu?)</li>
+                            <li>"İletişim" linkini test edin</li>
+                            <li>"Nasıl Çalışır" linkini test edin</li>
+                        </ul>
+                    </li>
+                    <li><strong>Mobil Test:</strong>
+                        <ul>
+                            <li>Tarayıcıda F12 basın</li>
+                            <li>Mobile view'e geçin</li>
+                            <li>Site responsive mı?</li>
+                            <li>Menü çalışıyor mu?</li>
+                        </ul>
+                    </li>
+                    <li><strong>Hız Test:</strong>
+                        <ul>
+                            <li>Sayfa hızlı yükleniyor mu?</li>
+                            <li>Resimler görünüyor mu?</li>
+                            <li>CSS stilleri yüklendi mi?</li>
+                        </ul>
+                    </li>
+                </ol>
+            </div>
+
+            <div class="important-note">
+                <h4>⚠️ Yaygın Test Sorunları</h4>
+                <ul>
+                    <li><strong>404 Error:</strong> public klasörünü değil, içeriğini yüklemişsiniz</li>
+                    <li><strong>Beyaz sayfa:</strong> index.html bulunamıyor</li>
+                    <li><strong>CSS yok:</strong> assets klasörü eksik</li>
+                    <li><strong>Navigation 404:</strong> React router ayarları eksik</li>
+                </ul>
+                <p><strong>Çözüm:</strong> netlify.toml dosyası redirect ayarlarını içeriyor</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>🌐 Bölüm 2: Custom Domain (www.finrasyo.com)</h2>
+            
+            <div class="step-list">
+                <h3>Adım 1: Netlify Domain Ayarları</h3>
+                <ol>
+                    <li>Netlify site dashboard'ınızda <strong>"Site settings"</strong> tıklayın</li>
+                    <li>Sol menüden <strong>"Domain management"</strong> seçin</li>
+                    <li><strong>"Add custom domain"</strong> butonuna tıklayın</li>
+                    <li><strong>"www.finrasyo.com"</strong> yazın ve Enter'a basın</li>
+                    <li><strong>"Yes, add domain"</strong> onaylayın</li>
+                </ol>
+            </div>
+
+            <div class="success-indicator">
+                <h4>📋 Netlify Size DNS Bilgileri Verecek</h4>
+                <p>Domain eklendikten sonra şu bilgileri göreceksiniz:</p>
+                <div class="dns-settings">
+# Netlify DNS Ayarları
+CNAME: www.finrasyo.com → amazing-butterfly-12345.netlify.app
+A Record: finrasyo.com → 75.2.60.5
+                </div>
+            </div>
+
+            <div class="step-list">
+                <h3>Adım 2: Cloudflare DNS Ayarları</h3>
+                <ol>
+                    <li><strong>Cloudflare Dashboard</strong>'a gidin</li>
+                    <li><strong>DNS</strong> → <strong>Records</strong> seçin</li>
+                    <li>Mevcut <strong>www</strong> A record'unu bulun</li>
+                    <li><strong>Edit</strong> tıklayın</li>
+                    <li><strong>Target</strong>: amazing-butterfly-12345.netlify.app</li>
+                    <li><strong>Proxy status</strong>: DNS Only (gri bulut)</li>
+                    <li><strong>Save</strong> tıklayın</li>
+                </ol>
+            </div>
+
+            <div class="cloudflare-panel">
+                <h4>🔧 Cloudflare DNS Ayar Detayları</h4>
+                <p><strong>Eski ayar (silinecek):</strong></p>
+                <p>Type: A | Name: www | Content: 88.99.123.45 | Proxy: ON</p>
+                <p><strong>Yeni ayar:</strong></p>
+                <p>Type: CNAME | Name: www | Content: amazing-butterfly-12345.netlify.app | Proxy: OFF</p>
+            </div>
+
+            <div class="step-list">
+                <h3>Adım 3: SSL ve HTTPS</h3>
+                <ol>
+                    <li>DNS değişikliği 15-30 dakika sürer</li>
+                    <li>Netlify otomatik SSL sertifikası oluşturur</li>
+                    <li><strong>"HTTPS certificate provisioned"</strong> mesajını bekleyin</li>
+                    <li>www.finrasyo.com test edin</li>
+                    <li>🔒 simgesi görünmelidir</li>
+                </ol>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>🎯 Bölüm 3: Final Test</h2>
+            
+            <div class="test-checklist">
+                <h3>🏆 Production Test Checklist</h3>
+                <ol>
+                    <li><strong>Domain Test:</strong>
+                        <ul>
+                            <li>www.finrasyo.com açılıyor mu?</li>
+                            <li>SSL aktif mi? (🔒 var mı?)</li>
+                            <li>HTTP otomatik HTTPS'e yönlendiriliyor mu?</li>
+                        </ul>
+                    </li>
+                    <li><strong>Navigation Test:</strong>
+                        <ul>
+                            <li>Tüm navbar linkleri çalışıyor mu?</li>
+                            <li>Sayfalar arası geçiş sorunsuz mu?</li>
+                            <li>Tarayıcı back/forward butonları çalışıyor mu?</li>
+                        </ul>
+                    </li>
+                    <li><strong>Performance Test:</strong>
+                        <ul>
+                            <li>Sayfa yükleme hızı kabul edilebilir mi?</li>
+                            <li>Tüm resimlerde loading animasyonu var mı?</li>
+                            <li>Mobile görünüm optimize mi?</li>
+                        </ul>
+                    </li>
+                    <li><strong>SEO Test:</strong>
+                        <ul>
+                            <li>Sayfa başlığı doğru mu?</li>
+                            <li>Meta description var mı?</li>
+                            <li>Favicon görünüyor mu?</li>
+                        </ul>
+                    </li>
+                </ol>
+            </div>
+        </div>
+
+        <div class="success-indicator">
+            <h3>🎉 Başarı Kriterleri</h3>
+            <p><strong>Deployment başarılı sayılır eğer:</strong></p>
+            <ul>
+                <li>✅ www.finrasyo.com domain'i açılır</li>
+                <li>✅ Navigation problemi tamamen çözülür</li>
+                <li>✅ SSL sertifikası aktif olur</li>
+                <li>✅ Site hızlı yüklenir</li>
+                <li>✅ Mobile responsive çalışır</li>
+                <li>✅ Cloudflare navigation engeli ortadan kalkar</li>
+            </ul>
+        </div>
+
+        <div class="important-note">
+            <h4>🚨 Sorun Yaşarsanız</h4>
+            <ul>
+                <li><strong>DNS propagation:</strong> 24 saate kadar sürebilir</li>
+                <li><strong>SSL pending:</strong> Cloudflare proxy'yi kapatın</li>
+                <li><strong>404 errors:</strong> netlify.toml dosyası eksik</li>
+                <li><strong>Slow loading:</strong> Netlify CDN cache temizleyin</li>
+            </ul>
+        </div>
+
+        <div style="text-align: center; margin-top: 40px; padding: 25px; background: #d4edda; border-radius: 12px; color: #155724;">
+            <h3>🚀 Test Başlatın!</h3>
+            <p><strong>İlk test:</strong> Netlify URL'ini açın</p>
+            <p><strong>Navigation:</strong> Tüm linkleri test edin</p>
+            <p><strong>Domain:</strong> www.finrasyo.com bağlayın</p>
+            <p>Hangi adımı tamamladınız?</p>
+        </div>
+    </div>
+</body>
+</html>

@@ -86,6 +86,7 @@ export default function HomePage() {
                       <div><a href="/free-easy-hosting.html" className="text-amber-600 hover:text-amber-800 font-bold">🌐 Ücretsiz Kolay Hosting</a></div>
                       <div><a href="/netlify-deploy-guide.html" className="text-green-500 hover:text-green-700 font-bold">🚀 Netlify Deployment Rehberi</a></div>
                       <div><a href="/netlify-drag-drop-detailed.html" className="text-emerald-500 hover:text-emerald-700 font-bold">📁 Netlify Drag & Drop Detaylı</a></div>
+                      <div><a href="/netlify-test-domain-guide.html" className="text-blue-500 hover:text-blue-700 font-bold">🧪 Test ve Domain Bağlama</a></div>
                     </div>
                   </div>
                 </div>
