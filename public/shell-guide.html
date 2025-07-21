@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Replit Shell Nasıl Bulunur - FinRasyo</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            line-height: 1.6;
+        }
+        .shell-guide {
+            background: rgba(255,255,255,0.95);
+            color: #333;
+            padding: 40px;
+            border-radius: 15px;
+            margin: 20px 0;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+        .step {
+            background: #f8f9fa;
+            border-left: 5px solid #007bff;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 0 8px 8px 0;
+            position: relative;
+        }
+        .step-number {
+            background: #007bff;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            position: absolute;
+            left: -15px;
+            top: 20px;
+        }
+        .screenshot-box {
+            background: #e9ecef;
+            border: 2px dashed #6c757d;
+            padding: 40px;
+            text-align: center;
+            border-radius: 8px;
+            margin: 15px 0;
+            color: #6c757d;
+            font-style: italic;
+            position: relative;
+        }
+        .mock-interface {
+            background: #2d3748;
+            color: #68d391;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            margin: 10px 0;
+            font-size: 14px;
+        }
+        .success-box {
+            background: #d4edda;
+            border: 2px solid #28a745;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            color: #155724;
+        }
+        .warning-box {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            color: #856404;
+        }
+        .replit-layout {
+            background: #1a1a1a;
+            color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            font-family: monospace;
+        }
+        .tab-bar {
+            background: #333;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            display: flex;
+            gap: 10px;
+        }
+        .tab {
+            background: #555;
+            padding: 5px 15px;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        .tab.active {
+            background: #007bff;
+        }
+        .commands-box {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="shell-guide">
+        <h1>🐚 Replit Shell Bulma Rehberi</h1>
+        <p style="text-align: center; font-size: 1.2em; color: #666;">Git komutlarını çalıştırmak için Shell'i nasıl bulacaksınız</p>
+
+        <h2>📍 Shell Nerede?</h2>
+        
+        <div class="step">
+            <div class="step-number">1</div>
+            <h3>Replit Arayüzünde Shell Tab'ı</h3>
+            <p>Replit editörünüzde, alt kısımda tab'lar var. Bu tab'lardan birisi <strong>"Shell"</strong> yazıyor.</p>
+            
+            <div class="replit-layout">
+                <div class="tab-bar">
+                    <div class="tab">Console</div>
+                    <div class="tab active">Shell</div>
+                    <div class="tab">Files</div>
+                    <div class="tab">Packages</div>
+                </div>
+                <div>
+                    <p>~ $ <span style="color: #68d391;">■</span></p>
+                </div>
+            </div>
+            
+            <p><strong>Shell tab'ına tıklayın!</strong></p>
+        </div>
+
+        <div class="step">
+            <div class="step-number">2</div>
+            <h3>Shell Tab'ı Görünmüyorsa</h3>
+            <p>Bazen Shell tab'ı görünmez. Bu durumda:</p>
+            <ul>
+                <li><strong>+ (Plus)</strong> butonuna tıklayın (tab'ların yanında)</li>
+                <li><strong>"Shell"</strong> seçeneğini bulup tıklayın</li>
+                <li>Yeni Shell tab'ı açılacak</li>
+            </ul>
+        </div>
+
+        <div class="step">
+            <div class="step-number">3</div>
+            <h3>Alternatif: Tools Menüsü</h3>
+            <p>Başka bir yöntem:</p>
+            <ol>
+                <li>Sol sidebar'da <strong>"Tools"</strong> ikonuna tıklayın</li>
+                <li><strong>"Shell"</strong> seçeneğini bulun ve tıklayın</li>
+                <li>Shell açılacak</li>
+            </ol>
+        </div>
+
+        <div class="success-box">
+            <h3>✅ Shell Açıldığında Göreceğiniz</h3>
+            <div class="commands-box">
+~ $ █
+            </div>
+            <p>Bu görünümü gördüğünüz anda hazırsınız! Komutları yazabilirsiniz.</p>
+        </div>
+
+        <h2>🔧 Git Komutları</h2>
+        <div class="step">
+            <div class="step-number">4</div>
+            <h3>Komutları Sırayla Çalıştırın</h3>
+            <p>Shell açıldıktan sonra bu komutları birer birer yazın:</p>
+            
+            <div class="commands-box">
+# 1. Proje klasörüne git
+cd /home/runner/workspace
+
+# 2. Git başlat  
+git init
+
+# 3. GitHub repository bağla (KULLANICI_ADI değiştir)
+git remote add origin https://github.com/KULLANICI_ADI/finrasyo.git
+
+# 4. Dosyaları hazırla
+git add .
+
+# 5. Commit oluştur
+git commit -m "Initial commit: FinRasyo platform"
+
+# 6. Ana branch ayarla
+git branch -M main
+
+# 7. GitHub'a yükle
+git push -u origin main
+            </div>
+        </div>
+
+        <div class="warning-box">
+            <h3>⚠️ Önemli Notlar</h3>
+            <ul>
+                <li><strong>KULLANICI_ADI</strong> yerine GitHub kullanıcı adınızı yazın</li>
+                <li>GitHub username ve password isteyecek</li>
+                <li>Password yerine <strong>Personal Access Token</strong> kullanın</li>
+                <li>Her komutun tamamlanmasını bekleyin</li>
+            </ul>
+        </div>
+
+        <h2>🔑 GitHub Authentication</h2>
+        <div class="step">
+            <div class="step-number">5</div>
+            <h3>Personal Access Token</h3>
+            <p>git push komutunda GitHub şifre isteyecek:</p>
+            <ol>
+                <li>GitHub → Settings → Developer settings</li>
+                <li>Personal access tokens → Tokens (classic)</li>
+                <li>Generate new token</li>
+                <li>repo permissions seç</li>
+                <li>Token'ı kopyala ve password olarak kullan</li>
+            </ol>
+        </div>
+
+        <h2>✅ Başarı Kontrolü</h2>
+        <div class="success-box">
+            <h3>Upload Tamamlandığında</h3>
+            <ul>
+                <li>GitHub repository sayfanızı yenileyin</li>
+                <li>Dosyalarınızın yüklendiğini görün</li>
+                <li>README.md dosyası görünüyor mu kontrol edin</li>
+                <li>client/, server/, shared/ klasörleri var mı bakın</li>
+            </ul>
+            <p><strong>Hepsi tamam ise Vercel setup'a geçin!</strong></p>
+        </div>
+
+        <div style="text-align: center; margin-top: 40px; padding: 20px; background: #d4edda; border-radius: 8px; color: #155724;">
+            <h3>📋 Shell buldunuz mu? Git komutlarını çalıştırmaya başlayın!</h3>
+            <p>Sorun yaşarsanız komut çıktılarını paylaşın.</p>
+        </div>
+    </div>
+</body>
+</html>
