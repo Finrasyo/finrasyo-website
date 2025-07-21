@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Netlify Site Silme ve Yeniden Upload - FinRasyo</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            line-height: 1.6;
+        }
+        .guide {
+            background: rgba(255,255,255,0.95);
+            color: #333;
+            padding: 40px;
+            border-radius: 15px;
+            margin: 20px 0;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #667eea;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+        .step-section {
+            background: #f8f9fa;
+            border: 2px solid #007bff;
+            padding: 25px;
+            margin: 25px 0;
+            border-radius: 12px;
+        }
+        .step-title {
+            background: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-weight: bold;
+            font-size: 18px;
+        }
+        .warning-box {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            color: #856404;
+        }
+        .success-box {
+            background: #d4edda;
+            border: 2px solid #28a745;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            color: #155724;
+        }
+        .screenshot-note {
+            background: #e7f3ff;
+            border: 2px solid #0066cc;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 8px;
+            color: #0066cc;
+            text-align: center;
+        }
+        .file-info {
+            background: #2d3748;
+            color: #68d391;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: monospace;
+            margin: 15px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="guide">
+        <h1>🔄 Site Silme ve Yeniden Upload</h1>
+        <p style="text-align: center; font-size: 1.2em; color: #666;">SSL sorununu çözmek için temiz başlangıç</p>
+
+        <div class="file-info">
+İndirilecek dosya: finrasyo-build-fixed.tar.gz
+Boyut: 1.8MB
+İçerik: dist/public/ + netlify.toml (React Router fix)
+        </div>
+
+        <div class="step-section">
+            <div class="step-title">1️⃣ ADIM: Yeni Dosyayı İndirin</div>
+            <ol>
+                <li>Replit Files panelinde <strong>finrasyo-build-fixed.tar.gz</strong> dosyasını bulun</li>
+                <li>Dosyaya sağ tıklayın → <strong>Download</strong></li>
+                <li>Masaüstüne indirin</li>
+                <li>Dosyayı çift tıklayarak açın</li>
+                <li><strong>dist/public/</strong> klasörünü çıkarın</li>
+            </ol>
+            <div class="success-box">
+                <p><strong>✅ Kontrol:</strong> Çıkarılan klasörde index.html, assets/ ve netlify.toml olmalı</p>
+            </div>
+        </div>
+
+        <div class="step-section">
+            <div class="step-title">2️⃣ ADIM: Mevcut Site'i Silin</div>
+            <ol>
+                <li><strong>netlify.com</strong> → Dashboard'a gidin</li>
+                <li>Mevcut <strong>finrasyo</strong> site'ini bulun</li>
+                <li>Site'in üzerine tıklayın</li>
+                <li><strong>Site settings</strong> butonuna tıklayın</li>
+                <li>En aşağı scroll edin</li>
+                <li><strong>"Danger zone"</strong> bölümünü bulun</li>
+                <li><strong>"Delete this site"</strong> butonuna tıklayın</li>
+                <li>Site adını yazarak onaylayın</li>
+            </ol>
+            <div class="warning-box">
+                <p><strong>⚠️ Uyarı:</strong> Site silinince www.finrasyo.com bağlantısı kesilir. Yeniden bağlamanız gerekir.</p>
+            </div>
+        </div>
+
+        <div class="step-section">
+            <div class="step-title">3️⃣ ADIM: Yeni Site Upload</div>
+            <ol>
+                <li>Netlify ana sayfa → <strong>"Add new site"</strong></li>
+                <li><strong>"Deploy manually"</strong> seçin</li>
+                <li>Mavi drag & drop alanını görün</li>
+                <li><strong>dist/public/</strong> klasörünü sürükleyin</li>
+                <li>Upload başlayacak (2-3 dakika)</li>
+                <li>Yeni otomatik URL alacaksınız</li>
+            </ol>
+            <div class="screenshot-note">
+                <p><strong>📋 Not:</strong> Upload sırasında progress bar göreceksiniz</p>
+            </div>
+        </div>
+
+        <div class="step-section">
+            <div class="step-title">4️⃣ ADIM: Domain Tekrar Bağlayın</div>
+            <ol>
+                <li>Yeni site'in dashboard'ına gidin</li>
+                <li><strong>Site settings</strong> → <strong>Domain management</strong></li>
+                <li><strong>"Add custom domain"</strong></li>
+                <li><strong>"www.finrasyo.com"</strong> yazın</li>
+                <li><strong>"Yes, add domain"</strong> onaylayın</li>
+                <li>DNS bilgilerini kopyalayın</li>
+                <li>Cloudflare'de www record'unu güncelleyin</li>
+            </ol>
+        </div>
+
+        <div class="step-section">
+            <div class="step-title">5️⃣ ADIM: Cloudflare DNS Güncelleme</div>
+            <ol>
+                <li>Cloudflare → DNS → Records</li>
+                <li><strong>"www"</strong> kaydını bulun</li>
+                <li><strong>"Edit"</strong> tıklayın</li>
+                <li><strong>Target:</strong> Yeni Netlify URL'i yazın (örnek: new-amazing-site-12345.netlify.app)</li>
+                <li><strong>Proxy status:</strong> DNS only (gri bulut)</li>
+                <li><strong>"Save"</strong> tıklayın</li>
+            </ol>
+        </div>
+
+        <div class="success-box">
+            <h3>🎯 Beklenen Sonuç (15-30 dakika sonra)</h3>
+            <ul>
+                <li>✅ www.finrasyo.com açılır</li>
+                <li>✅ SSL sertifikası otomatik oluşur</li>
+                <li>✅ Navigation linkler çalışır (netlify.toml sayesinde)</li>
+                <li>✅ Hakkımızda, İletişim, Nasıl Çalışır sayfaları açılır</li>
+            </ul>
+        </div>
+
+        <div class="warning-box">
+            <h4>🚨 Önemli Notlar</h4>
+            <ul>
+                <li><strong>DNS propagation:</strong> 15-30 dakika sürebilir</li>
+                <li><strong>SSL oluşma:</strong> Domain aktif olduktan sonra otomatik</li>
+                <li><strong>Test yöntemi:</strong> Önce Netlify URL, sonra www.finrasyo.com</li>
+                <li><strong>Sorun olursa:</strong> 24 saat bekleyin veya Netlify support'a yazın</li>
+            </ul>
+        </div>
+
+        <div style="text-align: center; margin-top: 40px; padding: 25px; background: #d4edda; border-radius: 12px; color: #155724;">
+            <h3>🚀 Başlayın!</h3>
+            <p><strong>1.</strong> finrasyo-build-fixed.tar.gz indirin</p>
+            <p><strong>2.</strong> Eski site'i silin</p>
+            <p><strong>3.</strong> Yeni upload yapın</p>
+            <p><strong>4.</strong> Domain bağlayın</p>
+            <p>Hangi adımdasınız?</p>
+        </div>
+    </div>
+</body>
+</html>
