@@ -73,6 +73,7 @@ export default function HomePage() {
                       <div><a href="https://www.finrasyo.com/about" className="text-blue-600 hover:text-blue-800">About</a></div>
                       <div><a href="https://www.finrasyo.com/contact" className="text-blue-600 hover:text-blue-800">Contact</a></div>
                       <div><a href="https://www.finrasyo.com/how-it-works" className="text-blue-600 hover:text-blue-800">How it works</a></div>
+                      <div><a href="/meta-refresh-test.html" className="text-purple-600 hover:text-purple-800 font-bold">🚀 Meta Refresh Test</a></div>
                     </div>
                   </div>
                 </div>

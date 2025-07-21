@@ -748,6 +748,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Server redirect endpoints for testing
+  app.get('/redirect/about', (req, res) => {
+    res.redirect(302, 'https://www.finrasyo.com/about');
+  });
+  
+  app.get('/redirect/contact', (req, res) => {
+    res.redirect(302, 'https://www.finrasyo.com/contact');
+  });
+  
+  app.get('/redirect/how-it-works', (req, res) => {
+    res.redirect(302, 'https://www.finrasyo.com/how-it-works');
+  });
+
   const httpServer = createServer(app);
 
   return httpServer;

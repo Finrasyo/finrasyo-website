@@ -3,80 +3,144 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Meta Refresh Test - FinRasyo</title>
+    <title>Meta Refresh Navigation Test - FinRasyo</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             max-width: 800px;
             margin: 0 auto;
             padding: 20px;
-            background: #f5f5f5;
+            background: #9c27b0;
+            color: white;
+            min-height: 100vh;
         }
-        .container {
+        .test-box {
             background: white;
+            color: #333;
             padding: 30px;
             border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin: 20px 0;
         }
-        .nav-links {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
+        h1 {
+            text-align: center;
+            font-size: 3em;
             margin-bottom: 30px;
         }
-        .nav-links a {
-            display: block;
-            padding: 15px 20px;
-            background: #007bff;
+        .method {
+            background: #333;
             color: white;
-            text-decoration: none;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 8px;
+        }
+        button, a {
+            background: #9c27b0;
+            color: white;
+            padding: 15px 25px;
+            border: none;
             border-radius: 5px;
-            text-align: center;
+            cursor: pointer;
+            margin: 10px;
+            text-decoration: none;
+            display: inline-block;
             font-weight: bold;
         }
-        .countdown {
-            font-size: 24px;
+        button:hover, a:hover {
+            background: #7b1fa2;
+        }
+        .critical {
+            background: #ff5722;
+            color: white;
             font-weight: bold;
-            color: #007bff;
+            padding: 20px;
+            border-radius: 8px;
             text-align: center;
             margin: 20px 0;
+        }
+        .countdown {
+            font-size: 2em;
+            font-weight: bold;
+            color: #ff5722;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>🚀 Meta Refresh Navigation Test</h1>
-        
-        <div class="nav-links">
-            <a href="javascript:void(0)" onclick="redirectTo('/')">🏠 Ana Sayfa</a>
-            <a href="javascript:void(0)" onclick="redirectTo('/about')">📄 Hakkımızda</a>
-            <a href="javascript:void(0)" onclick="redirectTo('/how-it-works')">⚙️ Nasıl Çalışır</a>
-            <a href="javascript:void(0)" onclick="redirectTo('/contact')">📧 İletişim</a>
-        </div>
-        
-        <div id="countdown" class="countdown" style="display: none;"></div>
+    <h1>🚀 META REFRESH TEST</h1>
+    
+    <div class="critical">
+        META REFRESH: Server-side HTTP yönlendirme testi<br>
+        Cloudflare proxy bypass için son çare yöntem
     </div>
-
+    
+    <div class="method">
+        <h3>Method 1: Meta Refresh (Instant)</h3>
+        <button onclick="metaRefresh('/about', 0)">Hakkımızda (Anında)</button>
+        <button onclick="metaRefresh('/contact', 0)">İletişim (Anında)</button>
+        <button onclick="metaRefresh('/how-it-works', 0)">Nasıl Çalışır (Anında)</button>
+    </div>
+    
+    <div class="method">
+        <h3>Method 2: Meta Refresh (2 saniye)</h3>
+        <button onclick="metaRefresh('/about', 2)">Hakkımızda (2sn)</button>
+        <button onclick="metaRefresh('/contact', 2)">İletişim (2sn)</button>
+        <button onclick="metaRefresh('/how-it-works', 2)">Nasıl Çalışır (2sn)</button>
+    </div>
+    
+    <div class="method">
+        <h3>Method 3: Server Redirect</h3>
+        <a href="/redirect/about">Hakkımızda (Server)</a>
+        <a href="/redirect/contact">İletişim (Server)</a>
+        <a href="/redirect/how-it-works">Nasıl Çalışır (Server)</a>
+    </div>
+    
+    <div class="test-box">
+        <h3>Test Sonuçları:</h3>
+        <p>1. Meta refresh çalışırsa: Cloudflare proxy HTML yönlendirmelerine izin veriyor</p>
+        <p>2. Server redirect çalışırsa: HTTP 302 redirections çalışıyor</p>
+        <p>3. Hiçbiri çalışmazsa: Tamamen static content gerekli</p>
+        
+        <div id="countdown" class="countdown" style="display: none;">
+            Yönlendirme: <span id="seconds">3</span> saniye
+        </div>
+    </div>
+    
     <script>
-        function redirectTo(url) {
-            const countdownEl = document.getElementById('countdown');
-            countdownEl.style.display = 'block';
+        function metaRefresh(url, delay) {
+            const fullUrl = 'https://www.finrasyo.com' + url;
+            console.log('Meta refresh to:', fullUrl, 'delay:', delay);
             
-            let seconds = 3;
-            const interval = setInterval(() => {
-                countdownEl.textContent = `Yönlendiriliyor... ${seconds}`;
-                seconds--;
+            if (delay > 0) {
+                // Show countdown
+                document.getElementById('countdown').style.display = 'block';
+                let remaining = delay;
+                document.getElementById('seconds').textContent = remaining;
                 
-                if (seconds < 0) {
-                    clearInterval(interval);
-                    // Meta refresh ile yönlendirme
-                    const meta = document.createElement('meta');
-                    meta.httpEquiv = 'refresh';
-                    meta.content = '0; url=' + url;
-                    document.head.appendChild(meta);
+                const interval = setInterval(() => {
+                    remaining--;
+                    document.getElementById('seconds').textContent = remaining;
+                    if (remaining <= 0) {
+                        clearInterval(interval);
+                    }
+                }, 1000);
+            }
+            
+            // Create meta refresh tag
+            const meta = document.createElement('meta');
+            meta.httpEquiv = 'refresh';
+            meta.content = delay + '; url=' + fullUrl;
+            document.head.appendChild(meta);
+            
+            // Alternative: direct location change after delay
+            setTimeout(() => {
+                try {
+                    window.location.href = fullUrl;
+                } catch (e) {
+                    console.error('Location change failed:', e);
                 }
-            }, 1000);
+            }, delay * 1000 + 100);
         }
+        
+        console.log('Meta refresh test loaded');
     </script>
 </body>
 </html>
