@@ -135,3 +135,4 @@ Preferred communication style: Simple, everyday language.
 - **PROBLEM**: Nested `<a>` tags from React Router causing navigation failure
 - **CRITICAL FIX**: Navbar converted to HTML form submission - bypassing all JavaScript
 - **EMERGENCY FIX**: Server-side routing added - serving pages directly from Express server
+- **ABSOLUTE URL FIX**: All navbar and footer links converted to https://www.finrasyo.com/path format

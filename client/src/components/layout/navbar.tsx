@@ -80,23 +80,23 @@ export default function Navbar() {
         <div className="flex justify-between h-16">
           <div className="flex">
             <div className="flex-shrink-0 flex items-center">
-              <a href="/" className="text-primary font-bold text-xl no-underline">
+              <a href="https://www.finrasyo.com/" className="text-primary font-bold text-xl no-underline">
                 FinRasyo
               </a>
             </div>
             <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
               {navLinks.map((link) => (
-                <form key={link.label} method="GET" action={link.href} style={{display: 'inline'}}>
-                  <input 
-                    type="submit" 
-                    value={link.label}
-                    className={`${
-                      link.active 
-                        ? "border-primary text-neutral-800 border-b-2" 
-                        : "border-transparent text-neutral-600 hover:border-neutral-300 hover:text-neutral-800 border-b-2"
-                    } inline-flex items-center px-1 pt-1 text-sm font-medium cursor-pointer bg-transparent border-0 border-b-2`}
-                  />
-                </form>
+                <a 
+                  key={link.label} 
+                  href={`https://www.finrasyo.com${link.href}`}
+                  className={`${
+                    link.active 
+                      ? "border-primary text-neutral-800 border-b-2" 
+                      : "border-transparent text-neutral-600 hover:border-neutral-300 hover:text-neutral-800 border-b-2"
+                  } inline-flex items-center px-1 pt-1 text-sm font-medium no-underline`}
+                >
+                  {link.label}
+                </a>
               ))}
             </div>
           </div>
@@ -108,7 +108,7 @@ export default function Navbar() {
                   Bakiye: <strong>{formatCurrency(user.credits)}</strong>
                 </span>
                 
-                <a href="/credits" className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2 no-underline">
+                <a href="https://www.finrasyo.com/credits" className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2 no-underline">
                   Bakiye Yükle
                 </a>
                 
@@ -149,7 +149,7 @@ export default function Navbar() {
               </div>
             ) : (
               <div className="flex items-center space-x-4">
-                <a href="/auth" className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2 no-underline">
+                <a href="https://www.finrasyo.com/auth" className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2 no-underline">
                   Giriş Yap
                 </a>
               </div>
@@ -168,7 +168,7 @@ export default function Navbar() {
                   {navLinks.map((link) => (
                     <a 
                       key={link.label} 
-                      href={link.href}
+                      href={`https://www.finrasyo.com${link.href}`}
                       className={`${
                         link.active 
                           ? "bg-primary-50 text-primary-600" 
@@ -194,11 +194,11 @@ export default function Navbar() {
                         </div>
                       </div>
                       <div className="mt-3 px-2 space-y-1">
-                        <a href="/profile" className="block px-3 py-2 rounded-md text-base font-medium text-neutral-600 hover:bg-neutral-50 hover:text-neutral-800">
+                        <a href="https://www.finrasyo.com/profile" className="block px-3 py-2 rounded-md text-base font-medium text-neutral-600 hover:bg-neutral-50 hover:text-neutral-800">
                           Profil
                         </a>
                         {user.role === 'admin' && (
-                          <a href="/admin" onClick={() => setIsOpen(false)} className="block px-3 py-2 rounded-md text-base font-medium text-neutral-600 hover:bg-neutral-50 hover:text-neutral-800">
+                          <a href="https://www.finrasyo.com/admin" onClick={() => setIsOpen(false)} className="block px-3 py-2 rounded-md text-base font-medium text-neutral-600 hover:bg-neutral-50 hover:text-neutral-800">
                             <div className="flex items-center">
                               <UserCog className="mr-2 h-4 w-4" />
                               <span>Admin Paneli</span>
@@ -208,7 +208,7 @@ export default function Navbar() {
                         <div className="block px-3 py-2 rounded-md text-base font-medium text-neutral-600">
                           Bakiye: <strong>{formatCurrency(user.credits)}</strong>
                         </div>
-                        <a href="/credits" className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2 no-underline w-full my-2">
+                        <a href="https://www.finrasyo.com/credits" className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2 no-underline w-full my-2">
                           Bakiye Yükle
                         </a>
                         <Button 
@@ -224,7 +224,7 @@ export default function Navbar() {
                   ) : (
                     <div className="pt-4 pb-3 border-t border-neutral-200">
                       <div className="px-2 space-y-1">
-                        <a href="/auth" onClick={() => setIsOpen(false)} className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2 no-underline w-full">
+                        <a href="https://www.finrasyo.com/auth" onClick={() => setIsOpen(false)} className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2 no-underline w-full">
                           Giriş Yap
                         </a>
                       </div>

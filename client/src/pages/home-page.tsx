@@ -130,7 +130,7 @@ export default function HomePage() {
               {/* CRITICAL NAVIGATION FIX */}
               <div className="bg-blue-100 border-4 border-blue-600 rounded-lg p-6 max-w-2xl mx-auto shadow-lg">
                 <h3 className="font-bold text-blue-800 mb-4 text-lg">🔧 NAVBAR FIX UYGULANDI</h3>
-                <p className="text-blue-700 mb-4 text-sm">SERVER-SIDE ROUTING eklendi - Cloudflare bypass</p>
+                <p className="text-blue-700 mb-4 text-sm">ABSOLUTE URL links eklendi - Direct navigation fix</p>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <h4 className="font-bold text-red-800 mb-2">HTML Forms:</h4>
