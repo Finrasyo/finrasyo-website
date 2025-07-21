@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cloudflare DNS Düzeltme - FinRasyo</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+            color: white;
+            line-height: 1.6;
+        }
+        .dns-guide {
+            background: rgba(255,255,255,0.95);
+            color: #333;
+            padding: 40px;
+            border-radius: 15px;
+            margin: 20px 0;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #ff6b35;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+        .error-box {
+            background: #f8d7da;
+            border: 2px solid #dc3545;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            color: #721c24;
+        }
+        .fix-steps {
+            background: #d4edda;
+            border: 2px solid #28a745;
+            padding: 25px;
+            margin: 20px 0;
+            border-radius: 8px;
+            color: #155724;
+        }
+        .dns-settings {
+            background: #2d3748;
+            color: #68d391;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: monospace;
+            margin: 15px 0;
+        }
+        .warning-box {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            color: #856404;
+        }
+    </style>
+</head>
+<body>
+    <div class="dns-guide">
+        <h1>🔧 DNS Düzeltme Rehberi</h1>
+        
+        <div class="error-box">
+            <h3>❌ Hata: DNS verification failed</h3>
+            <p><strong>Sorun:</strong> "finrasyo.com doesn't appear to be served by Netlify"</p>
+            <p><strong>Sebep:</strong> Cloudflare DNS ayarları yanlış veya proxy aktif</p>
+        </div>
+
+        <div class="fix-steps">
+            <h3>🚀 ADIM ADIM ÇÖZÜM</h3>
+            <ol>
+                <li><strong>Cloudflare Dashboard'a gidin</strong></li>
+                <li><strong>finrasyo.com domain'ini seçin</strong></li>
+                <li><strong>DNS → Records</strong> sekmesine gidin</li>
+                <li><strong>"www" kaydını bulun</strong></li>
+                <li><strong>"Edit" butonuna tıklayın</strong></li>
+                <li><strong>Aşağıdaki ayarları yapın:</strong></li>
+            </ol>
+        </div>
+
+        <div class="dns-settings">
+DOĞRU CLOUDFLARE AYARLARI:
+
+Type: CNAME
+Name: www
+Target: [NETLIFY-URL].netlify.app
+TTL: Auto
+Proxy status: DNS only (GRİ BULUT - ÖNEMLİ!)
+
+YANLIŞ AYAR:
+Proxy status: Proxied (TURUNCU BULUT)
+        </div>
+
+        <div class="warning-box">
+            <h3>⚠️ Kritik Noktalar</h3>
+            <ul>
+                <li><strong>Proxy KAPALI olmalı:</strong> Gri bulut simgesi</li>
+                <li><strong>Target doğru olmalı:</strong> Netlify URL'iniz</li>
+                <li><strong>Type CNAME olmalı:</strong> A record değil</li>
+                <li><strong>Name "www" olmalı:</strong> @ veya finrasyo.com değil</li>
+            </ul>
+        </div>
+
+        <div style="background: #e7f3ff; border: 2px solid #0066cc; padding: 25px; margin: 20px 0; border-radius: 8px; color: #0066cc;">
+            <h3>📋 Netlify URL Nasıl Bulunur</h3>
+            <ol>
+                <li>Netlify dashboard → Sites</li>
+                <li>Site'inizi bulun</li>
+                <li>Site adına tıklayın</li>
+                <li>URL'i kopyalayın (örnek: amazing-butterfly-12345.netlify.app)</li>
+                <li>Bu URL'i Cloudflare'de Target olarak kullanın</li>
+            </ol>
+        </div>
+
+        <div class="fix-steps">
+            <h3>✅ Ayarları Yaptıktan Sonra</h3>
+            <ol>
+                <li><strong>"Save" butonuna tıklayın</strong></li>
+                <li><strong>5-10 dakika bekleyin</strong> (DNS propagation)</li>
+                <li><strong>Netlify'e geri dönün</strong></li>
+                <li><strong>"Retry DNS verification" butonuna tıklayın</strong></li>
+                <li><strong>Başarılı olursa SSL otomatik başlayacak</strong></li>
+            </ol>
+        </div>
+
+        <div style="text-align: center; margin-top: 40px; padding: 25px; background: #d4edda; border-radius: 12px; color: #155724;">
+            <h3>🎯 Hemen Yapın</h3>
+            <p><strong>1.</strong> Cloudflare → DNS → www kaydını edit edin</p>
+            <p><strong>2.</strong> Proxy'yi kapatın (gri bulut)</p>
+            <p><strong>3.</strong> Target'ı Netlify URL yapın</p>
+            <p><strong>4.</strong> 10 dakika bekleyin</p>
+            <p><strong>5.</strong> Netlify'de "Retry DNS verification"</p>
+        </div>
+    </div>
+</body>
+</html>
