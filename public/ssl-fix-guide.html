@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SSL Sorunu Çözümü - FinRasyo</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+            color: white;
+            line-height: 1.6;
+        }
+        .ssl-guide {
+            background: rgba(255,255,255,0.95);
+            color: #333;
+            padding: 40px;
+            border-radius: 15px;
+            margin: 20px 0;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #ff6b35;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+        .error-box {
+            background: #f8d7da;
+            border: 2px solid #dc3545;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            color: #721c24;
+        }
+        .solution-box {
+            background: #d1ecf1;
+            border: 2px solid #0c5460;
+            padding: 25px;
+            margin: 20px 0;
+            border-radius: 8px;
+            color: #0c5460;
+        }
+        .steps {
+            background: #f8f9fa;
+            border-left: 4px solid #007bff;
+            padding: 20px;
+            margin: 15px 0;
+        }
+        .urgent-fix {
+            background: #fff3cd;
+            border: 2px solid #856404;
+            padding: 25px;
+            margin: 20px 0;
+            border-radius: 8px;
+            color: #856404;
+        }
+    </style>
+</head>
+<body>
+    <div class="ssl-guide">
+        <h1>🔒 SSL Sertifikası Sorunu</h1>
+        
+        <div class="error-box">
+            <h3>❌ Hata: NET::ERR_CERT_COMMON_NAME_INVALID</h3>
+            <p><strong>Sorun:</strong> www.finrasyo.com için SSL sertifikası henüz oluşmadı</p>
+            <p><strong>Sebep:</strong> Netlify henüz domain'i doğrulayamadı veya DNS propagation tamamlanmadı</p>
+        </div>
+
+        <div class="solution-box">
+            <h3>🚀 ÇÖZÜM 1: Netlify Yeniden Upload (Önerilen)</h3>
+            <p><strong>En hızlı çözüm - yeni paket ile:</strong></p>
+            <ol>
+                <li>finrasyo-build-fixed.tar.gz dosyasını indirin</li>
+                <li>Netlify'de mevcut site'i silin</li>
+                <li>Yeni paketi drag & drop edin</li>
+                <li>Domain tekrar bağlayın (15 dakika)</li>
+                <li>SSL otomatik oluşacak</li>
+            </ol>
+        </div>
+
+        <div class="steps">
+            <h3>🔧 ÇÖZÜM 2: Cloudflare DNS Düzeltme</h3>
+            <p><strong>Mevcut site'i koruyarak:</strong></p>
+            <ol>
+                <li>Cloudflare → DNS Records</li>
+                <li>www kaydının Proxy Status'unu kontrol edin</li>
+                <li>Gri bulut olduğundan emin olun (DNS Only)</li>
+                <li>Target'ın doğru Netlify URL olduğunu kontrol edin</li>
+                <li>24 saat bekleyin</li>
+            </ol>
+        </div>
+
+        <div class="urgent-fix">
+            <h3>⚡ HIZLI TEST: Netlify URL'i Deneyin</h3>
+            <p><strong>SSL sorunu olup olmadığını anlamak için:</strong></p>
+            <ol>
+                <li>Netlify dashboard'a gidin</li>
+                <li>Site'inizin otomatik URL'ini bulun (örnek: amazing-butterfly-12345.netlify.app)</li>
+                <li>Bu URL'e gidin</li>
+                <li>Navigation test edin</li>
+            </ol>
+            <p><strong>Eğer Netlify URL'de navigation çalışıyorsa:</strong> SSL sorunu, domain sorunu değil</p>
+            <p><strong>Eğer navigation çalışmıyorsa:</strong> netlify.toml sorunu - yeni upload gerekli</p>
+        </div>
+
+        <div style="text-align: center; margin-top: 40px; padding: 25px; background: #d4edda; border-radius: 12px; color: #155724;">
+            <h3>🎯 Hangisini Tercih Ediyorsunuz?</h3>
+            <p><strong>Seçenek A:</strong> Yeni upload (finrasyo-build-fixed.tar.gz) - 30 dakika</p>
+            <p><strong>Seçenek B:</strong> DNS beklemek - 24 saate kadar</p>
+            <p><strong>Seçenek C:</strong> Önce Netlify URL test - 5 dakika</p>
+        </div>
+    </div>
+</body>
+</html>
