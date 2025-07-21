@@ -84,6 +84,7 @@ export default function HomePage() {
                       <div><a href="/shell-guide.html" className="text-teal-600 hover:text-teal-800 font-bold">🐚 Replit Shell Nasıl Bulunur</a></div>
                       <div><a href="/easy-github-upload.html" className="text-cyan-600 hover:text-cyan-800 font-bold">📁 Kolay GitHub Upload</a></div>
                       <div><a href="/free-easy-hosting.html" className="text-amber-600 hover:text-amber-800 font-bold">🌐 Ücretsiz Kolay Hosting</a></div>
+                      <div><a href="/netlify-deploy-guide.html" className="text-green-500 hover:text-green-700 font-bold">🚀 Netlify Deployment Rehberi</a></div>
                     </div>
                   </div>
                 </div>
