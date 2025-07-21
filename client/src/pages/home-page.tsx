@@ -78,6 +78,7 @@ export default function HomePage() {
                       <div><a href="/final-emergency-nav.html" className="text-red-600 hover:text-red-800 font-bold">🚨 Emergency Navigation</a></div>
                       <div><a href="/cloudflare-fix-guide.html" className="text-green-600 hover:text-green-800 font-bold">🛠️ Cloudflare Fix Guide</a></div>
                       <div><a href="/dns-only-guide.html" className="text-emerald-600 hover:text-emerald-800 font-bold">⚡ DNS Only Mode Rehberi</a></div>
+                      <div><a href="/cdn-explanation.html" className="text-blue-600 hover:text-blue-800 font-bold">📚 CDN Nedir?</a></div>
                     </div>
                   </div>
                 </div>
