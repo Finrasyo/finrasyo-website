@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cloudflare Netlify Hata Çözümleri - FinRasyo</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            line-height: 1.6;
+        }
+        .error-guide {
+            background: rgba(255,255,255,0.95);
+            color: #333;
+            padding: 40px;
+            border-radius: 15px;
+            margin: 20px 0;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #667eea;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+        .error-case {
+            background: #f8f9fa;
+            border: 2px solid #dc3545;
+            padding: 25px;
+            margin: 25px 0;
+            border-radius: 8px;
+        }
+        .solution {
+            background: #d4edda;
+            border: 2px solid #28a745;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 8px;
+            color: #155724;
+        }
+        .netlify-url-format {
+            background: #2d3748;
+            color: #68d391;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: monospace;
+            margin: 15px 0;
+        }
+        .warning-box {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            color: #856404;
+        }
+    </style>
+</head>
+<body>
+    <div class="error-guide">
+        <h1>⚠️ Cloudflare Netlify Hataları</h1>
+        
+        <div class="error-case">
+            <h3>❌ HATA 1: "Invalid target hostname"</h3>
+            <p><strong>Sebep:</strong> Netlify URL formatı yanlış</p>
+            <div class="solution">
+                <h4>✅ ÇÖZÜM:</h4>
+                <p>Doğru format kullanın:</p>
+                <div class="netlify-url-format">
+YANLIŞ: https://site-name.netlify.app
+DOĞRU: site-name.netlify.app
+
+YANLIŞ: www.site-name.netlify.app  
+DOĞRU: site-name.netlify.app
+                </div>
+                <p>Sadece domain adı, https:// veya www olmadan</p>
+            </div>
+        </div>
+
+        <div class="error-case">
+            <h3>❌ HATA 2: "CNAME target cannot be an IP address"</h3>
+            <p><strong>Sebep:</strong> IP adresi girmeye çalışıyorsunuz</p>
+            <div class="solution">
+                <h4>✅ ÇÖZÜM:</h4>
+                <ul>
+                    <li>IP adresi değil, Netlify domain kullanın</li>
+                    <li>Netlify dashboard'da site URL'inizi bulun</li>
+                    <li>.netlify.app uzantılı adresi kullanın</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="error-case">
+            <h3>❌ HATA 3: "Target hostname already exists"</h3>
+            <p><strong>Sebep:</strong> Aynı domain başka yerde kullanılıyor</p>
+            <div class="solution">
+                <h4>✅ ÇÖZÜM:</h4>
+                <ol>
+                    <li>Mevcut "www" kaydını silin</li>
+                    <li>5 dakika bekleyin</li>
+                    <li>Yeni CNAME kaydı oluşturun</li>
+                    <li>Name: www, Target: netlify-url</li>
+                </ol>
+            </div>
+        </div>
+
+        <div class="error-case">
+            <h3>❌ HATA 4: "Cannot resolve target hostname"</h3>
+            <p><strong>Sebep:</strong> Netlify URL yanlış yazılmış</p>
+            <div class="solution">
+                <h4>✅ ÇÖZÜM:</h4>
+                <p>Netlify URL'i doğru şekilde kopyalayın:</p>
+                <ol>
+                    <li>Netlify → Sites → Site'inize tıklayın</li>
+                    <li>Site URL'ini kopyalayın</li>
+                    <li>.netlify.app ile bittiğinden emin olun</li>
+                    <li>Typo olmadığından emin olun</li>
+                </ol>
+            </div>
+        </div>
+
+        <div class="warning-box">
+            <h3>📋 Netlify URL Nasıl Bulunur</h3>
+            <ol>
+                <li><strong>Netlify.com</strong> → Dashboard</li>
+                <li><strong>Sites</strong> sekmesine gidin</li>
+                <li>Site'inizin adına tıklayın</li>
+                <li>URL'i kopyalayın (örnek: happy-einstein-123456.netlify.app)</li>
+                <li>Bu URL'i Cloudflare'de Target olarak kullanın</li>
+            </ol>
+        </div>
+
+        <div style="text-align: center; margin-top: 40px; padding: 25px; background: #e7f3ff; border-radius: 12px; color: #0066cc;">
+            <h3>🎯 Doğru Cloudflare Ayarı</h3>
+            <div class="netlify-url-format">
+Type: CNAME
+Name: www
+Target: [site-name].netlify.app
+Proxy: DNS only (gri bulut)
+            </div>
+            <p>Hangi hatayı alıyorsunuz? Yukarıdakilerden hangisi?</p>
+        </div>
+    </div>
+</body>
+</html>
