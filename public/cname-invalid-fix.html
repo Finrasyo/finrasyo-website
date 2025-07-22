@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CNAME Invalid Hatası Çözümü - FinRasyo</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+            color: white;
+            line-height: 1.6;
+        }
+        .fix-guide {
+            background: rgba(255,255,255,0.95);
+            color: #333;
+            padding: 40px;
+            border-radius: 15px;
+            margin: 20px 0;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #ff6b35;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+        .error-box {
+            background: #f8d7da;
+            border: 2px solid #dc3545;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            color: #721c24;
+        }
+        .solution-box {
+            background: #d4edda;
+            border: 2px solid #28a745;
+            padding: 25px;
+            margin: 20px 0;
+            border-radius: 8px;
+            color: #155724;
+        }
+        .format-examples {
+            background: #2d3748;
+            color: #68d391;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: monospace;
+            margin: 15px 0;
+        }
+        .steps {
+            background: #e7f3ff;
+            border: 2px solid #0066cc;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            color: #0066cc;
+        }
+    </style>
+</head>
+<body>
+    <div class="fix-guide">
+        <h1>🔧 CNAME Invalid Hatası</h1>
+        
+        <div class="error-box">
+            <h3>❌ Hata: "Content for CNAME record is invalid"</h3>
+            <p><strong>Sebep:</strong> Netlify URL'i yanlış formatta girdiniz</p>
+            <p><strong>Çözüm:</strong> Doğru format kullanmanız gerekiyor</p>
+        </div>
+
+        <div class="format-examples">
+YANLIŞ FORMATLAR:
+❌ https://site-name.netlify.app
+❌ http://site-name.netlify.app  
+❌ www.site-name.netlify.app
+❌ site-name.netlify.app/
+
+DOĞRU FORMAT:
+✅ site-name.netlify.app
+        </div>
+
+        <div class="solution-box">
+            <h3>✅ ADIM ADIM ÇÖZÜM</h3>
+            <ol>
+                <li><strong>Netlify dashboard'a gidin</strong></li>
+                <li><strong>Sites sekmesinde site'inizi bulun</strong></li>
+                <li><strong>Site URL'ini kopyalayın</strong></li>
+                <li><strong>URL'den sadece domain kısmını alın</strong></li>
+                <li><strong>Cloudflare'de bu domain'i Target olarak girin</strong></li>
+            </ol>
+        </div>
+
+        <div class="steps">
+            <h3>📋 Netlify URL Kopyalama</h3>
+            <p><strong>Netlify'de görünen URL örneği:</strong></p>
+            <div class="format-examples">
+https://amazing-butterfly-123456.netlify.app
+            </div>
+            <p><strong>Cloudflare'de Target kutusuna yazacağınız:</strong></p>
+            <div class="format-examples">
+amazing-butterfly-123456.netlify.app
+            </div>
+            <p><strong>Yani:</strong> https:// ve sonundaki / işaretlerini kaldırın</p>
+        </div>
+
+        <div class="solution-box">
+            <h3>🎯 Cloudflare'de Doğru Ayar</h3>
+            <div class="format-examples">
+Type: CNAME
+Name: www
+Content/Target: [site-name].netlify.app
+Proxy status: DNS only (gri bulut)
+TTL: Auto
+            </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 40px; padding: 25px; background: #fff3cd; border-radius: 12px; color: #856404;">
+            <h3>🚀 Şimdi Yapın</h3>
+            <p><strong>1.</strong> Netlify dashboard → Sites → URL kopyalayın</p>
+            <p><strong>2.</strong> URL'den https:// ve sondaki / kaldırın</p>
+            <p><strong>3.</strong> Cloudflare'de Target kutusuna yapıştırın</p>
+            <p><strong>4.</strong> Save tıklayın</p>
+            <p>Netlify URL'inizi doğru formatta girmeyi deneyin!</p>
+        </div>
+    </div>
+</body>
+</html>
