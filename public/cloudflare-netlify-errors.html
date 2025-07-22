@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cloudflare Netlify Hata Çözümleri - FinRasyo</title>
+    <title>Cloudflare DNS Hatası Çözümü - FinRasyo</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            max-width: 900px;
+            max-width: 800px;
             margin: 0 auto;
             padding: 20px;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -24,26 +24,27 @@
         }
         h1 {
             text-align: center;
-            color: #667eea;
+            color: #dc3545;
             margin-bottom: 30px;
             font-size: 2.5em;
         }
-        .error-case {
-            background: #f8f9fa;
+        .error-box {
+            background: #f8d7da;
             border: 2px solid #dc3545;
             padding: 25px;
             margin: 25px 0;
             border-radius: 8px;
+            color: #721c24;
         }
-        .solution {
+        .solution-box {
             background: #d4edda;
             border: 2px solid #28a745;
-            padding: 20px;
-            margin: 15px 0;
+            padding: 25px;
+            margin: 25px 0;
             border-radius: 8px;
             color: #155724;
         }
-        .netlify-url-format {
+        .dns-record {
             background: #2d3748;
             color: #68d391;
             padding: 15px;
@@ -51,99 +52,83 @@
             font-family: monospace;
             margin: 15px 0;
         }
-        .warning-box {
-            background: #fff3cd;
-            border: 2px solid #ffc107;
-            padding: 20px;
-            margin: 20px 0;
+        .step-by-step {
+            background: #e7f3ff;
+            border: 2px solid #0066cc;
+            padding: 25px;
+            margin: 25px 0;
             border-radius: 8px;
-            color: #856404;
+            color: #0066cc;
         }
     </style>
 </head>
 <body>
     <div class="error-guide">
-        <h1>⚠️ Cloudflare Netlify Hataları</h1>
+        <h1>🚨 DNS Doğrulama Hatası</h1>
         
-        <div class="error-case">
-            <h3>❌ HATA 1: "Invalid target hostname"</h3>
-            <p><strong>Sebep:</strong> Netlify URL formatı yanlış</p>
-            <div class="solution">
-                <h4>✅ ÇÖZÜM:</h4>
-                <p>Doğru format kullanın:</p>
-                <div class="netlify-url-format">
-YANLIŞ: https://site-name.netlify.app
-DOĞRU: site-name.netlify.app
-
-YANLIŞ: www.site-name.netlify.app  
-DOĞRU: site-name.netlify.app
-                </div>
-                <p>Sadece domain adı, https:// veya www olmadan</p>
-            </div>
+        <div class="error-box">
+            <h3>❌ HATA MESSAJı:</h3>
+            <p><strong>"DNS verification failed - finrasyo.com doesn't appear to be served by Netlify"</strong></p>
+            
+            <h3>🔍 SORUNUN NEDENİ:</h3>
+            <ul>
+                <li>Cloudflare'de sadece <strong>www.finrasyo.com</strong> için CNAME kaydı var</li>
+                <li>Netlify <strong>finrasyo.com</strong> (apex domain) arıyor</li>
+                <li>İki farklı domain türü - uyumsuzluk var</li>
+            </ul>
         </div>
 
-        <div class="error-case">
-            <h3>❌ HATA 2: "CNAME target cannot be an IP address"</h3>
-            <p><strong>Sebep:</strong> IP adresi girmeye çalışıyorsunuz</p>
-            <div class="solution">
-                <h4>✅ ÇÖZÜM:</h4>
-                <ul>
-                    <li>IP adresi değil, Netlify domain kullanın</li>
-                    <li>Netlify dashboard'da site URL'inizi bulun</li>
-                    <li>.netlify.app uzantılı adresi kullanın</li>
-                </ul>
-            </div>
-        </div>
-
-        <div class="error-case">
-            <h3>❌ HATA 3: "Target hostname already exists"</h3>
-            <p><strong>Sebep:</strong> Aynı domain başka yerde kullanılıyor</p>
-            <div class="solution">
-                <h4>✅ ÇÖZÜM:</h4>
-                <ol>
-                    <li>Mevcut "www" kaydını silin</li>
-                    <li>5 dakika bekleyin</li>
-                    <li>Yeni CNAME kaydı oluşturun</li>
-                    <li>Name: www, Target: netlify-url</li>
-                </ol>
-            </div>
-        </div>
-
-        <div class="error-case">
-            <h3>❌ HATA 4: "Cannot resolve target hostname"</h3>
-            <p><strong>Sebep:</strong> Netlify URL yanlış yazılmış</p>
-            <div class="solution">
-                <h4>✅ ÇÖZÜM:</h4>
-                <p>Netlify URL'i doğru şekilde kopyalayın:</p>
-                <ol>
-                    <li>Netlify → Sites → Site'inize tıklayın</li>
-                    <li>Site URL'ini kopyalayın</li>
-                    <li>.netlify.app ile bittiğinden emin olun</li>
-                    <li>Typo olmadığından emin olun</li>
-                </ol>
-            </div>
-        </div>
-
-        <div class="warning-box">
-            <h3>📋 Netlify URL Nasıl Bulunur</h3>
-            <ol>
-                <li><strong>Netlify.com</strong> → Dashboard</li>
-                <li><strong>Sites</strong> sekmesine gidin</li>
-                <li>Site'inizin adına tıklayın</li>
-                <li>URL'i kopyalayın (örnek: happy-einstein-123456.netlify.app)</li>
-                <li>Bu URL'i Cloudflare'de Target olarak kullanın</li>
-            </ol>
-        </div>
-
-        <div style="text-align: center; margin-top: 40px; padding: 25px; background: #e7f3ff; border-radius: 12px; color: #0066cc;">
-            <h3>🎯 Doğru Cloudflare Ayarı</h3>
-            <div class="netlify-url-format">
+        <div class="solution-box">
+            <h3>✅ ÇÖZÜM 1: Cloudflare'de Apex Domain Ekleyin</h3>
+            
+            <p><strong>Cloudflare DNS panelinde:</strong></p>
+            <div class="dns-record">
 Type: CNAME
-Name: www
-Target: [site-name].netlify.app
-Proxy: DNS only (gri bulut)
+Name: finrasyo.com (veya @)
+Target: flourishing-mousse-817e75.netlify.app
             </div>
-            <p>Hangi hatayı alıyorsunuz? Yukarıdakilerden hangisi?</p>
+            
+            <p><strong>Mevcut kayıt ile birlikte olacak:</strong></p>
+            <div class="dns-record">
+✅ www.finrasyo.com → flourishing-mousse-817e75.netlify.app
+✅ finrasyo.com → flourishing-mousse-817e75.netlify.app
+            </div>
+        </div>
+
+        <div class="step-by-step">
+            <h3>🔧 ADIM ADIM ÇÖZÜM</h3>
+            
+            <p><strong>1. Cloudflare DNS paneline gidin</strong></p>
+            <p><strong>2. "Add record" butonuna tıklayın</strong></p>
+            <p><strong>3. Yeni CNAME kaydı oluşturun:</strong></p>
+            <ul>
+                <li>Type: CNAME</li>
+                <li>Name: finrasyo.com</li>
+                <li>Target: flourishing-mousse-817e75.netlify.app</li>
+                <li>Proxy status: DNS only (gri bulut)</li>
+            </ul>
+            <p><strong>4. "Save" butonuna tıklayın</strong></p>
+            <p><strong>5. 5-10 dakika bekleyin</strong></p>
+            <p><strong>6. Netlify'de "Retry DNS verification" deneyin</strong></p>
+        </div>
+
+        <div class="solution-box">
+            <h3>🔄 ALTERNATİF ÇÖZÜM 2: Netlify'de Domain Değiştirin</h3>
+            
+            <p>Eğer sadece www.finrasyo.com kullanmak istiyorsanız:</p>
+            <ul>
+                <li>Netlify'de domain silip yeniden ekleyin</li>
+                <li>Bu sefer <strong>www.finrasyo.com</strong> yazın</li>
+                <li>finrasyo.com yerine www'li versiyonu kullanın</li>
+            </ul>
+        </div>
+
+        <div style="text-align: center; margin-top: 40px; padding: 25px; background: #fff3cd; border-radius: 12px; color: #856404;">
+            <h3>⏰ Beklenen Sonuç</h3>
+            <p><strong>ÇÖZÜM 1 tercih edilir</strong> - Hem finrasyo.com hem www.finrasyo.com çalışır</p>
+            <p><strong>5-10 dakika sonra:</strong> DNS doğrulama başarılı</p>
+            <p><strong>15-30 dakika sonra:</strong> SSL sertifikası aktif</p>
+            <p>Cloudflare'de apex domain CNAME kaydını ekleyin ve sonucu paylaşın!</p>
         </div>
     </div>
 </body>
