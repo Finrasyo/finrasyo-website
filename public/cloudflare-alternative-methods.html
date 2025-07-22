@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cloudflare Alternatif Yöntemler - FinRasyo</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            line-height: 1.6;
+        }
+        .alternatives {
+            background: rgba(255,255,255,0.95);
+            color: #333;
+            padding: 40px;
+            border-radius: 15px;
+            margin: 20px 0;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #667eea;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+        .method {
+            background: #f8f9fa;
+            border: 2px solid #28a745;
+            padding: 25px;
+            margin: 25px 0;
+            border-radius: 8px;
+        }
+        .warning-box {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            color: #856404;
+        }
+        .dns-settings {
+            background: #2d3748;
+            color: #68d391;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: monospace;
+            margin: 15px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="alternatives">
+        <h1>🔄 Cloudflare Alternatif Yöntemler</h1>
+        
+        <div class="method">
+            <h3>🎯 YÖNTEM 1: Mevcut CNAME Silme</h3>
+            <ol>
+                <li>Cloudflare DNS'de mevcut "www" kaydını bulun</li>
+                <li>"Delete" butonuna tıklayın</li>
+                <li>5 dakika bekleyin</li>
+                <li>Yeni CNAME kaydı oluşturun</li>
+                <li>flourishing-mousse-817e75.netlify.app girin</li>
+            </ol>
+        </div>
+
+        <div class="method">
+            <h3>📝 YÖNTEM 2: Manuel CNAME Oluşturma</h3>
+            <ol>
+                <li>"Add record" butonuna tıklayın</li>
+                <li>Type: CNAME seçin</li>
+                <li>Name: www yazın</li>
+                <li>Target: flourishing-mousse-817e75.netlify.app</li>
+                <li>Proxy status: DNS only (gri bulut)</li>
+                <li>Save tıklayın</li>
+            </ol>
+        </div>
+
+        <div class="method">
+            <h3>🔧 YÖNTEM 3: A Record Kullanma</h3>
+            <div class="warning-box">
+                <p><strong>Not:</strong> CNAME çalışmazsa A record deneyin</p>
+            </div>
+            <ol>
+                <li>Type: A seçin</li>
+                <li>Name: www</li>
+                <li>IPv4: 75.2.60.5 (Netlify Load Balancer IP)</li>
+                <li>Proxy: DNS only</li>
+            </ol>
+            <div class="dns-settings">
+Type: A
+Name: www
+IPv4 address: 75.2.60.5
+Proxy status: DNS only
+            </div>
+        </div>
+
+        <div class="method">
+            <h3>⚡ YÖNTEM 4: Geçici Test</h3>
+            <p><strong>SSL beklerken navigation test edin:</strong></p>
+            <ol>
+                <li>Doğrudan Netlify URL'ini açın</li>
+                <li>https://flourishing-mousse-817e75.netlify.app</li>
+                <li>Navigation linklerini test edin</li>
+                <li>Hakkımızda, İletişim sayfalarını kontrol edin</li>
+            </ol>
+        </div>
+
+        <div style="text-align: center; margin-top: 40px; padding: 25px; background: #e7f3ff; border-radius: 12px; color: #0066cc;">
+            <h3>🎯 Şimdi Deneyin</h3>
+            <p><strong>En basit:</strong> Mevcut www kaydını silin, yenisini oluşturun</p>
+            <p><strong>Alternatif:</strong> CNAME yerine A record kullanın</p>
+            <p><strong>Test:</strong> Netlify URL'de navigation kontrol edin</p>
+            <p>Hangi yöntemi denersiniz?</p>
+        </div>
+    </div>
+</body>
+</html>
