@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Netlify Otomatik Deployment Kurulumu - FinRasyo</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            line-height: 1.6;
+        }
+        .deployment-guide {
+            background: rgba(255,255,255,0.95);
+            color: #333;
+            padding: 40px;
+            border-radius: 15px;
+            margin: 20px 0;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #667eea;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+        .current-method {
+            background: #f8d7da;
+            border: 2px solid #dc3545;
+            padding: 25px;
+            margin: 25px 0;
+            border-radius: 8px;
+            color: #721c24;
+        }
+        .automatic-method {
+            background: #d4edda;
+            border: 2px solid #28a745;
+            padding: 25px;
+            margin: 25px 0;
+            border-radius: 8px;
+            color: #155724;
+        }
+        .step-box {
+            background: #e7f3ff;
+            border: 2px solid #0066cc;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            color: #0066cc;
+        }
+        .comparison-table {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            overflow-x: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #667eea;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="deployment-guide">
+        <h1>🔄 Otomatik Deployment Kurulumu</h1>
+        
+        <div class="current-method">
+            <h3>❌ ŞU ANKİ DURUM (Manuel)</h3>
+            <ul>
+                <li>Her kod değişikliğinde manuel ZIP oluşturma</li>
+                <li>Netlify'a elle yükleme</li>
+                <li>Domain yeniden bağlama (bazen gerekli)</li>
+                <li>Zaman kaybı ve hata riski</li>
+            </ul>
+        </div>
+
+        <div class="automatic-method">
+            <h3>✅ OTOMATİK ÇÖZÜM (Git Integration)</h3>
+            <ul>
+                <li><strong>GitHub/GitLab bağlantısı</strong> - Kod değişikliği otomatik deployment</li>
+                <li><strong>Continuous Deployment</strong> - Push yaptığınızda otomatik build</li>
+                <li><strong>Preview builds</strong> - Branch'ler için test ortamı</li>
+                <li><strong>Build logs</strong> - Hata durumunda detaylı log</li>
+                <li><strong>Rollback</strong> - Önceki versiyona tek tıkla dönüş</li>
+            </ul>
+        </div>
+
+        <div class="comparison-table">
+            <h3>📊 Manuel vs Otomatik Karşılaştırma</h3>
+            <table>
+                <tr>
+                    <th>Özellik</th>
+                    <th>Manuel (Şu an)</th>
+                    <th>Otomatik (Git)</th>
+                </tr>
+                <tr>
+                    <td>Deployment Süresi</td>
+                    <td>5-10 dakika</td>
+                    <td>2-3 dakika</td>
+                </tr>
+                <tr>
+                    <td>Hata Riski</td>
+                    <td>Yüksek</td>
+                    <td>Çok düşük</td>
+                </tr>
+                <tr>
+                    <td>Build Logs</td>
+                    <td>Yok</td>
+                    <td>Detaylı</td>
+                </tr>
+                <tr>
+                    <td>Rollback</td>
+                    <td>Manuel restore</td>
+                    <td>1-click</td>
+                </tr>
+                <tr>
+                    <td>Preview</td>
+                    <td>Yok</td>
+                    <td>Branch preview</td>
+                </tr>
+                <tr>
+                    <td>Team Collaboration</td>
+                    <td>Zor</td>
+                    <td>Kolay</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="step-box">
+            <h3>🚀 OTOMATİK DEPLOYMENT KURULUMU</h3>
+            
+            <h4>ADIM 1: GitHub Repository Oluştur</h4>
+            <ul>
+                <li>GitHub'da yeni repository oluşturun</li>
+                <li>Projeyi GitHub'a push edin</li>
+                <li>Public/Private seçimi yapın</li>
+            </ul>
+
+            <h4>ADIM 2: Netlify Git Integration</h4>
+            <ul>
+                <li>Netlify'da "New site from Git" seçin</li>
+                <li>GitHub hesabınızı bağlayın</li>
+                <li>Repository seçin</li>
+                <li>Build settings: <code>npm run build</code></li>
+                <li>Publish directory: <code>dist</code></li>
+            </ul>
+
+            <h4>ADIM 3: Domain Migration</h4>
+            <ul>
+                <li>Yeni site deploy olduktan sonra</li>
+                <li>Custom domain ekleyin (finrasyo.com)</li>
+                <li>Eski site'ı silin</li>
+                <li>DNS değişikliği gerekmez</li>
+            </ul>
+        </div>
+
+        <div style="text-align: center; margin-top: 40px; padding: 25px; background: #d4edda; border-radius: 12px; color: #155724;">
+            <h3>🎯 Sonuç</h3>
+            <p><strong>Kod değiştirdiniz:</strong> Git push yapın</p>
+            <p><strong>2-3 dakika sonra:</strong> Site otomatik güncellenir</p>
+            <p><strong>Hata durumu:</strong> Otomatik rollback</p>
+            <p><strong>Zaman tasarrufu:</strong> %80 daha hızlı</p>
+            <p>Otomatik deployment kurmak istiyor musunuz?</p>
+        </div>
+    </div>
+</body>
+</html>
