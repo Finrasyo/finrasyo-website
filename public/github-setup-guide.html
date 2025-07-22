@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GitHub Otomatik Deployment Kurulumu - Başlangıçtan Sona</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            line-height: 1.6;
+        }
+        .guide {
+            background: rgba(255,255,255,0.95);
+            color: #333;
+            padding: 40px;
+            border-radius: 15px;
+            margin: 20px 0;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #667eea;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+        .step {
+            background: #e7f3ff;
+            border: 2px solid #0066cc;
+            padding: 25px;
+            margin: 25px 0;
+            border-radius: 8px;
+            color: #0066cc;
+        }
+        .warning {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            color: #856404;
+        }
+        .success {
+            background: #d4edda;
+            border: 2px solid #28a745;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            color: #155724;
+        }
+        .code-box {
+            background: #2d3748;
+            color: #68d391;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: monospace;
+            margin: 15px 0;
+            word-break: break-all;
+        }
+    </style>
+</head>
+<body>
+    <div class="guide">
+        <h1>🚀 GitHub Otomatik Deployment Kurulumu</h1>
+        
+        <div class="step">
+            <h2>ADIM 1: GitHub Hesabı Oluşturun</h2>
+            <ol>
+                <li><strong>github.com</strong> adresine gidin</li>
+                <li><strong>"Sign up"</strong> butonuna tıklayın</li>
+                <li>Email, kullanıcı adı ve şifre girin</li>
+                <li>Email doğrulaması yapın</li>
+                <li>Ücretsiz plan seçin (Free tier yeterli)</li>
+            </ol>
+            <p><em>Zaten hesabınız varsa bu adımı atlayın</em></p>
+        </div>
+
+        <div class="step">
+            <h2>ADIM 2: Yeni Repository Oluşturun</h2>
+            <ol>
+                <li>GitHub'da <strong>"New repository"</strong> butonuna tıklayın</li>
+                <li><strong>Repository name:</strong> finrasyo-website (veya istediğiniz isim)</li>
+                <li><strong>Description:</strong> FinRasyo Financial Analysis Platform</li>
+                <li><strong>Public</strong> seçin (ücretsiz)</li>
+                <li><strong>"Add README file"</strong> işaretleyin</li>
+                <li><strong>"Create repository"</strong> butonuna tıklayın</li>
+            </ol>
+        </div>
+
+        <div class="step">
+            <h2>ADIM 3: Proje Dosyalarını Hazırlayın</h2>
+            <ol>
+                <li>Bilgisayarınızda proje klasörünü açın</li>
+                <li>Terminal/Command Prompt açın</li>
+                <li>Proje klasörüne gidin</li>
+                <li>Aşağıdaki komutları sırayla çalıştırın:</li>
+            </ol>
+            <div class="code-box">
+git init
+git add .
+git commit -m "İlk commit"
+git branch -M main
+git remote add origin https://github.com/KULLANICI_ADINIZ/finrasyo-website.git
+git push -u origin main
+            </div>
+            <p><strong>NOT:</strong> KULLANICI_ADINIZ yerine GitHub kullanıcı adınızı yazın</p>
+        </div>
+
+        <div class="warning">
+            <h3>⚠️ Git Kurulu Değilse</h3>
+            <p><strong>Windows:</strong> git-scm.com'dan Git indirin</p>
+            <p><strong>Mac:</strong> Terminal'de "git --version" yazın, otomatik kurulur</p>
+            <p><strong>Linux:</strong> sudo apt install git (Ubuntu/Debian)</p>
+        </div>
+
+        <div class="step">
+            <h2>ADIM 4: Netlify'de Yeni Site Oluşturun</h2>
+            <ol>
+                <li><strong>app.netlify.com</strong> adresine gidin</li>
+                <li><strong>"Add new site"</strong> butonuna tıklayın</li>
+                <li><strong>"Import an existing project"</strong> seçin</li>
+                <li><strong>"GitHub"</strong> butonuna tıklayın</li>
+                <li>GitHub hesabınızla giriş yapın ve izin verin</li>
+                <li>Repository listesinden <strong>finrasyo-website</strong> seçin</li>
+            </ol>
+        </div>
+
+        <div class="step">
+            <h2>ADIM 5: Build Ayarlarını Yapın</h2>
+            <ol>
+                <li><strong>Build command:</strong> npm run build</li>
+                <li><strong>Publish directory:</strong> dist</li>
+                <li><strong>Base directory:</strong> boş bırakın</li>
+                <li><strong>"Deploy site"</strong> butonuna tıklayın</li>
+            </ol>
+            <p>Netlify otomatik olarak build alacak ve site deploy edilecek</p>
+        </div>
+
+        <div class="step">
+            <h2>ADIM 6: Domain Bağlantısı</h2>
+            <ol>
+                <li>Deploy tamamlandıktan sonra <strong>"Site settings"</strong> gidin</li>
+                <li><strong>"Domain management"</strong> sekmesi</li>
+                <li><strong>"Add custom domain"</strong> tıklayın</li>
+                <li><strong>finrasyo.com</strong> yazın ve ekleyin</li>
+                <li><strong>"Verify DNS configuration"</strong> bekleyin</li>
+            </ol>
+            <p>DNS zaten Cloudflare'de yapılmış, otomatik tanınacak</p>
+        </div>
+
+        <div class="step">
+            <h2>ADIM 7: Eski Site'ı Silin</h2>
+            <ol>
+                <li>Netlify dashboard'da eski manuel site'ı bulun</li>
+                <li><strong>"Site settings"</strong> → <strong>"General"</strong></li>
+                <li>En aşağıda <strong>"Delete site"</strong> butonuna tıklayın</li>
+                <li>Site adını yazıp onaylayın</li>
+            </ol>
+        </div>
+
+        <div class="success">
+            <h3>✅ Kurulum Tamamlandı!</h3>
+            <p><strong>Artık şöyle çalışacak:</strong></p>
+            <ul>
+                <li>Kod değiştirip GitHub'a push yapın</li>
+                <li>Netlify otomatik build alır</li>
+                <li>2-3 dakika sonra www.finrasyo.com güncellenir</li>
+                <li>Hata durumunda otomatik rollback</li>
+            </ul>
+        </div>
+
+        <div class="step">
+            <h2>🧪 İLK TEST</h2>
+            <p>Kurulumu test etmek için:</p>
+            <ol>
+                <li>Projede küçük bir değişiklik yapın</li>
+                <li>Terminal'de şunları çalıştırın:</li>
+            </ol>
+            <div class="code-box">
+git add .
+git commit -m "Test değişikliği"
+git push
+            </div>
+            <p>2-3 dakika bekleyip www.finrasyo.com kontrol edin</p>
+        </div>
+
+        <div style="text-align: center; margin-top: 40px; padding: 25px; background: #d4edda; border-radius: 12px; color: #155724;">
+            <h3>🎯 Sonuç</h3>
+            <p>Artık her kod değişikliği otomatik olarak siteye yansıyacak!</p>
+            <p>Manuel ZIP yükleme dönemi sona erdi 🎉</p>
+        </div>
+    </div>
+</body>
+</html>

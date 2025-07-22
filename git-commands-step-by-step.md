@@ -1,80 +1,87 @@
-# Git Komutları - Adım Adım
+# GitHub Kurulum Komutları - Adım Adım
 
-Shell açık, hazırsınız! Bu komutları sırayla çalıştırın:
+## 1. İlk Kurulum (Sadece bir kez yapılır)
 
-## Komut 1: Proje Klasörüne Git
 ```bash
-cd /home/runner/workspace
-```
-**Ne yapıyor:** Proje klasörüne gidiyor
-**Beklenen sonuç:** Hiçbir hata mesajı çıkmamalı
+# Proje klasörüne gidin
+cd /path/to/your/project
 
-## Komut 2: Git Başlat
-```bash
+# Git'i başlatın
 git init
-```
-**Ne yapıyor:** Git repository başlatıyor
-**Beklenen sonuç:** "Initialized empty Git repository" mesajı
 
-## Komut 3: GitHub Repository Bağla
-```bash
-git remote add origin https://github.com/KULLANICI_ADI/finrasyo.git
-```
-**⚠️ ÖNEMLİ:** KULLANICI_ADI yerine gerçek GitHub kullanıcı adınızı yazın!
-
-**Örnek:** Eğer GitHub kullanıcı adınız "mehmet123" ise:
-```bash
-git remote add origin https://github.com/mehmet123/finrasyo.git
-```
-
-## Komut 4: Dosyaları Hazırla
-```bash
+# Tüm dosyaları ekleyin
 git add .
-```
-**Ne yapıyor:** Tüm dosyaları commit için hazırlıyor
-**Beklenen sonuç:** Hiçbir çıktı olmamalı (sessizce çalışır)
 
-## Komut 5: Commit Oluştur
-```bash
-git commit -m "Initial commit: FinRasyo financial analysis platform"
-```
-**Ne yapıyor:** Dosyaları kaydediyor
-**Beklenen sonuç:** "X files changed" gibi mesaj
+# İlk commit
+git commit -m "İlk commit - FinRasyo projesi"
 
-## Komut 6: Ana Branch Ayarla
-```bash
+# Ana branch adını main yapın
 git branch -M main
-```
-**Ne yapıyor:** Ana branch'i main yapıyor
-**Beklenen sonuç:** Hiçbir çıktı
 
-## Komut 7: GitHub'a Yükle
-```bash
+# GitHub repository'nizi bağlayın (KULLANICI_ADINIZ değiştirin)
+git remote add origin https://github.com/KULLANICI_ADINIZ/finrasyo-website.git
+
+# İlk push
 git push -u origin main
 ```
-**Ne yapıyor:** Kodu GitHub'a yükliyor
-**Beklenen:** Username ve password isteyecek!
 
-### Authentication İçin:
-- **Username:** GitHub kullanıcı adınız
-- **Password:** Personal Access Token (GitHub şifreniz DEĞİL!)
+## 2. Günlük Kullanım (Her değişiklik için)
 
-## Personal Access Token Alma:
-1. GitHub → Settings → Developer settings
-2. Personal access tokens → Tokens (classic)  
-3. Generate new token → Classic
-4. Permissions: "repo" seç
-5. Token'ı kopyala ve password olarak kullan
+```bash
+# Değişiklikleri ekleyin
+git add .
 
-## Başarı İşaretleri:
-✅ "Enumerating objects" mesajı
-✅ "Writing objects: 100%" mesajı  
-✅ "Branch 'main' set up to track" mesajı
+# Commit mesajı yazın
+git commit -m "Açıklayıcı mesaj buraya"
 
-## Hata Çözümü:
-❌ "remote origin already exists" → `git remote remove origin` sonra tekrar dene
-❌ "Authentication failed" → Personal Access Token kullan
-❌ "Permission denied" → Repository public mi kontrol et
+# GitHub'a gönderin
+git push
+```
 
-## Sonraki Adım:
-Upload başarılı olduğunda GitHub repository sayfanızı yenileyin, dosyalar görünmelidir!
+## 3. Netlify Build Ayarları
+
+- **Build command:** `npm run build`
+- **Publish directory:** `dist`
+- **Base directory:** (boş)
+
+## 4. Örnek Günlük İş Akışı
+
+1. Kodu değiştirin
+2. Terminal açın
+3. `git add .`
+4. `git commit -m "Navbar rengini değiştirdim"`
+5. `git push`
+6. 2-3 dakika bekleyin
+7. www.finrasyo.com otomatik güncellenecek
+
+## 5. Faydalı Git Komutları
+
+```bash
+# Durum kontrolü
+git status
+
+# Commit geçmişi
+git log --oneline
+
+# Son değişiklikleri geri alma
+git reset HEAD~1
+
+# Branch oluşturma
+git checkout -b yeni-feature
+
+# Branch değiştirme
+git checkout main
+```
+
+## 6. İlk Test İçin
+
+Küçük bir değişiklik yapın (örneğin README.md'ye bir satır ekleyin):
+
+```bash
+echo "# FinRasyo - Otomatik deployment aktif!" >> README.md
+git add .
+git commit -m "Otomatik deployment testi"
+git push
+```
+
+2-3 dakika sonra site güncellenecek!
