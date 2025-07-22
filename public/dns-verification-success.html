@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DNS Doğrulama Başarı Adımları - FinRasyo</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            line-height: 1.6;
+        }
+        .success-guide {
+            background: rgba(255,255,255,0.95);
+            color: #333;
+            padding: 40px;
+            border-radius: 15px;
+            margin: 20px 0;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #28a745;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+        .timeline-box {
+            background: #d4edda;
+            border: 2px solid #28a745;
+            padding: 25px;
+            margin: 25px 0;
+            border-radius: 8px;
+            color: #155724;
+        }
+        .next-step {
+            background: #e7f3ff;
+            border: 2px solid #0066cc;
+            padding: 25px;
+            margin: 25px 0;
+            border-radius: 8px;
+            color: #0066cc;
+        }
+        .final-test {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            padding: 25px;
+            margin: 25px 0;
+            border-radius: 8px;
+            color: #856404;
+        }
+    </style>
+</head>
+<body>
+    <div class="success-guide">
+        <h1>✅ DNS Kaydı Eklendi!</h1>
+        
+        <div class="timeline-box">
+            <h3>⏰ Şimdi Ne Olacak?</h3>
+            <ul>
+                <li><strong>0-5 dakika:</strong> DNS propagation başlıyor</li>
+                <li><strong>5-10 dakika:</strong> Netlify DNS doğrulaması hazır</li>
+                <li><strong>10-30 dakika:</strong> SSL sertifikası otomatik oluşur</li>
+                <li><strong>30 dakika sonra:</strong> www.finrasyo.com tamamen aktif</li>
+            </ul>
+        </div>
+
+        <div class="next-step">
+            <h3>🔄 Şimdi Yapın (5 dakika sonra)</h3>
+            <p><strong>1. Netlify paneline gidin</strong></p>
+            <p><strong>2. Deployments → Settings sekmesinde</strong></p>
+            <p><strong>3. "Retry DNS verification" butonuna tıklayın</strong></p>
+            <p><strong>4. Başarılı olursa "SSL certificate provisioning" başlayacak</strong></p>
+        </div>
+
+        <div class="final-test">
+            <h3>🧪 Final Test Listesi</h3>
+            <p><strong>DNS doğrulama başarılı olduktan sonra test edin:</strong></p>
+            <ul>
+                <li>https://www.finrasyo.com açılıyor mu?</li>
+                <li>https://finrasyo.com yönlendiriliyor mu?</li>
+                <li>Navigation linkler çalışıyor mu?</li>
+                <li>SSL sertifikası yeşil kilit gösteriyor mu?</li>
+                <li>Mobil cihazda görünüm doğru mu?</li>
+            </ul>
+        </div>
+
+        <div style="text-align: center; margin-top: 40px; padding: 25px; background: #d4edda; border-radius: 12px; color: #155724;">
+            <h3>🎯 Başarı Durumu</h3>
+            <p><strong>DNS kaydı eklendi ✅</strong></p>
+            <p><strong>5 dakika bekleyin → "Retry DNS verification"</strong></p>
+            <p><strong>Sonucu paylaşın!</strong></p>
+        </div>
+    </div>
+</body>
+</html>
