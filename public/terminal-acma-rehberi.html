@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terminal/Command Prompt Açma Rehberi</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            line-height: 1.6;
+        }
+        .guide {
+            background: rgba(255,255,255,0.95);
+            color: #333;
+            padding: 40px;
+            border-radius: 15px;
+            margin: 20px 0;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #667eea;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+        .os-section {
+            background: #e7f3ff;
+            border: 2px solid #0066cc;
+            padding: 25px;
+            margin: 25px 0;
+            border-radius: 8px;
+            color: #0066cc;
+        }
+        .method {
+            background: #f8f9fa;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 8px;
+            border-left: 4px solid #28a745;
+        }
+        .shortcut {
+            background: #2d3748;
+            color: #68d391;
+            padding: 10px;
+            border-radius: 5px;
+            font-family: monospace;
+            display: inline-block;
+            margin: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="guide">
+        <h1>💻 Terminal/Command Prompt Açma</h1>
+        
+        <div class="os-section">
+            <h2>🪟 WINDOWS</h2>
+            
+            <div class="method">
+                <h3>Yöntem 1: Windows Tuşu + R</h3>
+                <ul>
+                    <li><span class="shortcut">Windows + R</span> tuşlarına basın</li>
+                    <li>"cmd" yazıp Enter tuşuna basın</li>
+                </ul>
+            </div>
+
+            <div class="method">
+                <h3>Yöntem 2: Başlat Menüsü</h3>
+                <ul>
+                    <li>Sol alt köşedeki Windows simgesine tıklayın</li>
+                    <li>"cmd" veya "command prompt" yazın</li>
+                    <li>Çıkan sonuca tıklayın</li>
+                </ul>
+            </div>
+
+            <div class="method">
+                <h3>Yöntem 3: Proje Klasöründe</h3>
+                <ul>
+                    <li>Proje klasörünü File Explorer'da açın</li>
+                    <li>Adres çubuğuna "cmd" yazıp Enter basın</li>
+                    <li>Terminal direkt o klasörde açılır</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="os-section">
+            <h2>🍎 MAC</h2>
+            
+            <div class="method">
+                <h3>Yöntem 1: Spotlight</h3>
+                <ul>
+                    <li><span class="shortcut">Cmd + Space</span> tuşlarına basın</li>
+                    <li>"Terminal" yazıp Enter tuşuna basın</li>
+                </ul>
+            </div>
+
+            <div class="method">
+                <h3>Yöntem 2: Launchpad</h3>
+                <ul>
+                    <li>Launchpad'i açın</li>
+                    <li>"Other" klasörüne gidin</li>
+                    <li>"Terminal" uygulamasına tıklayın</li>
+                </ul>
+            </div>
+
+            <div class="method">
+                <h3>Yöntem 3: Finder</h3>
+                <ul>
+                    <li>Applications → Utilities → Terminal</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="os-section">
+            <h2>🐧 LINUX</h2>
+            
+            <div class="method">
+                <h3>Klavye Kısayolu</h3>
+                <ul>
+                    <li><span class="shortcut">Ctrl + Alt + T</span> (çoğu dağıtımda)</li>
+                </ul>
+            </div>
+
+            <div class="method">
+                <h3>Applications Menüsü</h3>
+                <ul>
+                    <li>Activities/Applications açın</li>
+                    <li>"Terminal" arayın</li>
+                </ul>
+            </div>
+        </div>
+
+        <div style="background: #d4edda; border: 2px solid #28a745; padding: 25px; margin: 25px 0; border-radius: 8px; color: #155724;">
+            <h3>✅ Terminal Açıldıktan Sonra</h3>
+            <p>Proje klasörüne gitmek için:</p>
+            <ul>
+                <li><strong>Windows:</strong> <code>cd C:\path\to\your\project</code></li>
+                <li><strong>Mac/Linux:</strong> <code>cd /path/to/your/project</code></li>
+                <li><strong>Kolay yol:</strong> Proje klasörünü terminale sürükleyin</li>
+            </ul>
+        </div>
+
+        <div style="text-align: center; margin-top: 40px; padding: 25px; background: #fff3cd; border-radius: 12px; color: #856404;">
+            <h3>🎯 Sonraki Adım</h3>
+            <p>Terminal açtıktan sonra proje klasörüne gidin</p>
+            <p>Sonra Git komutlarını çalıştırın</p>
+        </div>
+    </div>
+</body>
+</html>
